@@ -1,0 +1,81 @@
+@import url('./styles/vars.style.css');
+@import url('./styles/auth.style.css');
+@import url('./styles/buttons.style.css');
+@import url('./styles/tables.style.css');
+@import url('./styles/pagination.style.css');
+@import url('./styles/tabs.style.css');
+
+
+/* Global reset and typography */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body,
+html {
+  font-family: 'Oswald', sans-serif;
+  margin: 0;
+  padding: 0;
+  background-color: var(--background-color) !important; /* Override Bootstrap background */
+  color: var(--text-color);
+  min-height: 100%;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button,
+a,
+input[type="submit"] {
+  transition: background-color 0.3s ease;
+}
+
+
+/* Main app container */
+.app-container {
+  max-width: 100%;
+  padding: 20px;
+  transition: margin-left 0.3s ease;
+  min-height: 100vh;
+}
+
+.sidebar.open ~ .page-content {
+  margin-left: var(--sidebar-width);
+}
+
+.sidebar:not(.open) ~ .page-content {
+  margin-left: var(--sidebar-closed-width);
+}
+
+/* Section Styling */
+section {
+  padding: 20px;
+  background-color: var(--section-background);
+  color: var(--text-color);
+  box-shadow: 0px 4px 8px var(--shadow-color);
+  border-radius: 8px;
+  margin-bottom: 20px;
+}
+
+
+/* Pagination */
+.pagination {
+  display: flex;
+  justify-content: center;
+  padding: 10px 0;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+  .sidebar.open ~ .page-content,
+  .sidebar:not(.open) ~ .page-content {
+    margin-left: 0;
+  }
+  .app-container {
+    padding: 10px;
+  }
+}

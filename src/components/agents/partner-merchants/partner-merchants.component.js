@@ -56,12 +56,12 @@ const PartnerMerchants = ({
 
   // Default onSave callback for row edits that updates partnerData.
   // This is used by the TableWithFilters snackbar.
-  const handleSave = (updatedData) => {
-    const nonPartnerClients = clients.filter(client => !client.partner);
-    const updatedClients = [...nonPartnerClients, ...updatedData];
-    updatePartnerClients(updatedClients);
-    setHasChanges(false);
-  };
+  // const handleSave = (updatedData) => {
+  //   const nonPartnerClients = clients.filter(client => !client.partner);
+  //   const updatedClients = [...nonPartnerClients, ...updatedData];
+  //   updatePartnerClients(updatedClients);
+  //   setHasChanges(false);
+  // };
 
   // Global save function adapted for use via TableWithFilters.
   // It now accepts updatedData from the table's snackbar.

@@ -14,7 +14,7 @@ import {
 const EditDialog = ({ 
   open, 
   onClose, 
-  fields, // Array of field configurations: [{ label, field, type, defaultValue }]
+  fields, // Array of field configurations: [{ label, field, type, defaultValue, handleInputChange }]
   onSave // Function to handle the save action
 }) => {
   const [formValues, setFormValues] = useState(
@@ -25,7 +25,14 @@ const EditDialog = ({
   );
 
   const handleChange = (field, value) => {
-    setFormValues((prev) => ({ ...prev, [field]: value }));
+    // If there's a custom input handler for this field, use it
+    const fieldConfig = fields.find(f => f.field === field);
+    if (fieldConfig?.handleInputChange) {
+      const processedValue = fieldConfig.handleInputChange(field, value);
+      setFormValues((prev) => ({ ...prev, [field]: processedValue }));
+    } else {
+      setFormValues((prev) => ({ ...prev, [field]: value }));
+    }
   };
 
   const handleSave = () => {
@@ -66,8 +73,12 @@ const EditDialog = ({
                   value={formValues[field.field]}
                   onChange={(e) => handleChange(field.field, e.target.value)}
                   fullWidth
-                  multiline={field.type === "textarea"} // Support textarea if type is set to textarea
-                  rows={field.type === "textarea" ? 4 : 1} // Adjust rows for textareas
+                  multiline={field.type === "textarea"}
+                  rows={field.type === "textarea" ? 4 : 1}
+                  inputProps={{ 
+                    pattern: field.type === "number" ? "[0-9.]*" : undefined,
+                    inputMode: field.type === "number" ? "numeric" : undefined
+                  }}
                 />
               )}
             </React.Fragment>

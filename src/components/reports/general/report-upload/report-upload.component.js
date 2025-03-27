@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom'; // Import the hook
 import { addReport } from '../../../../api/reports.api.js';
 import './report-upload.component.css';
-import { Navigate } from 'react-router-dom';
 
 const ReportUpload = ({ authToken, organizationID }) => {
   const processors = [

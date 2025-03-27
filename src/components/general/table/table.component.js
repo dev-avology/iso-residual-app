@@ -36,6 +36,8 @@ const TableWithFilters = ({
   enableTotals = false,
   onSave,
   totalFields = [],
+  onDelete,
+  editDialogProps,
 }) => {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
@@ -47,10 +49,14 @@ const TableWithFilters = ({
 
 
   const handleDelete = (rowId) => {
-    const updatedData = data.filter((row) => row[idField] !== rowId);
-    setSelected(selected.filter((id) => id !== rowId));
-    setData(updatedData);
-    setHasChanges(true); // Set changes flag
+    if (onDelete) {
+      onDelete(rowId);
+    } else {
+      const updatedData = data.filter((row) => row[idField] !== rowId);
+      setSelected(selected.filter((id) => id !== rowId));
+      setData(updatedData);
+      setHasChanges(true);
+    }
   };
 
   const handleBulkDelete = () => {
@@ -293,11 +299,11 @@ const TableWithFilters = ({
           fields={columns.map((col) => ({
             label: col.label,
             field: col.field,
-            type: col.type || (typeof editRow?.[col.field] === "boolean" ? "boolean" : "text"), // Infer type if not provided
-            defaultValue: editRow?.[col.field] || "", // Provide fallback for undefined
+            type: col.type || (typeof editRow?.[col.field] === "boolean" ? "boolean" : "text"),
+            defaultValue: editRow?.[col.field] || col.defaultValue || "",
+            handleInputChange: editDialogProps?.handleInputChange
           }))}
         />
-
       )}
       {hasChanges && (
         <Box

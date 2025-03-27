@@ -121,8 +121,8 @@ const AgentViewerPage = ({ organizationID, authToken }) => {
     };
 
     // Split clients into two categories
-    const clientsWithoutPartners = clients.filter((client) => !client.partner);
-    const clientsWithPartners = clients.filter((client) => client.partner);
+    const clientsWithoutPartners = clients.filter((client) => !client.partner && !client.partners);
+    const clientsWithPartners = clients.filter((client) => client.partner || client.partners);
 
     if (loading) return <div>Loading agent details...</div>;
     if (error) return <div>{error}</div>;
@@ -151,7 +151,7 @@ const AgentViewerPage = ({ organizationID, authToken }) => {
                     <>
                         {/* Pass additional props for saving */}
                         <AgentMerchants
-                            clients={clients.filter(client => !client.partner)}
+                            clients={clientsWithoutPartners}
                             updateAgentClients={setClients}
                             organizationID={organizationID}
                             agentID={agentID}

@@ -296,13 +296,16 @@ const TableWithFilters = ({
           open={editDialogOpen}
           onClose={handleCancel}
           onSave={handleSave}
-          fields={columns.map((col) => ({
-            label: col.label,
-            field: col.field,
-            type: col.type || (typeof editRow?.[col.field] === "boolean" ? "boolean" : "text"),
-            defaultValue: editRow?.[col.field] || col.defaultValue || "",
-            handleInputChange: editDialogProps?.handleInputChange
-          }))}
+          fields={editDialogProps?.getFields ? 
+            editDialogProps.getFields(editRow) :
+            columns.map((col) => ({
+              label: col.label,
+              field: col.field,
+              type: col.type || (typeof editRow?.[col.field] === "boolean" ? "boolean" : "text"),
+              defaultValue: editRow?.[col.field] || col.defaultValue || "",
+              handleInputChange: editDialogProps?.handleInputChange
+            }))
+          }
         />
       )}
       {hasChanges && (

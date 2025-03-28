@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from 'react';
 import {
   Dialog,
   DialogTitle,
@@ -7,89 +7,60 @@ import {
   Button,
   TextField,
   Box,
-  FormControlLabel,
-  Checkbox,
-} from "@mui/material";
+} from '@mui/material';
 
-const EditDialog = ({ 
-  open, 
-  onClose, 
-  fields, // Array of field configurations: [{ label, field, type, defaultValue, handleInputChange }]
-  onSave // Function to handle the save action
-}) => {
-  const [formValues, setFormValues] = useState(
-    fields.reduce((acc, field) => {
-      acc[field.field] = field.defaultValue || ""; // Set default values if provided
+const EditDialog = ({ open, onClose, onSave, fields }) => {
+  const [formData, setFormData] = useState({});
+
+  useEffect(() => {
+    // Initialize form data with default values
+    const initialData = fields.reduce((acc, field) => {
+      acc[field.field] = field.defaultValue;
       return acc;
-    }, {})
-  );
+    }, {});
+    setFormData(initialData);
+  }, [fields]);
 
   const handleChange = (field, value) => {
-    // If there's a custom input handler for this field, use it
-    const fieldConfig = fields.find(f => f.field === field);
-    if (fieldConfig?.handleInputChange) {
-      const processedValue = fieldConfig.handleInputChange(field, value);
-      setFormValues((prev) => ({ ...prev, [field]: processedValue }));
-    } else {
-      setFormValues((prev) => ({ ...prev, [field]: value }));
-    }
+    setFormData(prev => ({
+      ...prev,
+      [field]: value
+    }));
   };
 
-  const handleSave = () => {
-    onSave(formValues); // Pass form values to the save function
-    onClose(); // Close the dialog after saving
+  const handleSubmit = () => {
+    onSave(formData);
   };
 
   return (
     <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
-      <DialogTitle>Edit</DialogTitle>
+      <DialogTitle>Edit Details</DialogTitle>
       <DialogContent>
-        <Box
-          sx={{
-            display: "flex",
-            flexDirection: "column",
-            gap: 2,
-            marginTop: 1,
-          }}
-        >
+        <Box sx={{ mt: 2 }}>
           {fields.map((field) => (
-            <React.Fragment key={field.field}>
-              {field.type === "boolean" ? (
-                <FormControlLabel
-                  control={
-                    <Checkbox
-                      checked={!!formValues[field.field]}
-                      onChange={(e) =>
-                        handleChange(field.field, e.target.checked)
-                      }
-                    />
-                  }
-                  label={field.label}
-                />
+            <Box key={field.field} sx={{ mb: 2 }}>
+              {field.type === 'custom' && field.component ? (
+                field.component({
+                  value: formData[field.field],
+                  onChange: (value) => handleChange(field.field, value)
+                })
               ) : (
                 <TextField
-                  label={field.label}
-                  type={field.type || "text"}
-                  value={formValues[field.field]}
-                  onChange={(e) => handleChange(field.field, e.target.value)}
                   fullWidth
-                  multiline={field.type === "textarea"}
-                  rows={field.type === "textarea" ? 4 : 1}
-                  inputProps={{ 
-                    pattern: field.type === "number" ? "[0-9.]*" : undefined,
-                    inputMode: field.type === "number" ? "numeric" : undefined
-                  }}
+                  label={field.label}
+                  type={field.type === 'boolean' ? 'checkbox' : field.type || 'text'}
+                  value={formData[field.field]}
+                  onChange={(e) => handleChange(field.field, e.target.value)}
+                  variant="outlined"
                 />
               )}
-            </React.Fragment>
+            </Box>
           ))}
         </Box>
       </DialogContent>
       <DialogActions>
-        <Button onClick={onClose} color="secondary">
-          Cancel
-        </Button>
-        <Button onClick={handleSave} color="primary" variant="contained">
+        <Button onClick={onClose}>Cancel</Button>
+        <Button onClick={handleSubmit} variant="contained" color="primary">
           Save
         </Button>
       </DialogActions>

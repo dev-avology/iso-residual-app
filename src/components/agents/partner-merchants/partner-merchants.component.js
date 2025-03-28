@@ -26,7 +26,7 @@ const PartnerMerchants = ({
   });
 
   useEffect(() => {
-    const filtered = clients.filter(client => client.partner);
+    const filtered = clients.filter(client => client.partner || client.partners);
     setPartnerData(filtered);
   }, [clients]);
 
@@ -76,7 +76,7 @@ const PartnerMerchants = ({
     // Validate all partners have names and valid splits
     const isValid = newMerchant.partners.every(partner => 
       partner.name.trim() !== '' && 
-      (partner.split === '' || (parseFloat(partner.split) >= 0 && parseFloat(partner.split) <= 100))
+      (partner.split === '' || (parseFloat(partner.split.replace('%', '')) >= 0 && parseFloat(partner.split.replace('%', '')) <= 100))
     );
 
     if (!isValid) {
@@ -89,7 +89,7 @@ const PartnerMerchants = ({
       merchantID: newMerchant.merchantID || Date.now().toString(),
       partners: newMerchant.partners.map(partner => ({
         ...partner,
-        split: partner.split ? `${partner.split}%` : '0%'
+        split: partner.split ? (partner.split.includes('%') ? partner.split : `${partner.split}%`) : '0%'
       }))
     };
     updatePartnerClients(prev => [...prev, newMerchantWithID]);
@@ -111,7 +111,7 @@ const PartnerMerchants = ({
     // Convert to number and ensure it's between 0 and 100
     const numValue = parseFloat(numericValue);
     if (numValue >= 0 && numValue <= 100) {
-      handlePartnerChange(index, 'split', numValue);
+      handlePartnerChange(index, 'split', `${numValue}%`);
     }
   };
 
@@ -126,7 +126,6 @@ const PartnerMerchants = ({
       
       const response = await updateAgent(organizationID, agentID, updatedAgent, authToken);
       if(response.data?.success) {
-        alert('Partner merchants saved successfully!');
         setHasChanges(false);
       } else {
         alert('Failed to save partner merchants.');
@@ -139,10 +138,173 @@ const PartnerMerchants = ({
   const columns = [
     { field: "merchantID", label: "Merchant ID", type: "text" },
     { field: "merchantName", label: "Merchant Name", type: "text" },
-    { field: "partner", label: "Partner", type: "text" },
-    { field: "partnerSplit", label: "Partner Split (%)", type: "text" },
+    { 
+      field: "partners", 
+      label: "Number of Partners", 
+      type: "text",
+      render: (value, row) => {
+        // Handle old format (single partner)
+        if (row.partner) {
+          return "1";
+        }
+        // Handle new format (multiple partners)
+        if (row.partners && Array.isArray(row.partners)) {
+          return row.partners.length.toString();
+        }
+        return "0";
+      }
+    },
+    { 
+      field: "partners", 
+      label: "Total Partner Split (%)", 
+      type: "text",
+      render: (value, row) => {
+        // Handle old format (single partner)
+        if (row.partner) {
+          return row.partnerSplit || "0%";
+        }
+        // Handle new format (multiple partners)
+        if (row.partners && Array.isArray(row.partners)) {
+          const totalSplit = row.partners.reduce((sum, partner) => {
+            // Handle both string and number values for split
+            const splitValue = typeof partner.split === 'string' 
+              ? parseFloat(partner.split.replace('%', ''))
+              : partner.split;
+            return sum + (splitValue || 0);
+          }, 0);
+          return `${totalSplit}%`;
+        }
+        return "0%";
+      }
+    },
     { field: "branchID", label: "Branch ID", type: "text" },
   ];
+
+  // Custom edit dialog fields for partners
+  const getEditDialogFields = (row) => {
+    const baseFields = columns.filter(col => col.field !== "partners").map(col => ({
+      label: col.label,
+      field: col.field,
+      type: col.type || "text",
+      defaultValue: row[col.field] || "",
+    }));
+
+    // Add partner fields based on data format
+    if (row.partner) {
+      // Old format - single partner
+      baseFields.push(
+        {
+          label: "Partner Name",
+          field: "partner",
+          type: "text",
+          defaultValue: row.partner || "",
+        },
+        {
+          label: "Partner Split (%)",
+          field: "partnerSplit",
+          type: "text",
+          defaultValue: row.partnerSplit || "0%",
+        }
+      );
+    } else if (row.partners && Array.isArray(row.partners)) {
+      // New format - multiple partners
+      baseFields.push({
+        label: "Partners",
+        field: "partners",
+        type: "custom",
+        defaultValue: row.partners || [],
+        component: ({ value = [], onChange }) => (
+          <div style={{ marginTop: '16px' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
+              <Typography variant="subtitle1">Partners</Typography>
+              <Button 
+                size="small" 
+                onClick={() => {
+                  const newPartners = [...value, { name: '', split: '' }];
+                  onChange(newPartners);
+                }}
+                variant="outlined"
+                color="primary"
+              >
+                Add Partner
+              </Button>
+            </div>
+            
+            {(value || []).map((partner, index) => (
+              <div key={index} style={{ display: 'flex', gap: '8px', marginBottom: '8px' }}>
+                <TextField
+                  margin="dense"
+                  label="Partner Name"
+                  type="text"
+                  style={{ width: '70%' }}
+                  variant="outlined"
+                  value={partner.name || ''}
+                  onChange={(e) => {
+                    const newPartners = [...value];
+                    newPartners[index] = { ...partner, name: e.target.value };
+                    onChange(newPartners);
+                  }}
+                />
+                <TextField
+                  margin="dense"
+                  label="Split (%)"
+                  type="text"
+                  style={{ width: '30%' }}
+                  variant="outlined"
+                  value={partner.split || ''}
+                  onChange={(e) => {
+                    const numericValue = e.target.value.replace(/[^0-9.]/g, '');
+                    if (numericValue === '') {
+                      const newPartners = [...value];
+                      newPartners[index] = { ...partner, split: '' };
+                      onChange(newPartners);
+                      return;
+                    }
+                    const numValue = parseFloat(numericValue);
+                    if (numValue >= 0 && numValue <= 100) {
+                      const newPartners = [...value];
+                      newPartners[index] = { ...partner, split: `${numValue}%` };
+                      onChange(newPartners);
+                    }
+                  }}
+                  helperText="0-100"
+                  inputProps={{ 
+                    pattern: "[0-9.]*",
+                    inputMode: "numeric"
+                  }}
+                />
+                <Button
+                  size="small"
+                  onClick={() => {
+                    const newPartners = value.filter((_, i) => i !== index);
+                    onChange(newPartners);
+                  }}
+                  color="error"
+                  style={{ marginTop: '8px' }}
+                >
+                  Remove
+                </Button>
+              </div>
+            ))}
+          </div>
+        )
+      });
+    }
+
+    return baseFields;
+  };
+
+  // Custom input change handler for partner fields
+  const handlePartnerInputChange = (field, value, row) => {
+    if (field === 'partners') {
+      // Handle new format partner fields
+      return { ...row, partners: value };
+    } else if (field === 'partner' || field === 'partnerSplit') {
+      // Handle old format partner fields
+      return { ...row, [field]: value };
+    }
+    return { ...row, [field]: value };
+  };
 
   const actions = [
     {
@@ -269,10 +431,13 @@ const PartnerMerchants = ({
         fileName="partner_merchants.csv"
         hasChanges={hasChanges}
         setHasChanges={setHasChanges}
-        // Use the table component's snackbar save by passing our global save callback.
         onSave={handleSavePartner}
         totalFields={[]}
         actions={actions}
+        editDialogProps={{
+          getFields: getEditDialogFields,
+          handleInputChange: handlePartnerInputChange
+        }}
       />
     </div>
   );

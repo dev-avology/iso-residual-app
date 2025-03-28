@@ -22,6 +22,7 @@ const PartnerMerchants = ({
     partner: '',
     partnerSplit: '',
     partners: [{ name: '', split: '' }], // Array of partners with their splits
+    reps: [{ name: '', split: '' }], // Add reps array
     branchID: ''
   });
 
@@ -37,6 +38,7 @@ const PartnerMerchants = ({
       partner: '',
       partnerSplit: '',
       partners: [{ name: '', split: '' }],
+      reps: [{ name: '', split: '' }],
       branchID: ''
     });
     setOpenModal(true);
@@ -72,29 +74,30 @@ const PartnerMerchants = ({
     }));
   };
 
-  const handleAddNewMerchant = () => {
-    // Validate all partners have names and valid splits
-    const isValid = newMerchant.partners.every(partner => 
-      partner.name.trim() !== '' && 
-      (partner.split === '' || (parseFloat(partner.split.replace('%', '')) >= 0 && parseFloat(partner.split.replace('%', '')) <= 100))
-    );
+  // Add a new rep row
+  const handleAddRep = () => {
+    setNewMerchant(prev => ({
+      ...prev,
+      reps: [...prev.reps, { name: '', split: '' }]
+    }));
+  };
 
-    if (!isValid) {
-      alert('Please fill in all partner names and ensure splits are between 0 and 100');
-      return;
-    }
+  // Remove a rep row
+  const handleRemoveRep = (index) => {
+    setNewMerchant(prev => ({
+      ...prev,
+      reps: prev.reps.filter((_, i) => i !== index)
+    }));
+  };
 
-    const newMerchantWithID = {
-      ...newMerchant,
-      merchantID: newMerchant.merchantID || Date.now().toString(),
-      partners: newMerchant.partners.map(partner => ({
-        ...partner,
-        split: partner.split ? (partner.split.includes('%') ? partner.split : `${partner.split}%`) : '0%'
-      }))
-    };
-    updatePartnerClients(prev => [...prev, newMerchantWithID]);
-    setHasChanges(true);
-    setOpenModal(false);
+  // Update rep name or split
+  const handleRepChange = (index, field, value) => {
+    setNewMerchant(prev => ({
+      ...prev,
+      reps: prev.reps.map((rep, i) => 
+        i === index ? { ...rep, [field]: value } : rep
+      )
+    }));
   };
 
   // Add validation function for partner split
@@ -113,6 +116,65 @@ const PartnerMerchants = ({
     if (numValue >= 0 && numValue <= 100) {
       handlePartnerChange(index, 'split', `${numValue}%`);
     }
+  };
+
+  // Add validation function for rep split
+  const handleRepSplitChange = (index, value) => {
+    const numericValue = value.replace(/[^0-9.]/g, '');
+    
+    if (numericValue === '') {
+      handleRepChange(index, 'split', '');
+      return;
+    }
+
+    const numValue = parseFloat(numericValue);
+    if (numValue >= 0 && numValue <= 100) {
+      handleRepChange(index, 'split', `${numValue}%`);
+    }
+  };
+
+  const handleAddNewMerchant = () => {
+    // Validate partners and reps have valid splits if they exist
+    const isValidPartners = newMerchant.partners.every(partner => 
+      (partner.name.trim() === '' && partner.split === '') || // Empty partner is valid
+      (partner.name.trim() !== '' && 
+        (partner.split === '' || (parseFloat(partner.split.replace('%', '')) >= 0 && parseFloat(partner.split.replace('%', '')) <= 100)))
+    );
+
+    const isValidReps = newMerchant.reps.every(rep => 
+      (rep.name.trim() === '' && rep.split === '') || // Empty rep is valid
+      (rep.name.trim() !== '' && 
+        (rep.split === '' || (parseFloat(rep.split.replace('%', '')) >= 0 && parseFloat(rep.split.replace('%', '')) <= 100)))
+    );
+
+    if (!isValidPartners || !isValidReps) {
+      alert('Please ensure all partner/rep splits are between 0 and 100');
+      return;
+    }
+
+    // Filter out empty partners and reps
+    const filteredPartners = newMerchant.partners.filter(partner => 
+      partner.name.trim() !== '' || partner.split !== ''
+    );
+    const filteredReps = newMerchant.reps.filter(rep => 
+      rep.name.trim() !== '' || rep.split !== ''
+    );
+
+    const newMerchantWithID = {
+      ...newMerchant,
+      merchantID: newMerchant.merchantID || Date.now().toString(),
+      partners: filteredPartners.map(partner => ({
+        ...partner,
+        split: partner.split ? (partner.split.includes('%') ? partner.split : `${partner.split}%`) : '0%'
+      })),
+      reps: filteredReps.map(rep => ({
+        ...rep,
+        split: rep.split ? (rep.split.includes('%') ? rep.split : `${rep.split}%`) : '0%'
+      }))
+    };
+    updatePartnerClients(prev => [...prev, newMerchantWithID]);
+    setHasChanges(true);
+    setOpenModal(false);
   };
 
   // Global save function adapted for use via TableWithFilters.
@@ -177,17 +239,49 @@ const PartnerMerchants = ({
         return "0%";
       }
     },
+    { 
+      field: "reps", 
+      label: "Number of Reps", 
+      type: "text",
+      render: (value, row) => {
+        if (row.reps && Array.isArray(row.reps)) {
+          return row.reps.length.toString();
+        }
+        return "0";
+      }
+    },
+    { 
+      field: "reps", 
+      label: "Total Rep Split (%)", 
+      type: "text",
+      render: (value, row) => {
+        if (row.reps && Array.isArray(row.reps)) {
+          const totalSplit = row.reps.reduce((sum, rep) => {
+            // Handle both string and number values for split
+            const splitValue = typeof rep.split === 'string' 
+              ? parseFloat(rep.split.replace('%', ''))
+              : rep.split;
+            return sum + (splitValue || 0);
+          }, 0);
+          return `${totalSplit}%`;
+        }
+        return "0%";
+      }
+    },
     { field: "branchID", label: "Branch ID", type: "text" },
   ];
 
-  // Custom edit dialog fields for partners
+  // Custom edit dialog fields for partners and reps
   const getEditDialogFields = (row) => {
-    const baseFields = columns.filter(col => col.field !== "partners").map(col => ({
-      label: col.label,
-      field: col.field,
-      type: col.type || "text",
-      defaultValue: row[col.field] || "",
-    }));
+    // Filter out both partners and reps columns from base fields
+    const baseFields = columns
+      .filter(col => col.field !== "partners" && col.field !== "reps")
+      .map(col => ({
+        label: col.label,
+        field: col.field,
+        type: col.type || "text",
+        defaultValue: row[col.field] || "",
+      }));
 
     // Add partner fields based on data format
     if (row.partner) {
@@ -291,16 +385,99 @@ const PartnerMerchants = ({
       });
     }
 
+    // Add reps section
+    baseFields.push({
+      label: "Reps",
+      field: "reps",
+      type: "custom",
+      defaultValue: row.reps || [],
+      component: ({ value = [], onChange }) => (
+        <div style={{ marginTop: '16px' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
+            <Typography variant="subtitle1">Reps</Typography>
+            <Button 
+              size="small" 
+              onClick={() => {
+                const newReps = [...value, { name: '', split: '' }];
+                onChange(newReps);
+              }}
+              variant="outlined"
+              color="primary"
+            >
+              Add Rep
+            </Button>
+          </div>
+          
+          {(value || []).map((rep, index) => (
+            <div key={index} style={{ display: 'flex', gap: '8px', marginBottom: '8px' }}>
+              <TextField
+                margin="dense"
+                label="Rep Name"
+                type="text"
+                style={{ width: '70%' }}
+                variant="outlined"
+                value={rep.name || ''}
+                onChange={(e) => {
+                  const newReps = [...value];
+                  newReps[index] = { ...rep, name: e.target.value };
+                  onChange(newReps);
+                }}
+              />
+              <TextField
+                margin="dense"
+                label="Split (%)"
+                type="text"
+                style={{ width: '30%' }}
+                variant="outlined"
+                value={rep.split || ''}
+                onChange={(e) => {
+                  const numericValue = e.target.value.replace(/[^0-9.]/g, '');
+                  if (numericValue === '') {
+                    const newReps = [...value];
+                    newReps[index] = { ...rep, split: '' };
+                    onChange(newReps);
+                    return;
+                  }
+                  const numValue = parseFloat(numericValue);
+                  if (numValue >= 0 && numValue <= 100) {
+                    const newReps = [...value];
+                    newReps[index] = { ...rep, split: `${numValue}%` };
+                    onChange(newReps);
+                  }
+                }}
+                helperText="0-100"
+                inputProps={{ 
+                  pattern: "[0-9.]*",
+                  inputMode: "numeric"
+                }}
+              />
+              <Button
+                size="small"
+                onClick={() => {
+                  const newReps = value.filter((_, i) => i !== index);
+                  onChange(newReps);
+                }}
+                color="error"
+                style={{ marginTop: '8px' }}
+              >
+                Remove
+              </Button>
+            </div>
+          ))}
+        </div>
+      )
+    });
+
     return baseFields;
   };
 
-  // Custom input change handler for partner fields
+  // Custom input change handler for partner and rep fields
   const handlePartnerInputChange = (field, value, row) => {
     if (field === 'partners') {
-      // Handle new format partner fields
       return { ...row, partners: value };
+    } else if (field === 'reps') {
+      return { ...row, reps: value };
     } else if (field === 'partner' || field === 'partnerSplit') {
-      // Handle old format partner fields
       return { ...row, [field]: value };
     }
     return { ...row, [field]: value };
@@ -393,6 +570,57 @@ const PartnerMerchants = ({
             ))}
           </div>
 
+          {/* Reps Section */}
+          <div style={{ marginTop: '16px' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
+              <Typography variant="subtitle1">Reps</Typography>
+              <Button 
+                size="small" 
+                onClick={handleAddRep}
+                variant="outlined"
+                color="primary"
+              >
+                Add Rep
+              </Button>
+            </div>
+            
+            {newMerchant.reps.map((rep, index) => (
+              <div key={index} style={{ display: 'flex', gap: '8px', marginBottom: '8px' }}>
+                <TextField
+                  margin="dense"
+                  label="Rep Name"
+                  type="text"
+                  style={{ width: '70%' }}
+                  variant="outlined"
+                  value={rep.name}
+                  onChange={(e) => handleRepChange(index, 'name', e.target.value)}
+                />
+                <TextField
+                  margin="dense"
+                  label="Split (%)"
+                  type="text"
+                  style={{ width: '30%' }}
+                  variant="outlined"
+                  value={rep.split}
+                  onChange={(e) => handleRepSplitChange(index, e.target.value)}
+                  helperText="0-100"
+                  inputProps={{ 
+                    pattern: "[0-9.]*",
+                    inputMode: "numeric"
+                  }}
+                />
+                <Button
+                  size="small"
+                  onClick={() => handleRemoveRep(index)}
+                  color="error"
+                  style={{ marginTop: '8px' }}
+                >
+                  Remove
+                </Button>
+              </div>
+            ))}
+          </div>
+
           <TextField
             margin="dense"
             label="Branch ID"
@@ -412,7 +640,8 @@ const PartnerMerchants = ({
           <Button 
             onClick={handleAddNewMerchant} 
             color="primary"
-            disabled={!newMerchant.merchantID || !newMerchant.merchantName || newMerchant.partners.length === 0}
+            disabled={!newMerchant.merchantID || !newMerchant.merchantName || 
+              (newMerchant.partners.length === 0 && newMerchant.reps.length === 0)}
           >
             Add
           </Button>

@@ -79,3 +79,145 @@ section {
     padding: 10px;
   }
 }
+
+
+
+/***************/
+
+body[data-theme="dark"] .report-item {
+  color: #fff;
+}
+body[data-theme="dark"] p, body[data-theme="dark"] li {
+  color: #fff;
+}
+body[data-theme="dark"] select {
+  background: #000;
+  color: #fff;
+}
+body[data-theme="dark"] button:hover {
+  background: #000;
+}
+body[data-theme="dark"] button:hover, 
+body[data-theme="dark"] a:hover, 
+body[data-theme="dark"] input[type="submit"]:hover {
+  background-color: #000000;
+}
+
+body[data-theme="dark"] .total-field {
+  box-shadow: 0 0 5px rgb(255 255 255 / 50%);
+
+}
+
+body[data-theme="dark"] .css-1pzfmz2-MuiInputBase-input-MuiOutlinedInput-input {
+  color: rgb(255 255 255 / 87%);
+
+}
+
+body[data-theme="dark"] .css-1ll44ll-MuiOutlinedInput-notchedOutline {
+
+  border-color: rgb(255 255 255 / 35%);
+}
+body[data-theme="dark"] .css-1kfabtt-MuiFormLabel-root-MuiInputLabel-root {
+  color: rgb(255 255 255 / 60%);
+  
+}
+body[data-theme="dark"]  .css-1umw9bq-MuiSvgIcon-root {
+
+  fill: rgb(255 255 255 / 60%);
+
+}
+body[data-theme="dark"] .css-14y13q2-MuiTableCell-root {
+  color: rgb(255 255 255 / 87%);
+ 
+}
+
+body[data-theme="dark"] .css-14y13q2-MuiTableCell-root,
+body[data-theme="dark"] .css-1ghfbj4-MuiTableCell-root {
+
+  border-bottom: 1px solid rgb(68 68 68);
+
+}
+
+body[data-theme="dark"] .css-16htz67-MuiPaper-root-MuiDialog-paper {
+  background-color: #323232;
+  color: rgb(255 255 255 / 87%);
+
+}
+body[data-theme="dark"] .css-113d811-MuiFormLabel-root-MuiInputLabel-root {
+  color: rgb(255 255 255 / 60%);
+
+}
+body[data-theme="dark"] .css-16wblaj-MuiInputBase-input-MuiOutlinedInput-input {
+  color: rgb(255 255 255 / 87%);
+
+}
+body[data-theme="dark"] .css-19qnlrw-MuiFormLabel-root-MuiInputLabel-root {
+  color: rgb(255 255 255 / 60%);
+}
+
+body[data-theme="dark"] .css-1tktgsa-MuiPaper-root-MuiPopover-paper-MuiMenu-paper {
+  background-color: #2c2b2b;
+  color: rgb(255 255 255 / 87%);
+
+}
+.MuiDialogContent-root.css-kw13he-MuiDialogContent-root .MuiBox-root.css-1qm1lh .MuiFormControl-root.MuiFormControl-fullWidth.MuiTextField-root.css-cmpglg-MuiFormControl-root-MuiTextField-root {
+  margin-bottom: 29px;
+}
+.agents-list.reports .agents-table td.actions-column a {
+  display: inline-block;
+  background: transparent;
+}
+.agents-list.reports .actions-container a.add-agent-link:hover {
+  background: transparent;
+}
+.agents-list.reports .filters .actions-container a.upload-agent-link:hover {
+  background: transparent;
+}
+.btn-view:hover {
+  background-color: var(--accent-color2);
+  color: #000;
+}
+body[data-theme="dark"] .btn-view:hover {
+  color: #fff;
+}
+.logo a:hover {
+  background: transparent;
+
+}
+
+
+body[data-theme="dark"] .css-1fdopfm-MuiPaper-root {
+  background-color: #4b4b4b;
+  color: rgb(255 255 255 / 87%);
+}
+body[data-theme="dark"] .small-input,
+body[data-theme="dark"] .input {
+
+  border: 1px solid #5e5d5d;
+
+}
+
+body[data-theme="dark"]  .css-sfhxm6-MuiTableCell-root,
+body[data-theme="dark"] .css-1vjdlt9-MuiTableCell-root {
+
+  border-bottom: 1px solid rgb(62 60 60);
+
+  color: #fff;
+
+  background-color: #333333;
+}
+body[data-theme="dark"] .css-qd2qbi,
+body[data-theme="dark"] .tabs{
+
+  border-bottom: 1px solid #5e5c5c;
+
+}
+
+body[data-theme="dark"] .tab {
+
+  border: 1px solid #5e5c5c;
+
+}
+body[data-theme="dark"] .tab:hover {
+  color: #000;
+}

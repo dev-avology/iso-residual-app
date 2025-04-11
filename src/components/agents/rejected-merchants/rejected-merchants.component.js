@@ -25,7 +25,7 @@ const RejectedMerchants = ({ data = [] }) => {
                         <thead>
                             <tr>
                                 {Object.keys(data[0]).map((key) => (
-                                    <th key={key}>{key}</th>
+                                    <th className='border-l-0 border-b px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider' key={key}>{key}</th>
                                 ))}
                             </tr>
                         </thead>
@@ -33,7 +33,7 @@ const RejectedMerchants = ({ data = [] }) => {
                             {currentClients.map((row, index) => (
                                 <tr key={index}>
                                     {Object.values(row).map((value, i) => (
-                                        <td key={i}>{value}</td>
+                                        <td className='px-6 py-4 whitespace-nowrap text-sm text-gray-300' key={i}>{value}</td>
                                     ))}
                                 </tr>
                             ))}

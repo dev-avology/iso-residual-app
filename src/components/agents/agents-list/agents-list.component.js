@@ -104,9 +104,9 @@ const AgentsList = ({ organizationID, authToken }) => {
   }
 
   return (
-    <div className="agents-list reports">
-      <div className="header">
-        <h2>Agents List</h2>
+    <div className="agents-list reports max-w-7xl mx-auto bg-zinc-900 rounded-lg shadow-sm p-6 mb-8">
+      <div className="header p-0">
+        <h2 className='text-lg font-semibold text-white mb-4'>Agents List</h2>
       </div>
 
       {/* Filters Section */}
@@ -116,20 +116,20 @@ const AgentsList = ({ organizationID, authToken }) => {
           value={searchTerm}
           onChange={handleSearchChange}
           placeholder="Search by name or company..."
-          className="search-input"
+          className="search-input block w-full pr-10 truncate bg-zinc-800 border-zinc-700 text-white rounded-md focus:ring-yellow-400 focus:border-yellow-400"
         />
 
-        <select value={filterRole} onChange={handleFilterChange} className="filter-select">
+        <select value={filterRole} onChange={handleFilterChange} className="al-select filter-select bg-zinc-800 border-zinc-700 text-white rounded-md focus:ring-yellow-400 focus:border-yellow-400">
           <option value="all">All Roles</option>
           <option value="company">Company</option>
           <option value="individual">Individual</option>
         </select>
         <div className="actions-container">
           <Link to="/agents/add-agent" className="add-agent-link">
-            <button className="add-agent-button">Add New Agent</button>
+            <button className="add-agent-button text-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-black bg-yellow-400 hover:bg-yellow-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-yellow-400">Add New Agent</button>
           </Link>
           <Link to="/agents/upload" className="upload-agent-link">
-            <button className="upload-agent-button">Upload Agents</button>
+            <button className="upload-agent-button text-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-black bg-yellow-400 hover:bg-yellow-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-yellow-400">Upload Agents</button>
           </Link>
         </div>
 
@@ -143,24 +143,24 @@ const AgentsList = ({ organizationID, authToken }) => {
           <table className="agents-table">
             <thead>
               <tr>
-                <th>First Name / Company Name</th>
-                <th>Last Name</th>
-                <th className="actions-column">Actions</th>
+                <th className='border-l-0 border-b px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider'>First Name / Company Name</th>
+                <th className='px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider'>Last Name</th>
+                <th className="actions-column px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">Actions</th>
               </tr>
             </thead>
             <tbody>
               {currentAgents.map((agent, index) => (
                 <tr key={index}>
-                  <td>{agent.role === 'company' ? agent.company : agent.fName}</td>
-                  <td>{agent.role === 'company' ? '' : agent.lName}</td>
-                  <td className="actions-column">
+                  <td className='px-6 py-4 whitespace-nowrap text-sm text-gray-300'>{agent.role === 'company' ? agent.company : agent.fName}</td>
+                  <td className='px-6 py-4 whitespace-nowrap text-sm text-gray-300'>{agent.role === 'company' ? '' : agent.lName}</td>
+                  <td className="actions-column px-6 py-4 whitespace-nowrap text-sm text-gray-300">
                     <Link to={`/agents/${agent.agentID}`}>
-                      <button className="btn-view">
+                      <button className="btn-view text-yellow-400 hover:text-yellow-500">
                         <FaEye />
                       </button>
                     </Link>
                     <button 
-                      className="btn-delete" 
+                      className="btn-delete text-yellow-400 hover:text-yellow-500" 
                       onClick={() => handleDelete(agent.agentID)}
                     >
                       <FaTrash />

@@ -1,11 +1,11 @@
-.needs-upload-container {
+/*.needs-upload-container {
     padding: 20px;
     background-color: var(--background-color);
     border-radius: 8px;
     box-shadow: 0 0 10px var(--shadow-color);
     max-width: 100%;
   }
-  
+  */
   h3 {
     font-size: 1.5rem;
     margin-bottom: 20px;
@@ -18,10 +18,13 @@
   }
   
   .report-item {
-    padding: 10px;
-    border-bottom: 1px solid var(--separator-color);
-    font-size: 1rem;
-  }
+    /* padding: 10px; */
+    /* border-bottom: 1px solid var(--separator-color); */
+    /* font-size: 1rem; */
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
   
   .report-item:last-child {
     border-bottom: none;
@@ -46,18 +49,19 @@
   }
   
   .pagination-btn.active {
-    background-color: #ff7800;
-  }
+    background-color: #facc15;
+}
   
   .pagination-btn:hover {
-    background-color: #ff9800;
+    background-color: #facc15;
+    color: #000;
   }
   
   .upload-button-container {
     margin-top: 20px;
     text-align: center;
   }
-  
+  /*
   .upload-btn {
     padding: 10px 20px;
     background-color: var(--accent-color);
@@ -71,4 +75,4 @@
   .upload-btn:hover {
     background-color: var(--accent-color2);
   }
-  
+  */

@@ -114,7 +114,7 @@ function App() {
 
   return (
     <Router>
-      <div className="app-container">
+      <div className="app-container bg-black">
         {username && <Sidebar username={username} isAdmin={isAdmin} onLogout={handleLogout} />}
         <div className="page-content">
           <Routes>

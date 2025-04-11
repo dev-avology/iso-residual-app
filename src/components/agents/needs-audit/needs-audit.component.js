@@ -77,7 +77,7 @@ const NeedsAudit = ({ data = [] }) => {
                     <table className="needs-audit-table">
                         <thead>
                             <tr>
-                                <th>
+                                <th className='border-l-0 border-b px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider'>
                                     <input
                                         type="checkbox"
                                         checked={selectedRows.length === currentRows.length}
@@ -87,13 +87,13 @@ const NeedsAudit = ({ data = [] }) => {
                                 {displayedColumns.map((key) => (
                                     <th key={key}>{key.replace(/([A-Z])/g, ' $1').trim()}</th>
                                 ))}
-                                <th>Actions</th>
+                                <th className='border-l-0 border-b px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider'>Actions</th>
                             </tr>
                         </thead>
                         <tbody>
                             {currentRows.map((row, rowIndex) => (
                                 <tr key={rowIndex}>
-                                    <td>
+                                    <td className='px-6 py-4 whitespace-nowrap text-sm text-gray-300'>
                                         <input
                                             type="checkbox"
                                             checked={selectedRows.includes(indexOfFirstRow + rowIndex)}
@@ -101,7 +101,7 @@ const NeedsAudit = ({ data = [] }) => {
                                         />
                                     </td>
                                     {displayedColumns.map((key) => (
-                                        <td key={key}>
+                                        <td key={key} className='px-6 py-4 whitespace-nowrap text-sm text-gray-300'>
                                             {isEditingRow === indexOfFirstRow + rowIndex ? (
                                                 <input
                                                     type="text"
@@ -116,7 +116,7 @@ const NeedsAudit = ({ data = [] }) => {
                                             )}
                                         </td>
                                     ))}
-                                    <td>
+                                    <td className='px-6 py-4 whitespace-nowrap text-sm text-gray-300'>
                                         <div className="needs-audit-action-buttons">
                                             <button onClick={() => handleEdit(indexOfFirstRow + rowIndex)} className="needs-audit-btn-edit">
                                                 <FaPencilAlt />

@@ -10,7 +10,7 @@
     --separator-color: rgba(0, 0, 0, 0.1); /* Light separator for table and layout elements */
     --shadow-color: rgba(0, 0, 0, 0.2); /* Shadow for elements */
     --sidebar-width: 250px; /* Sidebar open width */
-    --sidebar-closed-width: 60px; /* Sidebar closed width */
+    --sidebar-closed-width: 70px; /* Sidebar closed width */
   }
   
   /* Root variables for dark theme */
@@ -25,7 +25,7 @@
     --separator-color: rgba(255, 255, 255, 0.1); /* Light separator for dark theme */
     --shadow-color: rgba(0, 0, 0, 0.5); /* Darker shadow for dark theme */
     --sidebar-width: 250px; /* Sidebar open width (dark theme) */
-    --sidebar-closed-width: 60px; /* Sidebar closed width (dark theme) */
+    --sidebar-closed-width: 70px; /* Sidebar closed width (dark theme) */
   }
 
   /* Add any missing styles for dark theme */

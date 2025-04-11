@@ -31,13 +31,13 @@ const ReportsListHeader = ({
     return (
         <div className="reports-header">
             <div className="header">
-                <h2>{reportType.charAt(0).toUpperCase() + reportType.slice(1)} Reports</h2>
-                <button onClick={handleUploadClick}>Go to Report Upload</button>
+                <h2 className='text-lg font-semibold text-white mb-4'>{reportType.charAt(0).toUpperCase() + reportType.slice(1)} Reports</h2>
+                <button onClick={handleUploadClick} className='text-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-black bg-yellow-400 hover:bg-yellow-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-yellow-400'>Go to Report Upload</button>
             </div>
 
             <div className="filters">
                 {/* Month filter */}
-                <select value={filterMonth} onChange={(e) => setFilterMonth(e.target.value)}>
+                <select className='bg-zinc-800 border-zinc-700 text-white rounded-md focus:ring-yellow-400 focus:border-yellow-400 p-right' value={filterMonth} onChange={(e) => setFilterMonth(e.target.value)}>
                     <option value="">All Months</option>
                     {['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'].map(month => (
                         <option key={month} value={month}>{month}</option>
@@ -45,7 +45,7 @@ const ReportsListHeader = ({
                 </select>
 
                 {/* Year filter */}
-                <select value={filterYear} onChange={(e) => setFilterYear(e.target.value)}>
+                <select className='bg-zinc-800 border-zinc-700 text-white rounded-md focus:ring-yellow-400 focus:border-yellow-400 p-right' value={filterYear} onChange={(e) => setFilterYear(e.target.value)}>
                     <option value="">All Years</option>
                     {getYears().map(year => (
                         <option key={year} value={year}>{year}</option>
@@ -53,7 +53,7 @@ const ReportsListHeader = ({
                 </select>
 
                 {/* Report type filter */}
-                <select value={reportType} onChange={(e) => setReportType(e.target.value)}>
+                <select className='bg-zinc-800 border-zinc-700 text-white rounded-md focus:ring-yellow-400 focus:border-yellow-400 p-right' value={reportType} onChange={(e) => setReportType(e.target.value)}>
                     <option value="all">All Reports</option>
                     <option value="agent">Agent Reports</option>
                     <option value="agent-summary">Agent Summary Reports</option> {/* New Agent Summary Reports Option */}
@@ -68,6 +68,7 @@ const ReportsListHeader = ({
                 <input
                     type="text"
                     placeholder="Search reports..."
+                    className='bg-zinc-800 border-zinc-700 text-white rounded-md focus:ring-yellow-400 focus:border-yellow-400'
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
                 />

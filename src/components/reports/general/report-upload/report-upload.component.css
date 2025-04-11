@@ -85,7 +85,7 @@
 .delete-btn:hover i {
   opacity: 0.8;
 }
-
+/*
 .upload-btn {
   display: block;
   margin: 0 auto;
@@ -95,7 +95,7 @@
   border: none;
   border-radius: 5px;
   cursor: pointer;
-}
+}*/
 
 .upload-btn:hover {
   background-color: var(--accent-color2);

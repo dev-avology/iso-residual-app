@@ -22,12 +22,12 @@
     flex-direction: column;
     align-items: center;
 }
-
+/*
 .footer-logo h2 {
     font-size: 1.5rem;
     margin-bottom: 20px;
-    color: var(--text-color); /* Use the theme's text color */
-}
+    color: var(--text-color); 
+}*/
 
 .footer-links {
     margin: 20px 0;

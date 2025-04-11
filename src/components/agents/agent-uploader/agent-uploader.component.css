@@ -50,6 +50,7 @@
 }
 
 /* Upload button */
+/*
 .upload-btn {
   display: block;
   width: 100%;
@@ -62,7 +63,7 @@
   border-radius: 5px;
   cursor: pointer;
   transition: background-color 0.3s ease;
-}
+}*/
 
 .upload-btn:hover {
   background-color: var(--accent-color2);

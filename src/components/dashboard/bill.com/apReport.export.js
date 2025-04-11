@@ -104,7 +104,7 @@ const APReportExport = ({ authToken, organizationID }) => {
 
     return (
         <div className="ap-report-export">
-            <button className="export-button" onClick={generateAPReport}>
+            <button className="export-button text-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-black hover:bg-yellow-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-yellow-400" onClick={generateAPReport}>
                 Export AP Report
             </button>
         </div>

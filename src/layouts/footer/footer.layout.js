@@ -4,15 +4,15 @@ import './footer.layout.css';
 
 const Footer = () => {
   return (
-    <footer className="footer">
+    <footer className="footer bg-zinc-900 p-6">
       <div className="footer-content">
         <div className="footer-logo">
-          <h2>Tracer</h2>
+          <h2 className='text-lg font-semibold text-white mb-3'>Tracer</h2>
         </div>
       </div>
       <div className="footer-bottom">
-        <p>&copy; {new Date().getFullYear()} Tracer. All rights reserved.</p>
-        <p>Built by <a href="https://www.crittercodes.com">CritterCodes</a></p>
+        <p className='text-sm text-gray-300 text-center'>&copy; {new Date().getFullYear()} Tracer. All rights reserved.</p>
+        <p className='text-sm text-gray-300 text-center'>Built by <a href="https://www.crittercodes.com">CritterCodes</a></p>
       </div>
     </footer>
   );

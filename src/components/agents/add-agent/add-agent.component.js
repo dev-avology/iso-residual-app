@@ -32,14 +32,15 @@ const AddAgent = ({organizationID, authToken}) => {
   };
 
   return (
-    <div className="add-agent-container">
-      <h2>Add Agent</h2>
+    <div className="add-agent-container bg-zinc-900 p-10 rounded-lg shadow-lg w-full max-w-md w-full">
+      <h2 className='pb-6 mb-6 border-b border-yellow-400/20 text-lg font-semibold text-white mb-4'>Add Agent</h2>
       <form onSubmit={handleSubmit}>
         <div className="form-group">
-          <label>First Name</label>
+          <label className='block font-medium text-gray-300 mb-2'>First Name</label>
           <input
             type="text"
             name="fName"
+            className='w-full px-4 py-2 rounded bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-yellow-500'
             value={agent.fName}
             onChange={handleInputChange}
             placeholder="First Name"
@@ -47,10 +48,11 @@ const AddAgent = ({organizationID, authToken}) => {
           />
         </div>
         <div className="form-group">
-          <label>Last Name</label>
+          <label className='block font-medium text-gray-300 mb-2'>Last Name</label>
           <input
             type="text"
             name="lName"
+            className='w-full px-4 py-2 rounded bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-yellow-500'
             value={agent.lName}
             onChange={handleInputChange}
             placeholder="Last Name"
@@ -58,7 +60,7 @@ const AddAgent = ({organizationID, authToken}) => {
           />
         </div>
 
-        <button type="submit" className="submit-button">
+        <button type="submit" className="submit-button w-full bg-yellow-500 hover:bg-yellow-600 text-white py-3 rounded font-medium uppercase transition duration-200 dsabled:opacity-50">
           Add Agent
         </button>
       </form>

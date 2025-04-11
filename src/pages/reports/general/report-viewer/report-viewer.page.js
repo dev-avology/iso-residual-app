@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Box, Button, Typography } from "@mui/material";
+import { Box, Button, Typography, Select, MenuItem, TextField, FormControl, InputLabel, IconButton } from "@mui/material";
 import { FaExclamationTriangle } from "react-icons/fa"; // Import the specific icon
 import { useParams } from "react-router-dom";
 import { FaCheck } from "react-icons/fa"; // Import the specific icon
@@ -7,6 +7,7 @@ import Header from "../../../../components/general/header/header.component";
 import ReusableTable from "../../../../components/general/table/table.component";
 import { getReportById, updateReport } from "../../../../api/reports.api";
 import { regenerateProcessorReport } from "../../../../utils/reports/processorReport.util";
+import DeleteIcon from '@mui/icons-material/Delete';
 
 const ReportViewerPage = ({ authToken }) => {
     const { reportID } = useParams();
@@ -19,6 +20,14 @@ const ReportViewerPage = ({ authToken }) => {
     const [idField, setIdField] = useState("id");
     const [hasChanges, setHasChanges] = useState(false);
     const [status, setStatus] = useState({ loading: true, error: null });
+    const [splits, setSplits] = useState([]);
+    const [newSplit, setNewSplit] = useState({
+        type: '',
+        name: '',
+        value: ''
+    });
+
+    const splitTypes = ['agent', 'company', 'manager', 'partner', 'rep'];
 
     // Fetch report data on mount
     useEffect(() => {
@@ -29,7 +38,13 @@ const ReportViewerPage = ({ authToken }) => {
                 setIdField(Object.keys(data.reportData[0])[1]);
                 setReport(data);
                 setReportData(data.reportData);
-                setFilteredData(data.reportData); // Initialize with all data
+                setFilteredData(data.reportData);
+                
+                // Initialize splits from the first row's data (assuming all rows have the same splits)
+                if (data.reportData.length > 0 && data.reportData[0].splits) {
+                    setSplits(data.reportData[0].splits);
+                }
+                
                 setLoading(false);
                 console.log("Fetched report data:", data.reportData);
             } catch (err) {
@@ -74,7 +89,7 @@ const ReportViewerPage = ({ authToken }) => {
     };
 
     // Define columns dynamically based on data
-    const columns = reportData.length > 0
+    let baseColumns = reportData.length > 0
         ? Object.keys(reportData[0]).map((field) => ({
             field,
             label: field.replace(/_/g, " "),
@@ -82,16 +97,25 @@ const ReportViewerPage = ({ authToken }) => {
         : [];
 
     if (report?.type === "processor" ) {
-    columns.shift(); // Remove the first column
-    columns.pop(); // Remove the last column
-    columns.pop(); // Remove the last column
-
+        baseColumns.shift(); // Remove the first column
+        baseColumns.pop(); // Remove the last column
+        baseColumns.pop(); // Remove the last column
     } else if (report?.type === "ar") {
-        columns.pop(); // Remove the last column
+        baseColumns.pop(); // Remove the last column
+    }
 
-    };
+    // Add the "Needs Audit" column
+    baseColumns.unshift({
+        field: "needsAudit",
+        label: "Needs Audit",
+        render: (needsAudit) =>
+            needsAudit ? (
+                <FaExclamationTriangle color="orange" title="Needs Audit" />
+            ) : null,
+    });
 
-    columns.push({
+    // Add the "Approved" column
+    baseColumns.push({
         field: "approved",
         label: "Approved",
         render: (approved) =>
@@ -100,15 +124,10 @@ const ReportViewerPage = ({ authToken }) => {
             ) : null,
     });
 
-    // Add the "Needs Audit" column
-    columns.unshift({
-        field: "needsAudit",
-        label: "Needs Audit",
-        render: (needsAudit) =>
-            needsAudit ? (
-                <FaExclamationTriangle color="orange" title="Needs Audit" />
-            ) : null,
-    });
+    // Use the base columns for the table
+    const columns = baseColumns;
+
+    console.log('Columns with splits:', columns); // Debug log
 
     // Define filter configuration
     const filterConfig = report?.type === "processor" ? [
@@ -149,11 +168,24 @@ const ReportViewerPage = ({ authToken }) => {
         { field: "Sales Amount", label: "Sales Amount" },
         { field: "Expenses", label: "Expenses" },
         { field: "Bank Payout", label: "Bank Payout" },
+        { field: "Other Splits", label: "Other Splits" },
         { field: "ISO Total", label: "ISO Total" },
         { field: "Transaction Fee ISO", label: "Transaction Fee ISO" },
         { field: "Monthly Gateway Fee ISO", label: "Monthly Gateway Fee ISO" },
         
     ];
+
+    const handleAddSplit = () => {
+        if (newSplit.type && newSplit.name && newSplit.value) {
+            setSplits([...splits, newSplit]);
+            setNewSplit({ type: '', name: '', value: '' });
+        }
+    };
+
+    const handleRemoveSplit = (index) => {
+        const updatedSplits = splits.filter((_, i) => i !== index);
+        setSplits(updatedSplits);
+    };
 
     const handleSaveChanges = async () => {
         try {
@@ -163,8 +195,11 @@ const ReportViewerPage = ({ authToken }) => {
             // Update the report object and mark as approved if all rows are approved
             const updatedReport = {
                 ...report,
-                approved: allRowsApproved, // ✅ Mark the report as approved if all rows are approved
-                reportData: filteredData
+                approved: allRowsApproved,
+                reportData: filteredData.map(row => ({
+                    ...row,
+                    splits: row.splits || [] // Ensure splits are included in each row
+                }))
             };
     
             await updateReport(reportID, updatedReport, authToken);
@@ -182,6 +217,106 @@ const ReportViewerPage = ({ authToken }) => {
         return string.charAt(0).toUpperCase() + string.slice(1);
     };
 
+    const editDialogProps = {
+        splits, // Pass the current splits to the dialog
+        getFields: (row) => {
+            // Initialize splits from the row's data if it exists
+            if (row.splits && row.splits.length > 0) {
+                setSplits(row.splits);
+            }
+
+            const baseFields = columns.map((col) => ({
+                label: col.label,
+                field: col.field,
+                type: col.type || (typeof row?.[col.field] === "boolean" ? "boolean" : "text"),
+                defaultValue: row?.[col.field] || col.defaultValue || "",
+            }));
+
+            // Add split fields section
+            const splitFields = [
+                {
+                    label: "Other Splits",
+                    field: "splits_section",
+                    type: "custom",
+                    component: () => (
+                        <Box sx={{ mb: 2, p: 2, border: '1px solid #ccc', borderRadius: 1 }}>
+                            <Typography variant="h6" gutterBottom>Other Splits</Typography>
+                            {splits.map((split, index) => (
+                                <Box key={index} sx={{ display: 'flex', gap: 2, mb: 2 }}>
+                                    <FormControl fullWidth>
+                                        <InputLabel>Split Type</InputLabel>
+                                        <Select
+                                            value={split.type}
+                                            onChange={(e) => {
+                                                const updatedSplits = [...splits];
+                                                updatedSplits[index] = { ...updatedSplits[index], type: e.target.value };
+                                                setSplits(updatedSplits);
+                                                setHasChanges(true);
+                                            }}
+                                            label="Split Type"
+                                        >
+                                            {splitTypes.map(type => (
+                                                <MenuItem key={type} value={type}>
+                                                    {type.charAt(0).toUpperCase() + type.slice(1)}
+                                                </MenuItem>
+                                            ))}
+                                        </Select>
+                                    </FormControl>
+                                    <TextField
+                                        label="Name"
+                                        value={split.name}
+                                        onChange={(e) => {
+                                            const updatedSplits = [...splits];
+                                            updatedSplits[index] = { ...updatedSplits[index], name: e.target.value };
+                                            setSplits(updatedSplits);
+                                            setHasChanges(true);
+                                        }}
+                                    />
+                                    <TextField
+                                        label="Value"
+                                        type="number"
+                                        value={split.value}
+                                        onChange={(e) => {
+                                            const updatedSplits = [...splits];
+                                            updatedSplits[index] = { ...updatedSplits[index], value: e.target.value };
+                                            setSplits(updatedSplits);
+                                            setHasChanges(true);
+                                        }}
+                                    />
+                                    <IconButton 
+                                        color="error"
+                                        onClick={() => {
+                                            const updatedSplits = splits.filter((_, i) => i !== index);
+                                            setSplits(updatedSplits);
+                                            setHasChanges(true);
+                                        }}
+                                    >
+                                        <DeleteIcon />
+                                    </IconButton>
+                                </Box>
+                            ))}
+                            <Button 
+                                variant="contained" 
+                                onClick={() => {
+                                    setSplits([...splits, { type: '', name: '', value: '' }]);
+                                    setHasChanges(true);
+                                }}
+                                sx={{ mt: 2 }}
+                            >
+                                Add Split
+                            </Button>
+                        </Box>
+                    )
+                }
+            ];
+
+            return [...baseFields, ...splitFields];
+        },
+        handleInputChange: (field, value, row) => {
+            // Handle any other field changes if needed
+        }
+    };
+
     if (loading) return <Typography>Loading...</Typography>;
     if (error) return <Typography color="error">{error}</Typography>;
 
@@ -191,6 +326,7 @@ const ReportViewerPage = ({ authToken }) => {
                 title={`${capitalizeFirstLetter(report?.type)} Report`}
                 subtitle={`${report?.processor} - ${report?.month}`}
             />
+            
             <ReusableTable
                 data={filteredData}
                 setData={setFilteredData}
@@ -199,7 +335,7 @@ const ReportViewerPage = ({ authToken }) => {
                 filtersConfig={filterConfig}
                 actions={actions}
                 enableSearch={true}
-                enableFilters={false} // Filters handled by FilterComponent
+                enableFilters={false}
                 selected={selectedRows}
                 setSelected={setSelectedRows}
                 approvalAction={true}
@@ -209,6 +345,7 @@ const ReportViewerPage = ({ authToken }) => {
                 enableTotals={true}
                 onSave={handleSaveChanges}
                 totalFields={totalFields}
+                editDialogProps={editDialogProps}
             />
         </Box>
     );

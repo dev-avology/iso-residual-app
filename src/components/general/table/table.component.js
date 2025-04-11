@@ -115,8 +115,14 @@ const TableWithFilters = ({
   };
 
   const handleSave = (updatedRow) => {
+    // Include splits in the updated row data
+    const rowWithSplits = {
+      ...updatedRow,
+      splits: editDialogProps?.splits || []
+    };
+
     const updatedData = data.map((row) =>
-      row[idField] === updatedRow[idField] ? updatedRow : row
+      row[idField] === updatedRow[idField] ? rowWithSplits : row
     );
     setData(updatedData);
     setSelected([]);

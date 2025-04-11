@@ -5,12 +5,12 @@ a,
 input[type="submit"] {
   transition: background-color 0.3s ease;
 }
-
+/*
 button:hover,
 a:hover,
 input[type="submit"]:hover {
-  background-color: var(--accent-color2); /* Secondary accent color on hover */
-}
+  background-color: var(--accent-color2);
+}*/
 
 .btn-view, .btn-delete {
   background: none;

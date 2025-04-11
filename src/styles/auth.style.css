@@ -19,22 +19,25 @@
   
   /* Auth Container Headings */
   .auth-container h2 {
-    margin-bottom: 20px;
+    /* margin-bottom: 20px; */
     font-size: 24px;
-    color: var(--text-color);
-  }
+    color: #fff;
+    font-weight: 600;
+}
+  
+  
   
   .auth-container .form-group {
     margin-bottom: 15px;
     text-align: left;
   }
-  
+  /*
   .auth-container label {
     display: block;
     margin-bottom: 5px;
     font-weight: bold;
     color: var(--text-color);
-  }
+  }*/
   
   .auth-container input {
     width: 100%;
@@ -45,6 +48,7 @@
   }
   
   /* Button styling for auth container */
+  /*
   .auth-container button {
     width: 100%;
     padding: 10px;
@@ -58,13 +62,13 @@
   }
   
   .auth-container button:hover {
-    background-color: var(--accent-color2); /* Secondary accent color on hover */
+    background-color: var(--accent-color2); 
   }
-  
+  */
   /* Paragraph styling in auth container */
   .auth-container p {
     margin-top: 15px;
-    color: #555;
+    /*color: #555;*/
   }
   
   /* Error message styling */

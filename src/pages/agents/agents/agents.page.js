@@ -5,7 +5,7 @@ import AgentsList from '../../../components/agents/agents-list/agents-list.compo
 
 const Agents = ({ organizationID, authToken }) => {
     return (
-        <div className="homepage">
+        <div className="homepage p-6">
             {/* Hero Section */}
             <AgentsList  organizationID={organizationID} authToken={authToken} />
         </div>

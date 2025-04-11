@@ -10,7 +10,7 @@
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  padding: 20px;
+  /*padding: 20px;*/
   box-sizing: border-box;
   transition: width 0.3s ease, background 0.3s ease;
   z-index: 1000;
@@ -43,11 +43,11 @@
   flex-direction: column;
   gap: 15px;
 }
-
+/*
 .nav a {
   color: var(--text-color);
   text-decoration: none;
-  padding: 12px 0; /* Uniform padding for all links */
+  padding: 12px 0; 
   font-size: 1.1rem;
   border-radius: 8px;
   transition: background 0.3s ease, color 0.3s ease;
@@ -55,12 +55,13 @@
   align-items: center;
   justify-content: center;
 }
-
+*/
+/*
 .sidebar.hovered .nav a {
   justify-content: flex-start;
-  padding-left: 20px; /* Add left padding when sidebar is expanded */
+  padding-left: 20px; 
 }
-
+*/
 .nav-icon {
   font-size: 1.5rem;
   margin-left: auto;

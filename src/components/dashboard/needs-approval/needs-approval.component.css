@@ -43,7 +43,11 @@ button {
 button:hover {
   background-color: #ff9800;
 }
-
+button.btn-delete:hover,
+button.btn-view:hover {
+  background: transparent;
+  opacity: .7;
+}
 /* General button styling for both NeedsApproval and NeedsAudit */
 .edit-btn,
 .audit-btn {
@@ -63,7 +67,7 @@ button:hover {
 }
 
 /* Ensure consistent display and spacing across different components */
-.needs-approval-container .report-item button,
+/*.needs-approval-container .report-item button,
 .needs-audit-container .audit-item button {
   padding: 6px 12px;
   background-color: var(--accent-color);
@@ -72,8 +76,9 @@ button:hover {
   cursor: pointer;
   transition: background-color 0.3s ease;
 }
-
+*//*
 .needs-approval-container .report-item button:hover,
 .needs-audit-container .audit-item button:hover {
   background-color: #ff7800;
 }
+*/

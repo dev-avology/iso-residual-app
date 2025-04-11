@@ -58,52 +58,52 @@ const Dashboard = ({ organizationID: propOrganizationID, username, authToken }) 
     }, [authToken, organizationID, location.key]);
 
     return (
-        <Box sx={{ padding: 4 }}>
+        <div sx={{ padding: 4 }}  className='p-6'>
             {/* Header */}
-            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
-                <Box>
-                    <Typography variant="h4" component="h1" gutterBottom>
+            <div class="max-w-7xl flex items-center justify-between space-x-3 mx-auto mb-8 bg-yellow-400 rounded-lg p-6 shadow-lg" sx={{  mb: 3 }}>
+                <div>
+                    <Typography className='text-3xl font-bold text-black font-medium mb-0'  style={{ marginBottom: '0',fontSize: '1.875rem', fontWeight: '600' }}  variant="h4" component="h1" gutterBottom>
                         Welcome, {username}
                     </Typography>
-                    <Typography variant="h6" component="h2" gutterBottom>
+                    <Typography className='text-black/80 mt-0 mb-0 text-left'  style={{ marginBottom: '0',fontSize: '16px', fontWeight: '300' }} variant="h6" component="h2" gutterBottom>
                         Reports for {new Date().toLocaleString('default', { month: 'long', year: 'numeric' })}
                     </Typography>
-                </Box>
-                <Box>
+                </div>
+                <div>
                     {/* Export AP Report Button */}
                     <APReportExport authToken={authToken} organizationID={organizationID} reports={fetchedReports} />
-                </Box>
-            </Box>
+                </div>
+            </div>
 
             {loading ? (
-                <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '50vh' }}>
+                <div sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '50vh' }}>
                     <CircularProgress />
-                </Box>
+                </div>
             ) : (
-                <Grid container spacing={3}>
+                <Grid container spacing={3} className='max-w-7xl mx-auto ' style={{ marginLeft:'auto', marginRight:'auto' }}>
                     {/* Needs Upload Card */}
-                    <Grid item xs={12} md={4}>
-                        <Paper elevation={3} sx={{ padding: 2 }}>
+                    <Grid item xs={12} md={4} style={{ paddingLeft:'0' }}>
+                        <Paper elevation={3} sx={{ padding: 0 }}  style={{ background:'transparent' }}>
                             <NeedsUpload reports={fetchedReports} />
                         </Paper>
                     </Grid>
 
                     {/* Needs Audit Card */}
                     <Grid item xs={12} md={4}>
-                        <Paper elevation={3} sx={{ padding: 2 }}>
+                        <Paper elevation={3} sx={{ padding: 0 }} style={{ background:'transparent' }}>
                             <NeedsAudit reports={fetchedReports} />
                         </Paper>
                     </Grid>
 
                     {/* Needs Approval Card */}
                     <Grid item xs={12} md={4}>
-                        <Paper elevation={3} sx={{ padding: 2 }}>
+                        <Paper elevation={3} sx={{ padding: 0}} style={{ background:'transparent' }}>
                             <NeedsApproval reports={fetchedReports} authToken={authToken} organizationID={organizationID} />
                         </Paper>
                     </Grid>
                 </Grid>
             )}
-        </Box>
+        </div>
     );
 };
 

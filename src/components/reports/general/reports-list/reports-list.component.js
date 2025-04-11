@@ -114,21 +114,21 @@ const ReportsList = ({ authToken, organizationID, type, filterMonth, filterYear,
             <table>
                 <thead>
                     <tr>
-                        <th>Month</th>
-                        <th>Processor</th>
-                        <th>Actions</th>
+                        <th className='border-l-0 border-b px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider'>Month</th>
+                        <th className='border-l-0 border-b px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider'>Processor</th>
+                        <th className='border-l-0 border-b px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider'>Actions</th>
                     </tr>
                 </thead>
                 <tbody>
                     {currentReports.map((report) => (
                         <tr key={report.reportID}>
-                            <td>{report.month}</td>
-                            <td>{report.processor}</td>
-                            <td>
-                                <button className="btn-view" onClick={() => handleView(report.reportID)}>
+                            <td className='px-6 py-4 whitespace-nowrap text-sm text-gray-300'>{report.month}</td>
+                            <td className='px-6 py-4 whitespace-nowrap text-sm text-gray-300'>{report.processor}</td>
+                            <td className='px-6 py-4 whitespace-nowrap text-sm text-gray-300'>
+                                <button className="btn-view text-yellow-400 hover:text-yellow-500"  onClick={() => handleView(report.reportID)}>
                                     <FaEye />
                                 </button>
-                                <button className="btn-delete" onClick={() => handleDelete(report.reportID)}>
+                                <button className="btn-delete text-yellow-400 hover:text-yellow-500" onClick={() => handleDelete(report.reportID)}>
                                     <FaTrash />
                                 </button>
                             </td>

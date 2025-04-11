@@ -36,18 +36,18 @@ const Sidebar = ({ username, isAdmin, onLogout }) => {
 
   return (
     <>
-      <div className={`sidebar ${isMobileMenuOpen ? 'open' : ''} ${isHovered ? 'hovered' : ''}`}
+      <div className={`sidebar bg-zinc-900 shadow-lg  border-r border-yellow-400/20 overflow-hidden  ${isMobileMenuOpen ? 'open' : ''} ${isHovered ? 'hovered' : ''}`}
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
       >
-        <div className="logo">
-          <Link to="/" onClick={toggleMobileMenu}>
+        <div className="logo p-6 border-b border-yellow-400/20">
+          <Link className='text-yellow-400' to="/" onClick={toggleMobileMenu}>
             Tracer
           </Link>
         </div>
-        <nav className="nav">
-          <Link to="/admin-dashboard" onClick={toggleMobileMenu}>
-            <AiFillDashboard className="nav-icon" />
+        <nav className="nav px-4 py-6">
+          <Link to="/admin-dashboard" onClick={toggleMobileMenu} className='group flex items-center px-3 py-2 text-sm font-medium text-gray-300 rounded-md hover:text-yellow-400 hover:border-l-4 hover:border-yellow-400 relative'>
+            <AiFillDashboard className="nav-icon lucide lucide-file-text h-5 w-5  text-gray-400 group-hover:text-yellow-400" />
             <span className="nav-text">Dash</span>
           </Link>
           {/* Add Agents Nav Item 
@@ -56,12 +56,12 @@ const Sidebar = ({ username, isAdmin, onLogout }) => {
             <span className="nav-text">Merchants</span>
           </Link>*/}
           {/* Add Merchants Nav Item */}
-          <Link to="/agents" onClick={toggleMobileMenu}>
-            <FaUserTie className="nav-icon" />
+          <Link to="/agents" onClick={toggleMobileMenu} className='group flex items-center px-3 py-2 text-sm font-medium text-gray-300 rounded-md hover:text-yellow-400 hover:border-l-4 hover:border-yellow-400 relative'>
+            <FaUserTie className="nav-icon lucide lucide-file-text h-5 w-5  text-gray-400 group-hover:text-yellow-400" />
             <span className="nav-text">Agents</span>
           </Link>
-          <Link to="/reports/all" onClick={toggleMobileMenu}>
-            <FaFileAlt className="nav-icon" />
+          <Link to="/reports/all" onClick={toggleMobileMenu} className='group flex items-center px-3 py-2 text-sm font-medium text-gray-300 rounded-md hover:text-yellow-400 hover:border-l-4 hover:border-yellow-400 relative'>
+            <FaFileAlt className="nav-icon lucide lucide-file-text h-5 w-5  text-gray-400 group-hover:text-yellow-400" />
             <span className="nav-text">Reports</span>
           </Link>
           {/*}
@@ -91,14 +91,14 @@ const Sidebar = ({ username, isAdmin, onLogout }) => {
           {username ? (
             <>
               <div className="profile-section">
-                <Link to={`/user-settings/${username}`} className="connected profile-link">
+                <Link to={`/user-settings/${username}`} className="connected profile-link text-sm font-medium text-gray-300">
                   <div className="wallet-info">
-                    <FaCog className="settings-icon" />
-                    <span>{username}</span>
+                    <FaCog className="settings-icon text-gray-400" />
+                    <span >{username}</span>
                   </div>
                 </Link>
               </div>
-              <button onClick={onLogout} className="logout-button">
+              <button onClick={onLogout} className="logout-button  w-[90%] bg-yellow-400 rounded py-3 font-semibold uppercase flex items-center justify-center hover:bg-yellow-600 gap-2 text-black">
                 Logout
               </button>
             </>
@@ -107,7 +107,7 @@ const Sidebar = ({ username, isAdmin, onLogout }) => {
               Login
             </Link>
           )}
-          <div className="theme-toggle-container">
+         {/* <div className="theme-toggle-container">
             <label className="switch">
               <input
                 type="checkbox"
@@ -117,7 +117,7 @@ const Sidebar = ({ username, isAdmin, onLogout }) => {
               <span className="slider round"></span>
             </label>
             <span className="theme-label">Dark Mode</span>
-          </div>
+          </div>*/}
         </div>
         {isMobileMenuOpen && <div className="overlay show" onClick={toggleMobileMenu}></div>}
       </div>

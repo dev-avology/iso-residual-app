@@ -56,12 +56,13 @@ const AgentUploader = ({ authToken, organizationID }) => {
   };
 
   return (
-    <div className="agent-upload-container">
-      <h2>Upload Agent List</h2>
+    <div class="agtupload min-h-screen flex items-center justify-center">
+    <div className="agent-upload-container bg-zinc-900 p-10 rounded-lg shadow-lg w-full max-w-md " >
+      <h2 className='pb-6 mb-6 border-b border-yellow-400/20'>Upload Agent List</h2>
 
       <form onSubmit={handleUpload}>
-        <div className="file-input-container">
-          <label htmlFor="fileUpload">Choose file:</label>
+        <div className="file-input-container ">
+          <label htmlFor="fileUpload" className='block font-medium text-gray-300 mb-2'>Choose file:</label>
           <input
             type="file"
             id="fileUpload"
@@ -76,7 +77,7 @@ const AgentUploader = ({ authToken, organizationID }) => {
           </div>
         )}
 
-        <button type="submit" className="upload-btn">
+        <button type="submit" className="upload-btn w-full bg-yellow-500 hover:bg-yellow-600 text-white py-3 rounded font-medium uppercase transition duration-200 dsabled:opacity-50">
           Upload File
         </button>
       </form>
@@ -90,6 +91,7 @@ const AgentUploader = ({ authToken, organizationID }) => {
           <p>Uploading... Please wait</p>
         </div>
       )}
+    </div>
     </div>
   );
 };

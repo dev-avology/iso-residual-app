@@ -9,7 +9,7 @@ table {
     width: 100%;
     min-width: 800px;
     border-collapse: collapse;
-    background-color: var(--background-color);
+   /* background-color: var(--background-color);*/
     color: var(--text-color);
     margin-top: 20px;
 }

@@ -30,7 +30,7 @@ const handleSubmit = async (e) => {
   return (
     
     <div className="auth-page">
-      <div className="auth-container">
+      <div className="auth-container bg-zinc-900 p-10 rounded-lg shadow-lg w-full max-w-md ">
       <h2>Login</h2>
       <form onSubmit={handleSubmit}>
         <div className="form-group">

@@ -51,11 +51,11 @@
     border: 1px solid var(--separator-color);
     text-align: left;
   }
-  
+  /*
   table th {
     background-color: var(--section-background);
   }
-  
+  */
   table td {
     background-color: var(--background-color);
   }

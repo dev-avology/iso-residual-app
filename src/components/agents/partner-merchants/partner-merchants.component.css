@@ -80,12 +80,12 @@
 }
 
 .pagination-btn.active {
-  background-color: var(--accent-color);
+  background-color: #facc15;
   color: white;
-  border-color: var(--accent-color);
+  border-color: #facc15;
 }
 
 .pagination-btn:hover {
-  background-color: var(--accent-color2);
-  color: white;
+  background-color: #facc15;
+  color: #000;
 }

@@ -69,14 +69,14 @@ const NeedsUploaded = ({ reports }) => {
   const totalPages = Math.ceil(processorsThatNeedUpload.length / reportsPerPage);
 
   return (
-    <div className="needs-upload-container">
-      <h3>Reports Needing Upload</h3>
+    <div className="needs-upload-container bg-zinc-900 rounded-lg shadow-sm p-6 mb-8 border border-yellow-400/20">
+      <h3 className='text-lg font-semibold text-white mb-4'>Reports Needing Upload</h3>
       {processorsThatNeedUpload.length > 0 ? (
         <>
           <ul className="report-list">
             {currentReports.map((report, index) => (
-              <li key={index} className="report-item">
-                <strong>Processor:</strong> {report.processor}
+              <li key={index} className="report-item px-6 py-4 whitespace-nowrap text-sm text-gray-300">
+                <strong className='font-medium text-sm text-gray-300'>Processor:</strong> {report.processor}
               </li>
             ))}
           </ul>
@@ -86,7 +86,7 @@ const NeedsUploaded = ({ reports }) => {
             {Array.from({ length: totalPages }, (_, index) => (
               <button
                 key={index}
-                className={`pagination-btn ${index + 1 === currentPage ? 'active' : ''}`}
+                className={`pagination-btn shadow-sm text-sm font-medium text-black bg-yellow-400 hover:bg-yellow-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-yellow-400 ${index + 1 === currentPage ? 'active' : ''}`}
                 onClick={() => handlePageChange(index + 1)}
               >
                 {index + 1}
@@ -96,7 +96,7 @@ const NeedsUploaded = ({ reports }) => {
 
           {/* Upload Button */}
           <div className="upload-button-container">
-            <button className="upload-btn" onClick={goToUploader}>
+            <button className="upload-btn text-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-black bg-yellow-400 hover:bg-yellow-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-yellow-400" onClick={goToUploader}>
               Upload Missing Reports
             </button>
           </div>

@@ -52,8 +52,8 @@ const NeedsApproval = ({ authToken, organizationID }) => {
   const handleViewBankSummaryReport = (month) => navigate(`/bank-summary-report?month=${month}`);
 
   return (
-    <div className="needs-approval-container">
-      <h3>Reports Needing Approval</h3>
+    <div className="needs-approval-container bg-zinc-900 rounded-lg shadow-sm p-6 mb-8 border border-yellow-400/20">
+      <h3 className='text-lg font-semibold text-white mb-4'>Reports Needing Approval</h3>
       {reportsThatNeedApproval.length > 0 ? (
         <>
           <ul className="report-list">
@@ -116,7 +116,7 @@ const NeedsApproval = ({ authToken, organizationID }) => {
           </div>
         </>
       ) : (
-        <p>All reports have been approved.</p>
+        <p className='text-sm text-gray-300 text-center'>All reports have been approved.</p>
       )}
     </div>
   );

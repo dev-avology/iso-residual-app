@@ -22,7 +22,8 @@ const ReportsPage = ({ organizationID, authToken }) => {
     };
 
     return (
-        <div className="reports-page">
+        <div className="reports-page p-6">
+             <div className="reports-page-wrap max-w-7xl mx-auto bg-zinc-900 rounded-lg shadow-sm p-6 mb-8">
             <ReportsListHeader
                 reportType={reportType}
                 setReportType={setReportType}
@@ -82,6 +83,7 @@ const ReportsPage = ({ organizationID, authToken }) => {
                     searchTerm={searchTerm} // Pass search term to ReportsList
                 />
             )}
+            </div>
         </div>
     );
 };

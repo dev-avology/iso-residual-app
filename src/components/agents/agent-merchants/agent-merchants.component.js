@@ -150,7 +150,7 @@ const AgentMerchants = ({
   return (
     <div>
       {/* Modal Dialog for Adding an Agent Merchant */}
-      <Dialog open={openModal} onClose={handleCloseModal}>
+      <Dialog class='bg-zinc-900 rounded-lg shadow-sm p-6 mb-8' open={openModal} onClose={handleCloseModal}>
         <DialogTitle>Add Agent Merchant</DialogTitle>
         <DialogContent>
           <TextField
@@ -193,10 +193,10 @@ const AgentMerchants = ({
           />
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleCloseModal} color="primary">
+          <Button onClick={handleCloseModal} className='text-yellow-400 cncl'>
             Cancel
           </Button>
-          <Button onClick={handleAddNewMerchant} color="primary">
+          <Button onClick={handleAddNewMerchant} className='cncl-btn  primary text-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-black bg-yellow-400 hover:bg-yellow-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-yellow-400' >
             Add
           </Button>
         </DialogActions>

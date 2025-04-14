@@ -102,14 +102,15 @@ const ReportUpload = ({ authToken, organizationID }) => {
   const selectedProcessors = rows.map(row => row.processor); // Get all selected processors
 
   return (
-    <div className="report-upload-container">
-      <h2>Upload Reports</h2>
+    <div className='p-6'>
+    <div className="report-upload-container max-w-7xl mx-auto bg-zinc-900 rounded-lg shadow-sm p-6 mb-8 ">
+      <h2 className='text-lg font-semibold text-white mb-4'>Upload Reports</h2>
 
       {/* Month and Year Selection */}
       <div className="month-year-selection">
-        <label>
+        <label className='text-xs font-medium text-gray-300'>
           Month:
-          <select value={selectedMonth} onChange={(e) => setSelectedMonth(e.target.value)} required>
+          <select value={selectedMonth} onChange={(e) => setSelectedMonth(e.target.value)} required className='text-sm px-5 bg-zinc-800 ml-2 border-zinc-700 text-white rounded-md focus:ring-yellow-400 focus:border-yellow-400'>
             <option value="" disabled>Select Month</option>
             {months.map((month) => (
               <option key={month} value={month}>{month}</option>
@@ -117,9 +118,9 @@ const ReportUpload = ({ authToken, organizationID }) => {
           </select>
         </label>
 
-        <label>
+        <label className='text-xs font-medium text-gray-300'>
           Year:
-          <select value={selectedYear} onChange={(e) => setSelectedYear(e.target.value)} required>
+          <select value={selectedYear} onChange={(e) => setSelectedYear(e.target.value)} required className='text-sm px-5 bg-zinc-800 ml-2 border-zinc-700 text-white rounded-md focus:ring-yellow-400 focus:border-yellow-400'>
             <option value="" disabled>Select Year</option>
             {years.map((year) => (
               <option key={year} value={year}>{year}</option>
@@ -179,13 +180,13 @@ const ReportUpload = ({ authToken, organizationID }) => {
         </table>
 
         <div className="add-row-btn">
-          <button type="button" onClick={handleAddRow}>
+          <button type="button" onClick={handleAddRow} className='text-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-black bg-yellow-400 hover:bg-yellow-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-yellow-400'>
             Add File <i className="fa fa-plus"></i>
           </button>
         </div>
 
         {rows.length > 0 && (
-          <button type="submit" className="upload-btn">
+          <button type="submit" className="upload-btn text-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-black bg-yellow-400 hover:bg-yellow-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-yellow-400">
             Upload Files
           </button>
         )}
@@ -200,6 +201,7 @@ const ReportUpload = ({ authToken, organizationID }) => {
           <p>Uploading... Please wait</p>
         </div>
       )}
+    </div>
     </div>
   );
 };

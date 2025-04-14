@@ -319,11 +319,11 @@ const ReportViewer = ({ authToken }) => {
                                             onChange={toggleSelectAll}
                                         />
                                     </th>
-                                    <th>Needs Audit</th>
+                                    <th className='text-xs font-medium text-gray-300'>Needs Audit</th>
                                     {tableHeaders.map((header, index) => (
                                         <th key={index}>{header.replace(/([A-Z])/g, ' $1').trim()}</th>
                                     ))}
-                                    <th>Approved</th>
+                                    <th className='text-xs font-medium text-gray-300'>Approved</th>
                                 </tr>
                             </thead>
                             <tbody>

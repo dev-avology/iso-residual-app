@@ -203,7 +203,7 @@ const TableWithFilters = ({
   const paginatedData = filteredData.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
 
   return (
-    <Box>
+    <Box class="max-w-7xl mx-auto bg-zinc-900 rounded-lg shadow-sm p-6 mb-8 ">
 
       {enableTotals && <Totals data={filteredData} columns={totalFields} />}
       <FilterComponent
@@ -216,9 +216,9 @@ const TableWithFilters = ({
         onDelete={handleBulkDelete}
         onTotalsCalculated={(calculatedTotals) => setTotals(calculatedTotals)}
       />
-      <TableContainer>
+      <TableContainer >
 
-        <Table stickyHeader>
+        <Table stickyHeader className="tb-main">
           <TableHead>
             <TableRow>
               {setSelected && (
@@ -231,7 +231,7 @@ const TableWithFilters = ({
                 </TableCell>
               )}
               {columns.map((col) => (
-                <TableCell align="center" key={col.field} >
+                <TableCell align="center" key={col.field} className="border-b px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
                   {col.label}
                 </TableCell>
               ))}
@@ -243,7 +243,7 @@ const TableWithFilters = ({
               paginatedData.map((row) => (
                 <TableRow key={row[idField]}>
                   {setSelected && (
-                    <TableCell align="center" padding="checkbox">
+                    <TableCell  align="center" padding="checkbox">
                       <Checkbox
                         checked={selected.includes(row[idField])}
                         onChange={() => handleSelectRow(row[idField])}
@@ -261,7 +261,7 @@ const TableWithFilters = ({
                     </TableCell>
                 ))}
                   {approvalAction && (
-                    <TableCell align="center">
+                    <TableCell align="center" className="hrtd">
                       <ActionsColumn
                         onEdit={() => handleEdit(row)}
                         onDelete={() => handleDelete(row[idField])}

@@ -40,8 +40,8 @@ const Totals = ({ data, columns, onTotalsCalculated }) => {
         <div className="totals-container">
             {Object.entries(totals).map(([label, value]) =>
                 value !== null ? (
-                    <div key={label} className="total-field">
-                        <span className="total-label">{label}</span>
+                    <div key={label} className="total-field shadow-none bg-zinc-900 rounded-lg shadow-sm p-4  border border-yellow-400/20">
+                        <span className="total-label text-xs font-medium text-gray-300">{label}</span>
                         <span className="total-value">
                             {value.toLocaleString(undefined, {
                                 minimumFractionDigits: 2,

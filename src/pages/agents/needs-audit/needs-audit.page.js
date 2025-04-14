@@ -83,7 +83,7 @@ const NeedsAuditPage = ({ organizationID, authToken }) => {
         </header>
             <div className="tabs">
                 <div
-                    className={`tab ${activeTab === 'needsAudit' ? 'active' : ''}`}
+                    className={`tab  ${activeTab === 'needsAudit' ? 'active' : ''}`}
                     onClick={() => setActiveTab('needsAudit')}
                 >
                     Needs Audit

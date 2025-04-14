@@ -121,10 +121,12 @@ const FilterComponent = ({
             <Typography variant="body2">{filteredData.length} rows match.</Typography>
 
             <Button
+                className=" btn-cts text-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-black bg-yellow-400 hover:bg-yellow-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-yellow-400"
                 variant="contained"
                 onClick={handleActionsClick}
                 size="small"
                 sx={{ whiteSpace: "nowrap" }}
+                
             >
                 Actions
             </Button>

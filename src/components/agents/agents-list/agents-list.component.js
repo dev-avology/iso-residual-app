@@ -145,7 +145,7 @@ const AgentsList = ({ organizationID, authToken }) => {
               <tr>
                 <th className='border-l-0 border-b px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider'>First Name / Company Name</th>
                 <th className='px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider'>Last Name</th>
-                <th className="actions-column px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">Actions</th>
+                <th className="actions-column px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider ">Actions</th>
               </tr>
             </thead>
             <tbody>

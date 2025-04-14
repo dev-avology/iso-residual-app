@@ -53,13 +53,13 @@ const AgentDetails = ({ agent, onAgentChange }) => {
   return (
     <div className="agent-details-container">
       <div className="header">
-        <h2>Agent Details</h2>
+        <h2 className='text-lg font-semibold text-white mb-0'>Agent Details</h2>
       </div>
 
       <div className="agent-details-content">
         {/* Main Agent Information */}
         <div className="main-card">
-          <h3>
+          <h3 className='text-xs font-medium text-gray-300 uppercase tracking-wider'>
             {editedAgent.fName} {editedAgent.lName}
           </h3>
           <div className="split-input-wrapper">
@@ -68,7 +68,7 @@ const AgentDetails = ({ agent, onAgentChange }) => {
               value={editedAgent.agentSplit || ''}
               onChange={(e) => handleInputChange('agentSplit', e.target.value)}
               placeholder="Split"
-              className="input small-input"
+              className="input small-input block w-full pr-10 truncate text-center bg-zinc-800 border-zinc-700 text-white rounded-md focus:ring-yellow-400 focus:border-yellow-400"
             />
           </div>
         </div>
@@ -77,38 +77,38 @@ const AgentDetails = ({ agent, onAgentChange }) => {
         <div className="cards-container">
           {/* Company Card */}
           <div className="details-card">
-            <h4>Company</h4>
+            <h4 className='text-xs font-medium text-gray-300 uppercase tracking-wider'>Company</h4>
             <input
               type="text"
               value={editedAgent.company || ''}
               onChange={(e) => handleInputChange('company', e.target.value)}
               placeholder="Company Name"
-              className="input"
+              className="input truncate text-center bg-zinc-800 border-zinc-700 text-white rounded-md focus:ring-yellow-400 focus:border-yellow-400"
             />
             <input
               type="text"
               value={`${companySplit}%`} // Display company split
-              className="input small-input"
+              className="input small-input truncate text-center bg-zinc-800 border-zinc-700 text-white rounded-md focus:ring-yellow-400 focus:border-yellow-400"
               disabled
             />
           </div>
 
           {/* Manager Card */}
           <div className="details-card">
-            <h4>Manager</h4>
+            <h4 className='text-xs font-medium text-gray-300 uppercase tracking-wider'>Manager</h4>
             <input
               type="text"
               value={editedAgent.manager || ''}
               onChange={(e) => handleInputChange('manager', e.target.value)}
               placeholder="Manager Name"
-              className="input"
+              className="input truncate text-center bg-zinc-800 border-zinc-700 text-white rounded-md focus:ring-yellow-400 focus:border-yellow-400"
             />
             <input
               type="text"
               value={editedAgent.managerSplit || ''}
               onChange={(e) => handleInputChange('managerSplit', e.target.value)}
               placeholder="Split"
-              className="input small-input"
+              className="input small-input truncate text-center bg-zinc-800 border-zinc-700 text-white rounded-md focus:ring-yellow-400 focus:border-yellow-400"
             />
           </div>
         </div>

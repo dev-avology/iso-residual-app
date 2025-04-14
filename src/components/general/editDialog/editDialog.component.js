@@ -87,7 +87,7 @@ const EditDialog = ({ open, onClose, onSave, fields }) => {
 
   return (
     <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
-      <DialogTitle>Edit Details</DialogTitle>
+      <DialogTitle className='pb-6 mb-6 border-b border-yellow-400/20'>Edit Details</DialogTitle>
       <DialogContent>
         <Box sx={{ mt: 2 }}>
           {fields.map((field) => (
@@ -98,8 +98,8 @@ const EditDialog = ({ open, onClose, onSave, fields }) => {
         </Box>
       </DialogContent>
       <DialogActions>
-        <Button onClick={onClose}>Cancel</Button>
-        <Button onClick={handleSubmit} variant="contained" color="primary">
+        <Button onClick={onClose} className='text-yellow-400 cncl'>Cancel</Button>
+        <Button onClick={handleSubmit} variant="contained" color="primary" className=' cncl-btn text-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-black bg-yellow-400 hover:bg-yellow-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-yellow-400'>
           Save
         </Button>
       </DialogActions>

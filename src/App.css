@@ -134,7 +134,9 @@ body[data-theme="dark"] .total-field {
 .pop-form [aria-modal="true"] {
   background: rgb(24 24 27 / var(--tw-bg-opacity, 1));
 }
-
+.pop-form [aria-modal="true"] h2, .pop-form [aria-modal="true"] h6 {
+  color: #fff;
+}
 .pop-form [aria-modal="true"] button {
   color: #000 !important;
   text-transform: none !important;

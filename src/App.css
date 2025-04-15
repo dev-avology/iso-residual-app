@@ -131,6 +131,25 @@ body[data-theme="dark"] .total-field {
   border-bottom: 1px solid rgb(62 60 60);
   color: #fff;
 }
+.pop-form [aria-modal="true"] {
+  background: rgb(24 24 27 / var(--tw-bg-opacity, 1));
+}
+.pop-form [aria-modal="true"] button {
+  color: #000 !important;
+  text-transform: none !important;
+  font-weight: 700 !important;
+  font-family: system-ui;
+  background: #facc15 !important;
+}
+.pop-form [aria-modal="true"] input {
+  color: rgb(255 255 255 / 87%);
+}
+.pop-form [aria-modal="true"] fieldset {
+  border-color: rgb(255 255 255 / 35%);
+}
+.pop-form [aria-modal="true"] label {
+  color: rgb(255 255 255 / 60%);
+}
 .tb-main tr th {
   background: #333!important;
 

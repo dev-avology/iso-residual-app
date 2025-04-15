@@ -8,7 +8,7 @@ const Sidebar = ({ username, isAdmin, onLogout }) => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
   const [isReportsOpen, setIsReportsOpen] = useState(false); // State for reports dropdown
-  const [theme, setTheme] = useState(localStorage.getItem('theme') || 'light');
+  const [theme, setTheme] = useState(localStorage.getItem('theme') || 'dark');
   
   const location = useLocation(); // Get the current location
 
@@ -18,7 +18,7 @@ const Sidebar = ({ username, isAdmin, onLogout }) => {
   }, [theme]);
 
   const toggleTheme = () => {
-    setTheme((prevTheme) => (prevTheme === 'light' ? 'dark' : 'light'));
+    setTheme((prevTheme) => (prevTheme === 'dark' ? 'dark' : 'dark'));
   };
 
   const toggleMobileMenu = () => {

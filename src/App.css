@@ -121,7 +121,23 @@ body[data-theme="dark"] .total-field {
   box-shadow: 0 0 5px rgb(255 255 255 / 50%);
 
 }
+.tb-main tr th, .tb-main tr td {
+  background: transparent;
+  border-top: 0;
+  border-left: 0;
+  border-right: 0;
+  font-size: 14px;
+  text-transform: none;
+  border-bottom: 1px solid rgb(62 60 60);
+  color: #fff;
+}
+.tb-main tr th {
+  background: #333!important;
 
+}
+.tb-main tr th svg, .tb-main tr td svg {
+  fill: rgb(255 255 255 / 60%)!important;
+}
 body[data-theme="dark"] .css-1pzfmz2-MuiInputBase-input-MuiOutlinedInput-input,
 body[data-theme="dark"] .css-1pzfmz2 {
   color: rgb(255 255 255 / 87%);

@@ -358,6 +358,14 @@ body[data-theme="dark"] .tab:hover {
   line-height: 1rem;
   font-weight: 500;
 }
+
+.css-1ll44ll-MuiOutlinedInput-notchedOutline {
+  border: 1px solid rgb(255 255 255 / 35%);
+}
+button, input, optgroup, select, textarea {
+  box-shadow: none!important;
+  outline: 0!important;
+}
 /*tailwind*/
 
 
@@ -386,7 +394,7 @@ body[data-theme="dark"] .tab:hover {
   --tw-ring-inset: ;
   --tw-ring-offset-width: 0px;
   --tw-ring-offset-color: #fff;
-  --tw-ring-color: rgb(59 130 246 / .5);
+  --tw-ring-color: #facc15;
   --tw-ring-offset-shadow: 0 0 #0000;
   --tw-ring-shadow: 0 0 #0000;
   --tw-shadow: 0 0 #0000;
@@ -440,7 +448,7 @@ body[data-theme="dark"] .tab:hover {
   --tw-ring-inset: ;
   --tw-ring-offset-width: 0px;
   --tw-ring-offset-color: #fff;
-  --tw-ring-color: rgb(59 130 246 / .5);
+  --tw-ring-color:#facc15;
   --tw-ring-offset-shadow: 0 0 #0000;
   --tw-ring-shadow: 0 0 #0000;
   --tw-shadow: 0 0 #0000;

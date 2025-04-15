@@ -86,9 +86,9 @@ const EditDialog = ({ open, onClose, onSave, fields }) => {
   };
 
   return (
-    <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
+    <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth className='pop-form'>
       <DialogTitle className='pb-6 mb-6 border-b border-yellow-400/20'>Edit Details</DialogTitle>
-      <DialogContent>
+      <DialogContent className='pop-form-wrap'>
         <Box sx={{ mt: 2 }}>
           {fields.map((field) => (
             <Box key={field.field} sx={{ mb: 2 }}>

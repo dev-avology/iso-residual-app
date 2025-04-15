@@ -158,7 +158,11 @@ body[data-theme="dark"] .css-1ghfbj4-MuiTableCell-root {
 .MuiDialogContent-root.css-kw13he-MuiDialogContent-root [type=checkbox]:checked {
   color: #000;
 }
-
+button.css-5pf1h4-MuiButtonBase-root-MuiButton-root {
+  background: #facc15!important;
+  color: #000;
+  font-weight: 700;
+}
 body[data-theme="dark"] .css-16htz67-MuiPaper-root-MuiDialog-paper {
   background-color: #323232;
   color: rgb(255 255 255 / 87%);

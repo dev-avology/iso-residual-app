@@ -115,10 +115,13 @@ const TableWithFilters = ({
   };
 
   const handleSave = (updatedRow) => {
+    // Get the current splits from editDialogProps
+    const currentSplits = editDialogProps?.splits || [];
+
     // Include splits in the updated row data
     const rowWithSplits = {
       ...updatedRow,
-      splits: editDialogProps?.splits || []
+      splits: currentSplits // Use the current splits array
     };
 
     const updatedData = data.map((row) =>

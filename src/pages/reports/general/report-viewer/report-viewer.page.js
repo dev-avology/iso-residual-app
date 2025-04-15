@@ -21,6 +21,7 @@ const ReportViewerPage = ({ authToken }) => {
     const [hasChanges, setHasChanges] = useState(false);
     const [status, setStatus] = useState({ loading: true, error: null });
     const [splits, setSplits] = useState([]);
+    const [editRow, setEditRow] = useState(null);
     const [newSplit, setNewSplit] = useState({
         type: '',
         name: '',
@@ -56,6 +57,12 @@ const ReportViewerPage = ({ authToken }) => {
         fetchReport();
     }, [reportID, authToken]);
 
+    // Add this useEffect to handle splits initialization when editing a row
+    useEffect(() => {
+        if (editRow?.splits && editRow.splits.length > 0) {
+            setSplits(editRow.splits);
+        }
+    }, [editRow]);
 
     const handleRegenerateReport = async () => {
         try {
@@ -198,7 +205,7 @@ const ReportViewerPage = ({ authToken }) => {
                 approved: allRowsApproved,
                 reportData: filteredData.map(row => ({
                     ...row,
-                    splits: row.splits || [] // Ensure splits are included in each row
+                    splits: row[idField] === editRow?.[idField] ? splits : (row.splits || [])
                 }))
             };
     
@@ -218,13 +225,8 @@ const ReportViewerPage = ({ authToken }) => {
     };
 
     const editDialogProps = {
-        splits, // Pass the current splits to the dialog
+        splits,
         getFields: (row) => {
-            // Initialize splits from the row's data if it exists
-            if (row.splits && row.splits.length > 0) {
-                setSplits(row.splits);
-            }
-
             const baseFields = columns.map((col) => ({
                 label: col.label,
                 field: col.field,
@@ -246,7 +248,7 @@ const ReportViewerPage = ({ authToken }) => {
                                     <FormControl fullWidth>
                                         <InputLabel>Split Type</InputLabel>
                                         <Select
-                                            value={split.type}
+                                            value={split.type || ''}
                                             onChange={(e) => {
                                                 const updatedSplits = [...splits];
                                                 updatedSplits[index] = { ...updatedSplits[index], type: e.target.value };
@@ -264,7 +266,7 @@ const ReportViewerPage = ({ authToken }) => {
                                     </FormControl>
                                     <TextField
                                         label="Name"
-                                        value={split.name}
+                                        value={split.name || ''}
                                         onChange={(e) => {
                                             const updatedSplits = [...splits];
                                             updatedSplits[index] = { ...updatedSplits[index], name: e.target.value };
@@ -275,7 +277,7 @@ const ReportViewerPage = ({ authToken }) => {
                                     <TextField
                                         label="Value"
                                         type="number"
-                                        value={split.value}
+                                        value={split.value || ''}
                                         onChange={(e) => {
                                             const updatedSplits = [...splits];
                                             updatedSplits[index] = { ...updatedSplits[index], value: e.target.value };
@@ -311,9 +313,6 @@ const ReportViewerPage = ({ authToken }) => {
             ];
 
             return [...baseFields, ...splitFields];
-        },
-        handleInputChange: (field, value, row) => {
-            // Handle any other field changes if needed
         }
     };
 

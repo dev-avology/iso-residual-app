@@ -137,6 +137,12 @@ body[data-theme="dark"] .total-field {
 .pop-form [aria-modal="true"] h2, .pop-form [aria-modal="true"] h6 {
   color: #fff;
 }
+.pagination-m {
+  color: #fff!important;
+}
+.pagination-m  button svg {
+  fill: #fff!important;
+}
 .pop-form [aria-modal="true"] button {
   color: #000 !important;
   text-transform: none !important;

@@ -293,6 +293,7 @@ const TableWithFilters = ({
           setRowsPerPage(parseInt(event.target.value, 10));
           setPage(0); // Reset to first page when rows per page changes
         }}
+        className="pagination-m"
       />
 
 

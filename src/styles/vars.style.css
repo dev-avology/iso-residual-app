@@ -4,8 +4,8 @@
     --text-color: #333333;
     --header-background: #0044CC;
     --section-background: #FFFFFF;
-    --accent-color: #FF9900; /* Primary accent color */
-    --accent-color2: #ff7800; /* Secondary accent color */
+    --accent-color: #facc15; /* Primary accent color */
+    --accent-color2: #facc15; /* Secondary accent color */
     --sidebar-color: #EAEAEA;
     --separator-color: rgba(0, 0, 0, 0.1); /* Light separator for table and layout elements */
     --shadow-color: rgba(0, 0, 0, 0.2); /* Shadow for elements */
@@ -19,8 +19,8 @@
     --text-color: #FAFAFA;
     --header-background: #001F3F;
     --section-background: #2C2C2C;
-    --accent-color: #FF9900; /* Same accent color for dark theme */
-    --accent-color2: #ff7800; /* Same secondary accent color */
+    --accent-color: #facc15; /* Same accent color for dark theme */
+    --accent-color2: #facc15; /* Same secondary accent color */
     --sidebar-color: #1C1C1C;
     --separator-color: rgba(255, 255, 255, 0.1); /* Light separator for dark theme */
     --shadow-color: rgba(0, 0, 0, 0.5); /* Darker shadow for dark theme */

@@ -588,21 +588,60 @@ body[data-theme="dark"]  label {
 body[data-theme="dark"]  label svg {
   fill: rgb(255 255 255 / 60%);
 }
-.add-agent-container .submit-button {
+body[data-theme="dark"] .add-agent-container .submit-button {
   color: #000;
 }
-.agent-upload-container .upload-btn {
+body[data-theme="dark"] .agent-upload-container .upload-btn {
   color: #000;
 }
-body .delete-button, body  .save-button {
+body[data-theme="dark"] .delete-button, body[data-theme="dark"]  .save-button {
   background: #facc15;
   color: #000;
   font-weight: 500;
 }
-body .save-button, body .toggle-password-button {
+body[data-theme="dark"] .save-button, body[data-theme="dark"] .toggle-password-button {
   background: #facc15;
   color: #000;
   font-weight: 500;
+}
+body[data-theme="dark"] .pop-form [aria-modal="true"] button svg {
+  fill: #000;
+}
+body[data-theme="dark"] .pop-form [aria-modal="true"] button.dlt-btn {
+  height: 50px;
+  width: 50px;
+}
+body[data-theme="dark"] .select-nn > * {
+  color: #fff;
+}
+body[data-theme="dark"] [aria-modal=true] {
+  background: #18181b;
+}
+body[data-theme="dark"] [aria-modal=true]  p {
+  color: #fff;
+}
+body[data-theme="dark"] [aria-modal=true] button {
+  background: #facc15 !important;
+  color: #000 !important;
+  font-family: system-ui;
+  font-weight: 700 !important;
+  text-transform: none !important;
+}
+.export-btn, .re-audit-btn {
+  background: #facc15;
+  color: #000;
+}
+body[data-theme="dark"] .pagination-m svg {
+  fill: #fff;
+}
+body[data-theme="dark"] [aria-modal=true] button.remove-btn {
+  height: 55px;
+}
+.add-btn {
+  border: 0!important;
+}
+body[data-theme="dark"] [aria-modal=true] button {
+  border: 0!important;
 }
 /**********End light mode***********/
 

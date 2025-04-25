@@ -33,7 +33,7 @@ const NeedsAudit = ({ reports }) => {
   };
 
   return (
-    <div className="needs-audit-container bg-zinc-900 rounded-lg shadow-sm p-6 mb-8 border border-yellow-400/20">
+    <div className="needs-audit-container bg-zinc-900 rounded-lg shadow-sm p-6 mb-8 border border-yellow-400/20 b-maine-wrap">
       <h3 className='text-lg font-semibold text-white mb-4'>Reports Needing Audit</h3>
       {reportsThatNeedAudit.length > 0 ? (
         <>

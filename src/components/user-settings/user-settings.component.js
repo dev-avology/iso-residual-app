@@ -60,6 +60,7 @@ const UserSettings = ({ authToken, organizationID, username, setUsername, isAdmi
   };
 
   return (
+    <div className="user-settings-main p-6">
     <div className="user-settings-container">
       <h2>User Settings</h2>
       <div className="form-group">
@@ -91,7 +92,7 @@ const UserSettings = ({ authToken, organizationID, username, setUsername, isAdmi
 
       {isChangePasswordVisible && (
         <>
-          <h3>Change Password</h3>
+          <h3 className='mt-2'>Change Password</h3>
           <div className="form-group">
             <label>Current Password</label>
             <input
@@ -129,6 +130,7 @@ const UserSettings = ({ authToken, organizationID, username, setUsername, isAdmi
           </Link>
         </div>
       )}
+    </div>
     </div>
   );
 };

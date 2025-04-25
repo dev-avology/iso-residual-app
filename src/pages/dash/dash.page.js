@@ -83,21 +83,21 @@ const Dashboard = ({ organizationID: propOrganizationID, username, authToken }) 
                 <Grid container spacing={3} className='max-w-7xl mx-auto ' style={{ marginLeft:'auto', marginRight:'auto' }}>
                     {/* Needs Upload Card */}
                     <Grid item xs={12} md={4} style={{ paddingLeft:'0' }}>
-                        <Paper elevation={3} sx={{ padding: 0 }}  style={{ background:'transparent' }}>
+                        <Paper elevation={3} sx={{ padding: 0 }}  style={{ background:'transparent' }} className='b-maine'>
                             <NeedsUpload reports={fetchedReports} />
                         </Paper>
                     </Grid>
 
                     {/* Needs Audit Card */}
                     <Grid item xs={12} md={4}>
-                        <Paper elevation={3} sx={{ padding: 0 }} style={{ background:'transparent' }}>
+                        <Paper elevation={3} sx={{ padding: 0 }} style={{ background:'transparent' }} className='b-maine'>
                             <NeedsAudit reports={fetchedReports} />
                         </Paper>
                     </Grid>
 
                     {/* Needs Approval Card */}
                     <Grid item xs={12} md={4}>
-                        <Paper elevation={3} sx={{ padding: 0}} style={{ background:'transparent' }}>
+                        <Paper elevation={3} sx={{ padding: 0}} style={{ background:'transparent' }} className='b-maine'>
                             <NeedsApproval reports={fetchedReports} authToken={authToken} organizationID={organizationID} />
                         </Paper>
                     </Grid>

@@ -150,7 +150,7 @@ const AgentMerchants = ({
   return (
     <div>
       {/* Modal Dialog for Adding an Agent Merchant */}
-      <Dialog class='bg-zinc-900 rounded-lg shadow-sm p-6 mb-8' open={openModal} onClose={handleCloseModal}>
+      <Dialog class=' add-agent-merchant bg-zinc-900 rounded-lg shadow-sm p-6 mb-8' open={openModal} onClose={handleCloseModal}>
         <DialogTitle>Add Agent Merchant</DialogTitle>
         <DialogContent>
           <TextField

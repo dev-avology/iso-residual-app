@@ -119,6 +119,7 @@ const Sidebar = ({ username, isAdmin, onLogout }) => {
             <span className="theme-label">Dark Mode</span>
           </div>*/}
         </div>
+        
         {isMobileMenuOpen && <div className="overlay show" onClick={toggleMobileMenu}></div>}
       </div>
       <div className="hamburger" onClick={toggleMobileMenu}>

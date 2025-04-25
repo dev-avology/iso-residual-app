@@ -369,6 +369,7 @@ const PartnerMerchants = ({
                 />
                 <Button
                   size="small"
+                  className='remove-btn'
                   onClick={() => {
                     const newPartners = value.filter((_, i) => i !== index);
                     onChange(newPartners);
@@ -453,6 +454,7 @@ const PartnerMerchants = ({
               />
               <Button
                 size="small"
+                className='remove-btn'
                 onClick={() => {
                   const newReps = value.filter((_, i) => i !== index);
                   onChange(newReps);
@@ -525,6 +527,7 @@ const PartnerMerchants = ({
               <Typography variant="subtitle1">Partners</Typography>
               <Button 
                 size="small" 
+                className='add-btn'
                 onClick={handleAddPartner}
                 variant="outlined"
                 color="primary"
@@ -560,6 +563,7 @@ const PartnerMerchants = ({
                 />
                 <Button
                   size="small"
+                  className='remove-btn'
                   onClick={() => handleRemovePartner(index)}
                   color="error"
                   style={{ marginTop: '8px' }}
@@ -576,6 +580,7 @@ const PartnerMerchants = ({
               <Typography variant="subtitle1">Reps</Typography>
               <Button 
                 size="small" 
+                className='add-btn'
                 onClick={handleAddRep}
                 variant="outlined"
                 color="primary"
@@ -611,6 +616,7 @@ const PartnerMerchants = ({
                 />
                 <Button
                   size="small"
+                  className='remove-btn'
                   onClick={() => handleRemoveRep(index)}
                   color="error"
                   style={{ marginTop: '8px' }}

@@ -388,24 +388,17 @@ body[data-theme="dark"]  .css-sfhxm6-MuiTableCell-root,
 body[data-theme="dark"] .css-1vjdlt9-MuiTableCell-root,
 body[data-theme="dark"]  .css-sfhxm6,
 body[data-theme="dark"] .css-1vjdlt9 {
-
   border-bottom: 1px solid rgb(62 60 60);
-
   color: #fff;
-
   background-color: #333333;
 }
 body[data-theme="dark"] .css-qd2qbi,
 body[data-theme="dark"] .tabs{
-
   border-bottom: 1px solid #5e5c5c;
-
 }
 
 body[data-theme="dark"] .tab {
-
   border: 1px solid #5e5c5c;
-
 }
 body[data-theme="dark"] .tab:hover {
   color: #000;
@@ -441,6 +434,218 @@ button, input, optgroup, select, textarea {
   box-shadow: none!important;
   outline: 0!important;
 }
+/**********For light mode***********/
+body[data-theme="light"] .bg-black {
+  background: #fff;
+}
+body[data-theme="light"] .ap-report-export button {
+  background: #000;
+}
+body[data-theme="light"] .bg-zinc-900 {
+  background: #f4f4f4;
+}
+body[data-theme="light"] .text-gray-300 {
+  color: #000;
+}
+body[data-theme="light"] .pagination-btn {
+  border: 1px solid #ddd;
+}
+body[data-theme="light"]  nav a.group {
+  background: #fff;
+}
+body[data-theme="light"] .sidebar .border-yellow-400\/20 {
+  border-color: rgb(0 0 0 / 7%);
+}
+body[data-theme="light"] .footer-logo h2 {
+  color: #000;
+}
+body[data-theme="light"] .text-gray-400 {
+  color: rgb(0 0 0);
+}
+body[data-theme="light"] .needs-upload-container h3,
+body[data-theme="light"] .needs-audit-container h3,
+body[data-theme="light"] .needs-approval-container h3 {
+  color: #000;
+}
+.needs-approval-container .report-list li {
+  font-size: 14px;
+}
+.needs-approval-container .report-list li  strong {
+  font-weight: 500;
+}
+body[data-theme="light"] .tb-main tr th, body[data-theme="light"] .tb-main tr td {
+
+  border-bottom: 1px solid #ddd;
+
+}
+body[data-theme="light"] .total-field {
+  border-color: #ddd;
+}
+body[data-theme="light"]  .page-content label span {
+  color: #000;
+}
+body[data-theme="light"] .tb-main tr th {
+  background: #000000 !important;
+  color: #fff!important;
+}
+body[data-theme="light"] .tb-main tr th, body[data-theme="light"] .tb-main tr td {
+
+  color: #000000;
+}
+body[data-theme="light"] .tb-main tr th svg, body[data-theme="light"] .tb-main tr td svg {
+  fill: rgb(0 0 0 / 60%) !important;
+}
+body[data-theme="light"] .tb-main tr th svg {
+  fill: #fff!important;
+}
+body[data-theme="light"] td.pagination-m p {
+  color: #000!important;
+}
+body[data-theme="light"] td.pagination-m * {
+  color: #000;
+}
+body[data-theme="light"] td.pagination-m svg {
+  fill: #000!important;
+}
+body[data-theme="light"] .pop-form [aria-modal="true"] h2, body[data-theme="light"] .pop-form [aria-modal="true"] h6 {
+  color: #000000;
+}
+body[data-theme="light"] .pop-form [aria-modal="true"] {
+  background: #fff!important;
+}
+body[data-theme="light"] .pop-form [aria-modal="true"] input {
+  color: rgb(0 0 0 / 87%);
+}
+body[data-theme="light"] .pop-form [aria-modal="true"] label {
+  color: rgb(0 0 0 / 60%);
+}
+body[data-theme="light"] .pop-form [aria-modal="true"] fieldset {
+  border-color: rgb(0 0 0 / 35%);
+}
+body[data-theme="light"] .pop-form [aria-modal="true"] h2 {
+  border-bottom: 1px solid #ddd;
+}
+body[data-theme="light"] .report-upload-table th, body[data-theme="light"] .report-upload-table td {
+
+  color: #ffffff;
+
+}
+body[data-theme="light"] .month-year-selection select {
+
+  background: #fff;
+  color: #000;
+}
+body[data-theme="light"] .report-upload-table th, body[data-theme="light"] .report-upload-table td {
+ 
+  color: #000000;
+  background: #ffffff;
+
+}
+body[data-theme="light"] .header h2 {
+  color: #000;
+}
+body[data-theme="light"] table.agents-table tr:hover {
+  background: rgb(235 235 235);
+}
+body[data-theme="light"] .bg-zinc-800 {
+  background: #fff;
+}
+body[data-theme="light"] .split-input-wrapper input {
+  border-color: #ddd;
+  color: #000;
+}
+body[data-theme="light"] .details-card input {
+  border-color: #ddd;
+  color: #000;
+}
+body[data-theme="light"]  .tabs {
+  border-color: #ddddddb3;
+}
+body[data-theme="light"]  .tabs .tab {
+  border-color: #ddd;
+}
+body[data-theme="light"] .b-maine {
+  box-shadow: none!important;
+}
+body[data-theme="light"] .b-maine-wrap {
+  border: 1px solid #ddd;
+}
+body[data-theme="light"] .needs-approval-container .report-list li button:hover {
+  background: transparent;
+  opacity: .7;
+}
+body[data-theme="light"] .auth-container h2 {
+  color: #000;
+}
+
+
+body[data-theme="dark"] fieldset {
+  border-color: rgb(255 255 255 / 35%)!important;
+}
+body[data-theme="dark"]  label {
+  color: rgb(255 255 255 / 87%)!important;
+}
+body[data-theme="dark"]  label svg {
+  fill: rgb(255 255 255 / 60%);
+}
+body[data-theme="dark"] .add-agent-container .submit-button {
+  color: #000;
+}
+body[data-theme="dark"] .agent-upload-container .upload-btn {
+  color: #000;
+}
+body[data-theme="dark"] .delete-button, body[data-theme="dark"]  .save-button {
+  background: #facc15;
+  color: #000;
+  font-weight: 500;
+}
+body[data-theme="dark"] .save-button, body[data-theme="dark"] .toggle-password-button {
+  background: #facc15;
+  color: #000;
+  font-weight: 500;
+}
+body[data-theme="dark"] .pop-form [aria-modal="true"] button svg {
+  fill: #000;
+}
+body[data-theme="dark"] .pop-form [aria-modal="true"] button.dlt-btn {
+  height: 50px;
+  width: 50px;
+}
+body[data-theme="dark"] .select-nn > * {
+  color: #fff;
+}
+body[data-theme="dark"] [aria-modal=true] {
+  background: #18181b;
+}
+body[data-theme="dark"] [aria-modal=true]  p {
+  color: #fff;
+}
+body[data-theme="dark"] [aria-modal=true] button {
+  background: #facc15 !important;
+  color: #000 !important;
+  font-family: system-ui;
+  font-weight: 700 !important;
+  text-transform: none !important;
+}
+.export-btn, .re-audit-btn {
+  background: #facc15;
+  color: #000;
+}
+body[data-theme="dark"] .pagination-m svg {
+  fill: #fff;
+}
+body[data-theme="dark"] [aria-modal=true] button.remove-btn {
+  height: 55px;
+}
+.add-btn {
+  border: 0!important;
+}
+body[data-theme="dark"] [aria-modal=true] button {
+  border: 0!important;
+}
+/**********End light mode***********/
+
+
 /*tailwind*/
 
 

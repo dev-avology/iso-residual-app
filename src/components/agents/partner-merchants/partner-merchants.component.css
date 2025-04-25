@@ -45,11 +45,11 @@
 
 /* Blue Pencil (Edit Icon) */
 .edit-icon {
-  color: #007bff; /* Blue color */
+  color: #facc15; /* Blue color */
 }
 
 .edit-icon:hover {
-  color: #0056b3; /* Darker blue on hover */
+  color: #facc15; /* Darker blue on hover */
 }
 
 /* Red Trashcan Icon (Delete Button) */

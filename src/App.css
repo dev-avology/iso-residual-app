@@ -643,6 +643,17 @@ body[data-theme="dark"] [aria-modal=true] button.remove-btn {
 body[data-theme="dark"] [aria-modal=true] button {
   border: 0!important;
 }
+
+
+body[data-theme="dark"] .manage-team-button,
+body[data-theme="dark"] .add-user-button {
+  color: #000;
+  font-weight: 500;
+}
+body[data-theme="dark"] .manage-team-button:hover, body[data-theme="dark"] .add-user-button:hover {
+  background: #facc15;
+}
+
 /**********End light mode***********/
 
 

@@ -101,8 +101,8 @@
 .save-btn {
     padding: 12px 24px;
     font-size: 16px;
-    background-color: #007bff;
-    color: white;
+    background-color: #facc15;
+    color: #000;
     border: none;
     border-radius: 8px;
     cursor: pointer;
@@ -110,7 +110,7 @@
 }
 
 .save-btn:hover {
-    background-color: #0056b3;
+    background-color: #facc15;
 }
 
 /* Media Queries for Better Responsiveness */

@@ -643,6 +643,15 @@ body[data-theme="dark"] [aria-modal=true] button.remove-btn {
 body[data-theme="dark"] [aria-modal=true] button {
   border: 0!important;
 }
+.manage-team-button,
+.add-user-button {
+  color: #000;
+  font-weight: 500;
+}
+body[data-theme="dark"] .popup-container .form-group select {
+  background: #1c1c1c;
+  margin-left: 10px;
+}
 /**********End light mode***********/
 
 

@@ -41,7 +41,7 @@ button {
 }
 
 button:hover {
-  background-color: #ff9800;
+  background-color: #facc15;
 }
 button.btn-delete:hover,
 button.btn-view:hover {
@@ -63,7 +63,7 @@ button.btn-view:hover {
 
 .edit-btn:hover,
 .audit-btn:hover {
-  background-color: #ff7800;
+  background-color: #facc15;
 }
 
 /* Ensure consistent display and spacing across different components */

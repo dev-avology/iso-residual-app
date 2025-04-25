@@ -53,11 +53,11 @@ h2, h3 {
 }
 
 .action-button.edit {
-  color: #007bff; /* Blue for edit */
+  color: #facc15; /* Blue for edit */
 }
 
 .action-button.edit:hover {
-  color: #0056b3;
+  color: #facc15;
   background-color: var(--section-background);
 }
 

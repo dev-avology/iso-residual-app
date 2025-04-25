@@ -9,7 +9,8 @@ const PartnerMerchants = ({
   organizationID,
   agentID,
   authToken,
-  agentDetails // full agent object from parent
+  agentDetails, // full agent object from parent
+  repSplitOnChange
 }) => {
   const [partnerData, setPartnerData] = useState([]);
   const [selected, setSelected] = useState([]);
@@ -170,8 +171,13 @@ const PartnerMerchants = ({
       reps: filteredReps.map(rep => ({
         ...rep,
         split: rep.split ? (rep.split.includes('%') ? rep.split : `${rep.split}%`) : '0%'
-      }))
+      })),
+      totalRepsSplitCount: (filteredReps.reduce((total, rep) => {
+        const splitValue = rep.split ? parseFloat(rep.split.replace('%', '')) : 0;
+        return total + splitValue;
+      }, 0) + (parseFloat(agentDetails.agentSplit.replace('%', '')) > 0 ? parseFloat(agentDetails.agentSplit.replace('%', '')) : 0)).toString()  // Convert number to string
     };
+
     updatePartnerClients(prev => [...prev, newMerchantWithID]);
     setHasChanges(true);
     setOpenModal(false);
@@ -181,9 +187,22 @@ const PartnerMerchants = ({
   // It now accepts updatedData from the table's snackbar.
   const handleSavePartner = async (updatedData) => {
     try {
+      // Calculate totalRepsSplitCount for each merchant
+      const updatedDataWithTotal = updatedData.map(merchant => {
+        const totalRepsSplitCount = merchant.reps.reduce((total, rep) => {
+          const splitValue = rep.split ? parseFloat(rep.split.replace('%', '')) : 0;
+          return total + splitValue;
+        }, 0) + (parseFloat(agentDetails.agentSplit.replace('%', '')) > 0 ? parseFloat(agentDetails.agentSplit.replace('%', '')) : 0);
+
+        return {
+          ...merchant,
+          totalRepsSplitCount: totalRepsSplitCount.toString()
+        };
+      });
+
       // Get existing non-partner clients
       const nonPartnerClients = (agentDetails.clients || []).filter(client => !client.partner && !client.partners);
-      const updatedClients = [...nonPartnerClients, ...updatedData];
+      const updatedClients = [...nonPartnerClients, ...updatedDataWithTotal];
       const updatedAgent = { ...agentDetails, clients: updatedClients };
       
       const response = await updateAgent(organizationID, agentID, updatedAgent, authToken);
@@ -250,24 +269,30 @@ const PartnerMerchants = ({
         return "0";
       }
     },
-    { 
-      field: "reps", 
-      label: "Total Rep Split (%)", 
+
+    {
+      field: "reps",
+      label: "Total Rep Split (%)",
       type: "text",
       render: (value, row) => {
+        if (row.totalRepsSplitCount) {
+          return `${row.totalRepsSplitCount}%`;
+        }
+        // If totalRepsSplitCount doesn't exist, calculate it from reps
         if (row.reps && Array.isArray(row.reps)) {
           const totalSplit = row.reps.reduce((sum, rep) => {
-            // Handle both string and number values for split
             const splitValue = typeof rep.split === 'string' 
               ? parseFloat(rep.split.replace('%', ''))
               : rep.split;
             return sum + (splitValue || 0);
           }, 0);
-          return `${totalSplit}%`;
+          const agentSplit = parseFloat(agentDetails.agentSplit.replace('%', ''));
+          return `${totalSplit + agentSplit}%`;
         }
         return "0%";
       }
     },
+
     { field: "branchID", label: "Branch ID", type: "text" },
   ];
 

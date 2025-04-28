@@ -620,6 +620,9 @@ body[data-theme="dark"] [aria-modal=true] {
 body[data-theme="dark"] [aria-modal=true]  p {
   color: #fff;
 }
+body[data-theme=dark] [aria-modal=true] input {
+  color: #fff;
+}
 body[data-theme="dark"] [aria-modal=true] button {
   background: #facc15 !important;
   color: #000 !important;
@@ -643,15 +646,21 @@ body[data-theme="dark"] [aria-modal=true] button.remove-btn {
 body[data-theme="dark"] [aria-modal=true] button {
   border: 0!important;
 }
-.manage-team-button,
-.add-user-button {
+
+
+body[data-theme="dark"] .manage-team-button,
+body[data-theme="dark"] .add-user-button {
   color: #000;
   font-weight: 500;
 }
-body[data-theme="dark"] .popup-container .form-group select {
-  background: #1c1c1c;
-  margin-left: 10px;
+body[data-theme="dark"] .manage-team-button:hover, body[data-theme="dark"] .add-user-button:hover {
+  background: #facc15;
 }
+body[data-theme="dark"] .pop-form [aria-modal=true] input[type="checkbox"] {
+  color: #18181b;
+}
+
+
 /**********End light mode***********/
 
 

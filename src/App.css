@@ -620,6 +620,9 @@ body[data-theme="dark"] [aria-modal=true] {
 body[data-theme="dark"] [aria-modal=true]  p {
   color: #fff;
 }
+body[data-theme=dark] [aria-modal=true] input {
+  color: #fff;
+}
 body[data-theme="dark"] [aria-modal=true] button {
   background: #facc15 !important;
   color: #000 !important;

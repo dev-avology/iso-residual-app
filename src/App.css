@@ -653,6 +653,10 @@ body[data-theme="dark"] .add-user-button {
 body[data-theme="dark"] .manage-team-button:hover, body[data-theme="dark"] .add-user-button:hover {
   background: #facc15;
 }
+body[data-theme="dark"] .pop-form [aria-modal=true] input[type="checkbox"] {
+  color: #18181b;
+}
+
 
 /**********End light mode***********/
 

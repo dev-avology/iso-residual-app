@@ -275,9 +275,11 @@ const PartnerMerchants = ({
       label: "Total Rep Split (%)",
       type: "text",
       render: (value, row) => {
-        if (row.totalRepsSplitCount) {
-          return `${row.totalRepsSplitCount}%`;
-        }
+        // if (row.totalRepsSplitCount) {
+        //   const agentSplit = parseFloat(agentDetails.agentSplit.replace('%', '')) || 0;
+        //   const totalSplit = parseFloat(row.totalRepsSplitCount) + agentSplit;
+        //   return `${totalSplit}%`;
+        // }
         // If totalRepsSplitCount doesn't exist, calculate it from reps
         if (row.reps && Array.isArray(row.reps)) {
           const totalSplit = row.reps.reduce((sum, rep) => {

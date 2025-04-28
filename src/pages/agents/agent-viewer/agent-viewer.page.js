@@ -20,6 +20,9 @@ const AgentViewerPage = ({ organizationID, authToken }) => {
     const [editedAgent, setEditedAgent] = useState(null);
     // Track whether unsaved changes exist
     const [hasChanges, setHasChanges] = useState(false);
+    const [repSplitOnChange, setRepSplitOnChange] = useState(null);
+
+    // console.log(editedAgent.agentSplit,'editedAgent22222');
 
     // Fetch agent data on mount
     useEffect(() => {
@@ -54,6 +57,7 @@ const AgentViewerPage = ({ organizationID, authToken }) => {
             ...prev,
             [field]: value,
         }));
+        setRepSplitOnChange(value);
         setHasChanges(true);
     };
 
@@ -117,6 +121,7 @@ const AgentViewerPage = ({ organizationID, authToken }) => {
     // Function to update partner clients
     const updatePartnerClients = (updatedClients) => {
         setClients(updatedClients);
+        console.log(updatedClients,'updatedClients');
         setHasChanges(true);
     };
 
@@ -169,7 +174,8 @@ const AgentViewerPage = ({ organizationID, authToken }) => {
                             organizationID={organizationID}             // Pass organizationID
                             agentID={agentID}                           // Pass agentID
                             authToken={authToken}                       // Pass authToken
-                            agentDetails={editedAgent}                  // Pass agent details
+                            agentDetails={editedAgent} 
+                            repSplitOnChange={repSplitOnChange}                 // Pass agent details
                         />
 
                     </>

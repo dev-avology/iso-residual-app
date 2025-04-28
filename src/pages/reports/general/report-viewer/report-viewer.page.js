@@ -248,7 +248,8 @@ const ReportViewerPage = ({ authToken }) => {
                                     <FormControl fullWidth>
                                         <InputLabel>Split Type</InputLabel>
                                         <Select
-                                            value={split.type || ''}
+                                            value={split.type}
+                                            className="select-nn"
                                             onChange={(e) => {
                                                 const updatedSplits = [...splits];
                                                 updatedSplits[index] = { ...updatedSplits[index], type: e.target.value };
@@ -287,6 +288,7 @@ const ReportViewerPage = ({ authToken }) => {
                                     />
                                     <IconButton 
                                         color="error"
+                                        className="dlt-btn"
                                         onClick={() => {
                                             const updatedSplits = splits.filter((_, i) => i !== index);
                                             setSplits(updatedSplits);

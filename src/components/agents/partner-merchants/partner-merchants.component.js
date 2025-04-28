@@ -288,7 +288,14 @@ const PartnerMerchants = ({
               : rep.split;
             return sum + (splitValue || 0);
           }, 0);
-          const agentSplit = parseFloat(agentDetails.agentSplit.replace('%', ''));
+          
+          let agentSplit = parseFloat(agentDetails.agentSplit.replace('%', ''));
+          if (Number.isNaN(agentSplit)) {
+            agentSplit = 0;
+          }
+        
+          console.log(agentSplit, 'agentSplit');
+          console.log(totalSplit, 'totalSplit');
           return `${totalSplit + agentSplit}%`;
         }
         return "0%";

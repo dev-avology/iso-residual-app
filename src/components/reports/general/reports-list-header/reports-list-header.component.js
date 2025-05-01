@@ -1,5 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
+import Select from 'react-select';
 
 const ReportsListHeader = ({ 
   filterMonth, 
@@ -10,7 +11,8 @@ const ReportsListHeader = ({
   setReportType, 
   searchTerm, 
   setSearchTerm, 
-  onUploadClick 
+  onUploadClick,
+  uniqueFirstNames 
 }) => {
     const navigate = useNavigate();
 
@@ -27,6 +29,9 @@ const ReportsListHeader = ({
         }
         return years;
     };
+
+    console.log(uniqueFirstNames,'uniqueFirstNames fffff');
+
 
     return (
         <div className="reports-header">
@@ -72,6 +77,26 @@ const ReportsListHeader = ({
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
                 />
+
+                {
+                    reportType === 'agent' && (
+                        <div className="w-64">
+                           <Select
+                            options={(uniqueFirstNames || []).map(name => ({
+                                value: name,
+                                label: name
+                            }))}
+                            placeholder="Select an Agent"
+                            onChange={(selectedOption) => {
+                                setSearchTerm(selectedOption?.value || '');
+                            }}
+                            isClearable
+                            className="text-black"
+                            />
+                        </div>
+                    )
+                }
+
             </div>
         </div>
     );

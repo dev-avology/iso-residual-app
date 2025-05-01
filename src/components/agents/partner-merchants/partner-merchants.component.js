@@ -707,6 +707,7 @@ const PartnerMerchants = ({
           getFields: getEditDialogFields,
           handleInputChange: handlePartnerInputChange
         }}
+        agentDetails={agentDetails}
       />
     </div>
   );

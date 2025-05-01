@@ -3,6 +3,9 @@ import axios from 'axios';
 const BASE_URL = process.env.NODE_ENV === 'production' ? process.env.REACT_APP_PROD_URL : process.env.REACT_APP_DEV_URL;
 const ROUTE_BASE_URL = `${BASE_URL}/api/v2/agents`; // Ensure this is set in your .env file
 
+console.log(ROUTE_BASE_URL,'ROUTE_BASE_URL');
+console.log('ROUTE_BASE_URL');
+
 // Fetch all agents
 export const getAgents = async (organizationID, authToken) => {
   try {
@@ -11,6 +14,7 @@ export const getAgents = async (organizationID, authToken) => {
     };
     const response = await axios.get(`${ROUTE_BASE_URL}/organizations/${organizationID}`, { headers });
     console.log("Agents:", response.data);
+    console.log(ROUTE_BASE_URL,'ROUTE_BASE_URL');
     return response.data;
   } catch (error) {
     console.error("Error fetching agents:", error);

@@ -12,13 +12,16 @@ const ReportsListHeader = ({
   searchTerm, 
   setSearchTerm, 
   onUploadClick,
-  uniqueFirstNames 
+  uniqueFirstNames,
+  uniqueProcessor 
 }) => {
     const navigate = useNavigate();
 
     const handleUploadClick = () => {
         navigate('/upload-report');
     };
+    // console.log(uniqueProcessor,'uniqueFirstProcessor from header');
+    // console.log(reportType,'reportType')
 
     // Generate years from 2020 to the current year dynamically
     const getYears = () => {
@@ -29,9 +32,6 @@ const ReportsListHeader = ({
         }
         return years;
     };
-
-    console.log(uniqueFirstNames,'uniqueFirstNames fffff');
-
 
     return (
         <div className="reports-header">
@@ -81,19 +81,130 @@ const ReportsListHeader = ({
                 {
                     reportType === 'agent' && (
                         <div className="w-64">
-                           <Select
-                            options={(uniqueFirstNames || []).map(name => ({
-                                value: name,
-                                label: name
-                            }))}
-                            placeholder="Select an Agent"
-                            onChange={(selectedOption) => {
-                                setSearchTerm(selectedOption?.value || '');
-                            }}
-                            isClearable
-                            className="text-black"
+                            <Select
+                                options={(uniqueFirstNames || []).map(name => ({
+                                    value: name,
+                                    label: name
+                                }))}
+                                placeholder="Select an Agent"
+                                onChange={(selectedOption) => {
+                                    setSearchTerm(selectedOption?.value || '');
+                                }}
+                                isClearable
+                                menuShouldScrollIntoView={false}
+                                className="react-select-container"
+                                classNamePrefix="react-select"
+                                styles={{
+                                    control: (provided) => ({
+                                        ...provided,
+                                        backgroundColor: '#1a1a1a',
+                                        borderColor: '#444',
+                                        color: '#fff',
+                                        minHeight: '38px', // matches Bootstrap dropdown height
+                                        paddingLeft: '8px',
+                                        padding: '4px',
+                                        fontSize: '14px',
+                                        fontSize: '16px',
+                                        boxShadow: 'none',
+                                    }),
+                                    singleValue: (provided) => ({
+                                        ...provided,
+                                        color: '#ccc',
+                                    }),
+                                    menu: (provided) => ({
+                                        ...provided,
+                                        backgroundColor: '#1a1a1a',
+                                        maxHeight: 'none', // removes scroll
+                                        color: '#fff',
+                                        zIndex: 9999,
+                                    }),
+                                    option: (provided, state) => ({
+                                        ...provided,
+                                        backgroundColor: state.isFocused ? '#333' : '#1a1a1a',
+                                        color: '#fff',
+                                        padding: '10px',
+                                        cursor: 'pointer',
+                                    }),
+                                    placeholder: (provided) => ({
+                                        ...provided,
+                                        color: '#888',
+                                    }),
+                                    dropdownIndicator: (provided) => ({
+                                        ...provided,
+                                        color: '#888',
+                                    }),
+                                    indicatorSeparator: () => ({
+                                        display: 'none',
+                                    }),
+                                }}
                             />
                         </div>
+                    )
+                }
+ 
+                {
+                    reportType === 'processor' && (
+                        <div className="w-64">
+                              <Select
+                                options={(uniqueProcessor || []).map(name => ({
+                                    value: name,
+                                    label: name
+                                }))}
+                                placeholder="Select an Processor"
+                                onChange={(selectedOption) => {
+                                    setSearchTerm(selectedOption?.value || '');
+                                }}
+                                isClearable
+                                menuShouldScrollIntoView={false}
+                                className="react-select-container"
+                                classNamePrefix="react-select"
+                                styles={{
+                                    control: (provided) => ({
+                                        ...provided,
+                                        backgroundColor: '#1a1a1a',
+                                        borderColor: '#444',
+                                        color: '#fff',
+                                        minHeight: '38px', // matches Bootstrap dropdown height
+                                        paddingLeft: '8px',
+                                        padding: '4px',
+                                        fontSize: '16px',
+                                        boxShadow: 'none',
+                                    }),
+                                    singleValue: (provided) => ({
+                                        ...provided,
+                                        color: '#ccc',
+                                    }),
+                                    menu: (provided) => ({
+                                        ...provided,
+                                        backgroundColor: '#1a1a1a',
+                                        maxHeight: 'none', // removes scroll
+                                        color: '#fff',
+                                        zIndex: 9999,
+                                    }),
+                                    option: (provided, state) => ({
+                                        ...provided,
+                                        backgroundColor: state.isFocused ? '#333' : '#1a1a1a',
+                                        color: '#fff',
+                                        padding: '10px',
+                                        cursor: 'pointer',
+                                    }),
+                                    placeholder: (provided) => ({
+                                        ...provided,
+                                        color: '#888',
+                                    }),
+                                    dropdownIndicator: (provided) => ({
+                                        ...provided,
+                                        color: '#888',
+                                    }),
+                                    indicatorSeparator: () => ({
+                                        display: 'none',
+                                    }),
+                                }}
+                            />
+                        </div>
+
+
+
                     )
                 }
 

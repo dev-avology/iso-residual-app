@@ -6,7 +6,7 @@ import 'react-confirm-alert/src/react-confirm-alert.css';
 import { getReports, deleteReport } from '../../../../api/reports.api';
 import './reports-list.component.css';
 
-const ReportsList = ({ authToken, organizationID, type, filterMonth, filterYear, searchTerm }) => {
+const ReportsList = ({ authToken, organizationID, type, filterMonth, filterYear, searchTerm, setUniqueProcessor }) => {
     const [reports, setReports] = useState([]);
     const [filteredReports, setFilteredReports] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
@@ -62,6 +62,11 @@ const ReportsList = ({ authToken, organizationID, type, filterMonth, filterYear,
 
         setFilteredReports(filtered);
         setCurrentPage(1);
+        const uniqueFirstProcessor = [
+            ...new Set(filtered.map(report => report.processor?.trim()).filter(Boolean))
+        ];
+        
+        setUniqueProcessor(uniqueFirstProcessor);
     };
 
     const handleView = (reportID) => {

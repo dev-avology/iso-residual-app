@@ -6,7 +6,7 @@ import { getReports } from '../../../../api/reports.api'; // Import processor re
 // styles
 import './agent-reports-list.component.css'; // Custom styling for agents list
 
-const AgentReportsList = ({ authToken, organizationID, filterMonth, filterYear }) => {
+const AgentReportsList = ({ authToken, organizationID, filterMonth, filterYear, searchTerm, setUniqueFirstNames }) => {
   const [agents, setAgents] = useState([]);
   const [filteredReports, setFilteredReports] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -18,10 +18,32 @@ const AgentReportsList = ({ authToken, organizationID, filterMonth, filterYear }
     }
   }, [authToken, organizationID, filterMonth, filterYear]);
 
+  useEffect(() => {
+    if (searchTerm) {
+      const filtered = agents.filter(agent => {
+        const name = agent.role === 'company'
+          ? agent.company?.toLowerCase()
+          : `${agent.fName} ${agent.lName}`.toLowerCase();
+        return name.includes(searchTerm.toLowerCase());
+      });
+      setFilteredReports(filtered);
+    } else {
+      setFilteredReports(agents);
+    }
+  }, [searchTerm, agents]);
+
   const fetchAgentsAndProcessorReports = async () => {
     try {
       setLoading(true);
       const agentResponse = await getAgents(organizationID, authToken); // Fetch agents
+      console.log(agentResponse.agents,'agentResponse');
+      //  Extract unique fName values
+      const uniqueFirstNames = [
+        ...new Set(agentResponse.agents.map(agent => agent.fName?.trim()).filter(Boolean))
+      ];
+
+      setUniqueFirstNames(uniqueFirstNames);
+
       const processorReports = await getReports(organizationID, 'processor', authToken); // Fetch processor reports
 
       // Check if the agents were fetched successfully
@@ -73,7 +95,7 @@ const AgentReportsList = ({ authToken, organizationID, filterMonth, filterYear }
           </tr>
         </thead>
         <tbody>
-          {filteredReports.map(agent => (
+          {/* {filteredReports.map(agent => (
             agent.monthsWithProcessorReports.length > 0 && agent.monthsWithProcessorReports.map((month) => (
               <tr key={`${agent.agentID}-${month}`}>
                 <td>
@@ -87,7 +109,23 @@ const AgentReportsList = ({ authToken, organizationID, filterMonth, filterYear }
                 </td>
               </tr>
             ))
-          ))}
+          ))} */}
+
+          {filteredReports.map(agent =>
+            agent.monthsWithProcessorReports.length > 0 &&
+            agent.monthsWithProcessorReports.map(month => (
+              <tr key={`${agent.agentID}-${month}`}>
+                <td>{agent.role === 'company' ? agent.company : `${agent.fName} ${agent.lName}`}</td>
+                <td>{month}</td>
+                <td>
+                  <button className="btn-view" onClick={() => handleViewAgentReport(agent.agentID, month)}>
+                    <FaEye />
+                  </button>
+                </td>
+              </tr>
+            ))
+          )}
+
         </tbody>
       </table>
     </div>

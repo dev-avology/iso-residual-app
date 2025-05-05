@@ -38,6 +38,7 @@ const TableWithFilters = ({
   totalFields = [],
   onDelete,
   editDialogProps,
+  agentDetails
 }) => {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
@@ -46,6 +47,8 @@ const TableWithFilters = ({
   const [editDialogOpen, setEditDialogOpen] = useState(false);
   const [editRow, setEditRow] = useState(null);
   const [totals, setTotals] = useState({});
+
+  console.log(data,'datadatadata');
 
 
   const handleDelete = (rowId) => {
@@ -98,7 +101,7 @@ const TableWithFilters = ({
     console.log("Calculated Totals:", totals);
 
     // ✅ Export data along with corrected totals
-    exportToCSV(filteredData, columns, totals, fileName || "report.csv");
+    exportToCSV(filteredData, columns, totals, fileName || "report.csv",agentDetails);
 };
 
 

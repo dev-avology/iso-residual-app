@@ -1,14 +1,17 @@
 import Decimal from "decimal.js";
 
-export const exportToCSV = (data, columns, totals = {}, filename = "export.csv") => {
+export const exportToCSV = (data, columns, totals = {}, filename = "export.csv",agentDetails) => {
     console.log("exportToCSV function called");
 
     if (!data || data.length === 0 || columns.length === 0) {
         alert("No data available to export.");
         return;
     }
-
-    // Log input data
+    var agentSplit = 0;
+    if(agentDetails){
+        agentSplit = parseFloat(agentDetails.agentSplit.replace("%", ""));
+    }
+    console.log("agentSplit:", agentSplit);
     console.log("Input Data:", data);
     console.log("Input Columns:", columns);
 
@@ -48,19 +51,65 @@ export const exportToCSV = (data, columns, totals = {}, filename = "export.csv")
     };
 
     // Add data rows with processed values
+    // data.forEach((row, index) => {
+    //     console.log(`Processing Row ${index}:`, row);
+
+    //     const values = validColumns.map((col) => {
+    //         const value = row[col.field];
+    //         const processedValue = processValue(value); // Process each value
+
+    //         // Wrap processed value in double quotes and escape inner quotes
+    //         return processedValue !== null && processedValue !== undefined
+    //             ? `"${String(processedValue).replace(/"/g, '""')}"`
+    //             : ""; // Leave blank for null or undefined
+    //     });
+
+    //     console.log(`Row ${index} values (processed):`, values);
+    //     csvRows.push(values.join(","));
+    // });
+
     data.forEach((row, index) => {
         console.log(`Processing Row ${index}:`, row);
-
+    
         const values = validColumns.map((col) => {
-            const value = row[col.field];
-            const processedValue = processValue(value); // Process each value
-
-            // Wrap processed value in double quotes and escape inner quotes
+            var value = row[col.field];
+            console.log(value, 'valuevalue');
+            console.log(col.label, 'col.label'); 
+    
+            if (Array.isArray(value) && value.length > 0) {
+                const firstItem = value[0];
+                if (firstItem.hasOwnProperty("name") && firstItem.hasOwnProperty("split")) {
+                    const firstItem = value[0];
+                    if (col.label === 'Number of Partners') {
+                        value = value.length;
+                    }else if (col.label === 'Number of Reps') {
+                        value = value.length
+                    }else if(col.label === 'Total Rep Split (%)'){
+                        let totalSplit = 0;
+                        const names = value.map(item => {
+                            const percent = parseFloat(item.split?.replace('%', '') || 0); // convert to number
+                            totalSplit += percent; // now adds numerically
+                            return item.name;
+                        });
+                        value = Math.round(Number(totalSplit) + Number(agentSplit)) + '%';
+                    }else{
+                        let totalSplit = 0;
+                        const names = value.map(item => {
+                            const percent = parseFloat(item.split?.replace('%', '') || 0); // convert to number
+                            totalSplit += percent; // now adds numerically
+                            return item.name;
+                        });
+                        value = totalSplit + '%';
+                    }
+                }
+            }
+    
+            const processedValue = processValue(value);
             return processedValue !== null && processedValue !== undefined
                 ? `"${String(processedValue).replace(/"/g, '""')}"`
-                : ""; // Leave blank for null or undefined
+                : "";
         });
-
+    
         console.log(`Row ${index} values (processed):`, values);
         csvRows.push(values.join(","));
     });

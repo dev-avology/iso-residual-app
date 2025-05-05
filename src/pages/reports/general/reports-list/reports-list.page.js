@@ -16,6 +16,11 @@ const ReportsPage = ({ organizationID, authToken }) => {
     const [filterYear, setFilterYear] = useState('');
     const [reportType, setReportType] = useState(type || 'billing'); // Default to 'billing' if type is not provided
     const [searchTerm, setSearchTerm] = useState(''); // New state for search input
+    const [uniqueFirstNames , setUniqueFirstNames] = useState('');
+    const [uniqueProcessor , setUniqueProcessor] = useState('');
+
+    console.log(uniqueProcessor,'uniqueFirstProcessor from listing');
+    console.log(reportType,'reportType from listing');
 
     const handleUploadClick = () => {
         // Logic for handling "Go to Report Upload" button click
@@ -34,6 +39,8 @@ const ReportsPage = ({ organizationID, authToken }) => {
                 searchTerm={searchTerm} // Pass the search term state
                 setSearchTerm={setSearchTerm} // Pass the function to update the search term
                 onUploadClick={handleUploadClick}
+                uniqueFirstNames={uniqueFirstNames}
+                uniqueProcessor={uniqueProcessor}
             />
             {/* Based on the report type, render the appropriate report list */}
             {reportType === 'agent' ? (
@@ -44,6 +51,7 @@ const ReportsPage = ({ organizationID, authToken }) => {
                         searchTerm={searchTerm} // Pass search term to AgentReportsList
                         filterMonth={filterMonth}
                         filterYear={filterYear}
+                        setUniqueFirstNames={setUniqueFirstNames}
                     />
                 </div>
             ) : reportType === 'processor-summary' ? (
@@ -81,6 +89,7 @@ const ReportsPage = ({ organizationID, authToken }) => {
                     filterMonth={filterMonth}
                     filterYear={filterYear}
                     searchTerm={searchTerm} // Pass search term to ReportsList
+                    setUniqueProcessor={setUniqueProcessor}
                 />
             )}
             </div>

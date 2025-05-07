@@ -174,7 +174,14 @@ const BankSummaryReportViewerPage = ({ organizationID, authToken }) => {
             csvRows.push([escapeCSVValue(processorReport.processor)]); // Add processor name as a header
             csvRows.push(processorHeaders[processorType].map(escapeCSVValue).join(',')); // Add column headers
     
-            processorReport.reportData.forEach((item) => {
+            // Sort the report data by Merchant Name/DBA before processing
+            const sortedReportData = [...processorReport.reportData].sort((a, b) => {
+                const nameA = (a['Merchant Name'] || a['Merchant DBA'] || '').toString().toLowerCase().trim();
+                const nameB = (b['Merchant Name'] || b['Merchant DBA'] || '').toString().toLowerCase().trim();
+                return nameA.localeCompare(nameB);
+            });
+    
+            sortedReportData.forEach((item) => {
                 // Parse and accumulate totals dynamically using Decimal.js
                 fieldsToTotal.forEach((field) => {
                     const value = item[field];

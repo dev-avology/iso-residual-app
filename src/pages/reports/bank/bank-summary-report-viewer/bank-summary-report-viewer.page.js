@@ -163,6 +163,14 @@ const BankSummaryReportViewerPage = ({ organizationID, authToken }) => {
                 : stringValue;
         };
     
+        // Helper function to format numeric values
+        const formatNumericValue = (value) => {
+            if (value == null || value === '') return '';
+            if (typeof value === 'string' && value.includes('%')) return value; // Keep percentages as is
+            const num = parseFloat(value);
+            return !isNaN(num) ? num.toFixed(2) : value;
+        };
+    
         generatedReportData.forEach((processorReport) => {
             // Initialize totals for this processor using Decimal.js
             const totals = fieldsToTotal.reduce((acc, field) => {
@@ -190,8 +198,11 @@ const BankSummaryReportViewerPage = ({ organizationID, authToken }) => {
                     }
                 });
     
-                // Generate CSV row with properly escaped values
-                const csvRow = processorHeaders[processorType].map((header) => escapeCSVValue(item[header]));
+                // Generate CSV row with properly escaped and formatted values
+                const csvRow = processorHeaders[processorType].map((header) => {
+                    const value = item[header];
+                    return escapeCSVValue(formatNumericValue(value));
+                });
                 csvRows.push(csvRow.join(','));
             });
     

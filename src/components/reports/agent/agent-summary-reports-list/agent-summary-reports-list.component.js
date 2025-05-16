@@ -23,7 +23,9 @@ const AgentSummaryReportsList = ({ authToken, organizationID }) => {
 
       // Filter agent reports (type: 'agent') and check for approved reports
       const approvedAgentReports = allReports
-        .filter(report => report.type === 'agent' && report.approved) // Only approved agent reports
+        // .filter(report => report.type === 'agent' && report.approved) // Only approved agent reports
+        // this upper line is commented date 05-16-2025
+        .filter(report => report.type === 'agent') // Only approved agent reports
         .reduce((acc, report) => {
           const monthYear = `${report.month}`;
           if (!acc.includes(monthYear)) {

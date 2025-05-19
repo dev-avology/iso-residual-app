@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from 'react';
-import { FaEye } from 'react-icons/fa';
-import { useNavigate } from 'react-router-dom';
-import { getReports } from '../../../../api/reports.api';
-import './agent-summary-reports-list.component.css'; // Add your own styling here
+import React, { useState, useEffect } from "react";
+import { FaEye } from "react-icons/fa";
+import { useNavigate } from "react-router-dom";
+import { getReports } from "../../../../api/reports.api";
+import "./agent-summary-reports-list.component.css"; // Add your own styling here
 
 const AgentSummaryReportsList = ({ authToken, organizationID }) => {
   const [summaryReports, setSummaryReports] = useState([]);
@@ -19,13 +19,13 @@ const AgentSummaryReportsList = ({ authToken, organizationID }) => {
     try {
       setLoading(true);
       // Fetch all reports
-      const allReports = await getReports(organizationID, 'agent', authToken);
+      const allReports = await getReports(organizationID, "agent", authToken);
 
       // Filter agent reports (type: 'agent') and check for approved reports
       const approvedAgentReports = allReports
         // .filter(report => report.type === 'agent' && report.approved) // Only approved agent reports
         // this upper line is commented date 05-16-2025
-        .filter(report => report.type === 'agent') // Only approved agent reports
+        .filter((report) => report.type === "agent") // Only approved agent reports
         .reduce((acc, report) => {
           const monthYear = `${report.month}`;
           if (!acc.includes(monthYear)) {
@@ -35,14 +35,14 @@ const AgentSummaryReportsList = ({ authToken, organizationID }) => {
         }, []);
 
       // Create summary reports for the unique month-year combinations
-      const summaryReportsData = approvedAgentReports.map(monthYear => {
-        const [month, year] = monthYear.split('-');
+      const summaryReportsData = approvedAgentReports.map((monthYear) => {
+        const [month, year] = monthYear.split("-");
         return { month, year };
       });
 
       setSummaryReports(summaryReportsData);
     } catch (error) {
-      console.error('Error fetching agent reports:', error);
+      console.error("Error fetching agent reports:", error);
     } finally {
       setLoading(false);
     }
@@ -54,7 +54,11 @@ const AgentSummaryReportsList = ({ authToken, organizationID }) => {
   };
 
   if (loading) {
-    return <div className="agent-summary-reports-list"><p>Loading...</p></div>;
+    return (
+      <div className="agent-summary-reports-list">
+        <p>Loading...</p>
+      </div>
+    );
   }
 
   return (
@@ -69,11 +73,20 @@ const AgentSummaryReportsList = ({ authToken, organizationID }) => {
         <tbody>
           {summaryReports.map((summaryReport, index) => (
             <tr key={`${summaryReport.month}-${summaryReport.year}-${index}`}>
-              <td>{`${summaryReport.month}-${summaryReport.year}`}</td>
+              <td>
+                {summaryReport.year
+                  ? `${summaryReport.month}-${summaryReport.year}`
+                  : summaryReport.month}
+              </td>
               <td>
                 <button
                   className="btn-view"
-                  onClick={() => handleViewSummaryReport(summaryReport.month, summaryReport.year)}
+                  onClick={() =>
+                    handleViewSummaryReport(
+                      summaryReport.month,
+                      summaryReport.year
+                    )
+                  }
                 >
                   <FaEye />
                 </button>

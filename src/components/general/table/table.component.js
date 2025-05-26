@@ -118,23 +118,13 @@ const TableWithFilters = ({
   };
 
   const handleSave = (updatedRow) => {
-    // Get the current splits from editDialogProps
-    const currentSplits = editDialogProps?.splits || [];
-
-    // Include splits in the updated row data
-    const rowWithSplits = {
-      ...updatedRow,
-      splits: currentSplits // Use the current splits array
-    };
-
-    const updatedData = data.map((row) =>
-      row[idField] === updatedRow[idField] ? rowWithSplits : row
+    const updatedData = data.map(row =>
+      row["Merchant Id"] === updatedRow["Merchant Id"] ? updatedRow : row
     );
     setData(updatedData);
-    setSelected([]);
     setEditDialogOpen(false);
     setEditRow(null);
-    setHasChanges(true); // Set changes flag
+    setHasChanges(true);
   };
 
 
@@ -157,8 +147,13 @@ const TableWithFilters = ({
     );
   };
 
-  const handleEdit = (row) => {
-    setEditRow(row);
+  const handleEdit = (merchantId) => {
+    // Find the merchant by Merchant Id
+    const merchant = data.find(row => row["Merchant Id"] === merchantId);
+    console.log('merchant data',data);
+    console.log('merchant',merchant);
+
+    setEditRow(merchant);
     setEditDialogOpen(true);
   };
 
@@ -166,6 +161,8 @@ const TableWithFilters = ({
     setEditDialogOpen(false); // Close the dialog
     setEditRow(null); // Reset the edited row
   };
+
+  console.log('editRow',editRow);
 
   const filteredData = useMemo(() => {
     let filtered = data;
@@ -269,7 +266,7 @@ const TableWithFilters = ({
                   {approvalAction && (
                     <TableCell align="center" className="hrtd">
                       <ActionsColumn
-                        onEdit={() => handleEdit(row)}
+                        onEdit={() => handleEdit(row["Merchant Id"])}
                         onDelete={() => handleDelete(row[idField])}
                         onApprove={() => handleApprove(row[idField])}
                       />
@@ -309,16 +306,7 @@ const TableWithFilters = ({
           open={editDialogOpen}
           onClose={handleCancel}
           onSave={handleSave}
-          fields={editDialogProps?.getFields ? 
-            editDialogProps.getFields(editRow) :
-            columns.map((col) => ({
-              label: col.label,
-              field: col.field,
-              type: col.type || (typeof editRow?.[col.field] === "boolean" ? "boolean" : "text"),
-              defaultValue: editRow?.[col.field] || col.defaultValue || "",
-              handleInputChange: editDialogProps?.handleInputChange
-            }))
-          }
+          fields={editDialogProps.getFields(editRow)}
         />
       )}
       {hasChanges && (

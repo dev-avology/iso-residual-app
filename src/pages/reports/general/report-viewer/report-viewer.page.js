@@ -41,11 +41,6 @@ const ReportViewerPage = ({ authToken }) => {
                 setReportData(data.reportData);
                 setFilteredData(data.reportData);
                 
-                // Initialize splits from the first row's data (assuming all rows have the same splits)
-                if (data.reportData.length > 0 && data.reportData[0].splits) {
-                    setSplits(data.reportData[0].splits);
-                }
-                
                 setLoading(false);
                 console.log("Fetched report data:", data.reportData);
             } catch (err) {
@@ -56,13 +51,6 @@ const ReportViewerPage = ({ authToken }) => {
 
         fetchReport();
     }, [reportID, authToken]);
-
-    // Add this useEffect to handle splits initialization when editing a row
-    useEffect(() => {
-        if (editRow?.splits && editRow.splits.length > 0) {
-            setSplits(editRow.splits);
-        }
-    }, [editRow]);
 
     const handleRegenerateReport = async () => {
         try {
@@ -225,7 +213,6 @@ const ReportViewerPage = ({ authToken }) => {
     };
 
     const editDialogProps = {
-        splits,
         getFields: (row) => {
             const baseFields = columns.map((col) => ({
                 label: col.label,
@@ -234,83 +221,79 @@ const ReportViewerPage = ({ authToken }) => {
                 defaultValue: row?.[col.field] || col.defaultValue || "",
             }));
 
-            // Add split fields section
             const splitFields = [
                 {
                     label: "Other Splits",
                     field: "splits_section",
                     type: "custom",
-                    component: () => (
-                        <Box sx={{ mb: 2, p: 2, border: '1px solid #ccc', borderRadius: 1 }}>
-                            <Typography variant="h6" gutterBottom>Other Splits</Typography>
-                            {splits.map((split, index) => (
-                                <Box key={index} sx={{ display: 'flex', gap: 2, mb: 2 }}>
-                                    <FormControl fullWidth>
-                                        <InputLabel>Split Type</InputLabel>
-                                        <Select
-                                            value={split.type}
-                                            className="select-nn"
+                    component: ({ value = row.splits || [], onChange }) => {
+                        const splitsArray = value;
+                        return (
+                            <Box sx={{ mb: 2, p: 2, border: '1px solid #ccc', borderRadius: 1 }}>
+                                <Typography variant="h6" gutterBottom>Other Splits</Typography>
+                                {splitsArray.map((split, index) => (
+                                    <Box key={index} sx={{ display: 'flex', gap: 2, mb: 2 }}>
+                                        <FormControl fullWidth>
+                                            <InputLabel>Split Type</InputLabel>
+                                            <Select
+                                                value={split.type}
+                                                className="select-nn"
+                                                onChange={(e) => {
+                                                    const updatedSplits = [...splitsArray];
+                                                    updatedSplits[index] = { ...updatedSplits[index], type: e.target.value };
+                                                    onChange(updatedSplits);
+                                                }}
+                                                label="Split Type"
+                                            >
+                                                {splitTypes.map(type => (
+                                                    <MenuItem key={type} value={type}>
+                                                        {type.charAt(0).toUpperCase() + type.slice(1)}
+                                                    </MenuItem>
+                                                ))}
+                                            </Select>
+                                        </FormControl>
+                                        <TextField
+                                            label="Name"
+                                            value={split.name || ''}
                                             onChange={(e) => {
-                                                const updatedSplits = [...splits];
-                                                updatedSplits[index] = { ...updatedSplits[index], type: e.target.value };
-                                                setSplits(updatedSplits);
-                                                setHasChanges(true);
+                                                const updatedSplits = [...splitsArray];
+                                                updatedSplits[index] = { ...updatedSplits[index], name: e.target.value };
+                                                onChange(updatedSplits);
                                             }}
-                                            label="Split Type"
+                                        />
+                                        <TextField
+                                            label="Value"
+                                            type="number"
+                                            value={split.value || ''}
+                                            onChange={(e) => {
+                                                const updatedSplits = [...splitsArray];
+                                                updatedSplits[index] = { ...updatedSplits[index], value: e.target.value };
+                                                onChange(updatedSplits);
+                                            }}
+                                        />
+                                        <IconButton 
+                                            color="error"
+                                            className="dlt-btn"
+                                            onClick={() => {
+                                                const updatedSplits = splitsArray.filter((_, i) => i !== index);
+                                                onChange(updatedSplits);
+                                            }}
                                         >
-                                            {splitTypes.map(type => (
-                                                <MenuItem key={type} value={type}>
-                                                    {type.charAt(0).toUpperCase() + type.slice(1)}
-                                                </MenuItem>
-                                            ))}
-                                        </Select>
-                                    </FormControl>
-                                    <TextField
-                                        label="Name"
-                                        value={split.name || ''}
-                                        onChange={(e) => {
-                                            const updatedSplits = [...splits];
-                                            updatedSplits[index] = { ...updatedSplits[index], name: e.target.value };
-                                            setSplits(updatedSplits);
-                                            setHasChanges(true);
-                                        }}
-                                    />
-                                    <TextField
-                                        label="Value"
-                                        type="number"
-                                        value={split.value || ''}
-                                        onChange={(e) => {
-                                            const updatedSplits = [...splits];
-                                            updatedSplits[index] = { ...updatedSplits[index], value: e.target.value };
-                                            setSplits(updatedSplits);
-                                            setHasChanges(true);
-                                        }}
-                                    />
-                                    <IconButton 
-                                        color="error"
-                                        className="dlt-btn"
-                                        onClick={() => {
-                                            const updatedSplits = splits.filter((_, i) => i !== index);
-                                            setSplits(updatedSplits);
-                                            setHasChanges(true);
-                                        }}
-                                    >
-                                        <DeleteIcon />
-                                    </IconButton>
-                                </Box>
-                            ))}
-                            <Button 
-                                variant="contained" 
-                                onClick={() => {
-                                    setSplits([...splits, { type: '', name: '', value: '' }]);
-                                    setHasChanges(true);
-                                }}
-                                sx={{ mt: 2 }}
-                            >
-                                Add Split
-                            </Button>
-                        </Box>
-                    )
+                                            <DeleteIcon />
+                                        </IconButton>
+                                    </Box>
+                                ))}
+                                <Button 
+                                    variant="contained" 
+                                    onClick={() => onChange([...splitsArray, { type: '', name: '', value: '' }])}
+                                    sx={{ mt: 2 }}
+                                >
+                                    Add Split
+                                </Button>
+                            </Box>
+                        );
+                    },
+                    defaultValue: row.splits || [],
                 }
             ];
 

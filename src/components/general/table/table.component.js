@@ -38,7 +38,8 @@ const TableWithFilters = ({
   totalFields = [],
   onDelete,
   editDialogProps,
-  agentDetails
+  agentDetails,
+  merchantPartnerSlug
 }) => {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
@@ -118,9 +119,27 @@ const TableWithFilters = ({
   };
 
   const handleSave = (updatedRow) => {
-    const updatedData = data.map(row =>
-      row["Merchant Id"] === updatedRow["Merchant Id"] ? updatedRow : row
+    // console.log('updatedRow',updatedRow);
+    // const updatedData = data.map(row =>
+    //   row["merchantID"] === updatedRow["merchantID"] ? updatedRow : row
+    // );
+    let updatedData = '';
+
+    if(merchantPartnerSlug === 'merchantPartnerSlug'){
+      updatedData = data.map(row =>
+      row["merchantID"] === updatedRow["merchantID"] ? updatedRow : row
+      );
+    }else{
+       updatedData = data.map(row =>
+       row["Merchant Id"] === updatedRow["Merchant Id"] ? updatedRow : row
     );
+
+    }
+
+    // console.log('updatedData',updatedData);
+    // console.log('updatedRow',updatedRow);
+    // console.log('data',data);
+    // return false;
     setData(updatedData);
     setEditDialogOpen(false);
     setEditRow(null);
@@ -147,12 +166,9 @@ const TableWithFilters = ({
     );
   };
 
-  const handleEdit = (merchantId) => {
-    // Find the merchant by Merchant Id
-    const merchant = data.find(row => row["Merchant Id"] === merchantId);
-    console.log('merchant data',data);
-    console.log('merchant',merchant);
-
+  const handleEdit = (rowId) => {
+    // Find the merchant by idField
+    const merchant = data.find(row => row[idField] === rowId);
     setEditRow(merchant);
     setEditDialogOpen(true);
   };
@@ -266,7 +282,7 @@ const TableWithFilters = ({
                   {approvalAction && (
                     <TableCell align="center" className="hrtd">
                       <ActionsColumn
-                        onEdit={() => handleEdit(row["Merchant Id"])}
+                        onEdit={() => handleEdit(row[idField])}
                         onDelete={() => handleDelete(row[idField])}
                         onApprove={() => handleApprove(row[idField])}
                       />

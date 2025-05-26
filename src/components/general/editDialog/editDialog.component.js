@@ -75,7 +75,7 @@ const EditDialog = ({ open, onClose, onSave, fields }) => {
           />
         );
       case 'custom':
-        console.log('formData[field.field]',formData[field.field]);
+        // console.log('formData[field.field]',formData[field.field]);
         return field.component?.({
           value: formData[field.field],
           onChange: (value) => handleChange(field.field, value)

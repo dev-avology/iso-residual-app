@@ -38,7 +38,8 @@ const TableWithFilters = ({
   totalFields = [],
   onDelete,
   editDialogProps,
-  agentDetails
+  agentDetails,
+  merchantPartnerSlug
 }) => {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
@@ -118,23 +119,31 @@ const TableWithFilters = ({
   };
 
   const handleSave = (updatedRow) => {
-    // Get the current splits from editDialogProps
-    const currentSplits = editDialogProps?.splits || [];
+    // console.log('updatedRow',updatedRow);
+    // const updatedData = data.map(row =>
+    //   row["merchantID"] === updatedRow["merchantID"] ? updatedRow : row
+    // );
+    let updatedData = '';
 
-    // Include splits in the updated row data
-    const rowWithSplits = {
-      ...updatedRow,
-      splits: currentSplits // Use the current splits array
-    };
-
-    const updatedData = data.map((row) =>
-      row[idField] === updatedRow[idField] ? rowWithSplits : row
+    if(merchantPartnerSlug === 'merchantPartnerSlug'){
+      updatedData = data.map(row =>
+      row["merchantID"] === updatedRow["merchantID"] ? updatedRow : row
+      );
+    }else{
+       updatedData = data.map(row =>
+       row["Merchant Id"] === updatedRow["Merchant Id"] ? updatedRow : row
     );
+
+    }
+
+    // console.log('updatedData',updatedData);
+    // console.log('updatedRow',updatedRow);
+    // console.log('data',data);
+    // return false;
     setData(updatedData);
-    setSelected([]);
     setEditDialogOpen(false);
     setEditRow(null);
-    setHasChanges(true); // Set changes flag
+    setHasChanges(true);
   };
 
 
@@ -157,8 +166,10 @@ const TableWithFilters = ({
     );
   };
 
-  const handleEdit = (row) => {
-    setEditRow(row);
+  const handleEdit = (rowId) => {
+    // Find the merchant by idField
+    const merchant = data.find(row => row[idField] === rowId);
+    setEditRow(merchant);
     setEditDialogOpen(true);
   };
 
@@ -166,6 +177,8 @@ const TableWithFilters = ({
     setEditDialogOpen(false); // Close the dialog
     setEditRow(null); // Reset the edited row
   };
+
+  console.log('editRow',editRow);
 
   const filteredData = useMemo(() => {
     let filtered = data;
@@ -269,7 +282,7 @@ const TableWithFilters = ({
                   {approvalAction && (
                     <TableCell align="center" className="hrtd">
                       <ActionsColumn
-                        onEdit={() => handleEdit(row)}
+                        onEdit={() => handleEdit(row[idField])}
                         onDelete={() => handleDelete(row[idField])}
                         onApprove={() => handleApprove(row[idField])}
                       />
@@ -309,16 +322,7 @@ const TableWithFilters = ({
           open={editDialogOpen}
           onClose={handleCancel}
           onSave={handleSave}
-          fields={editDialogProps?.getFields ? 
-            editDialogProps.getFields(editRow) :
-            columns.map((col) => ({
-              label: col.label,
-              field: col.field,
-              type: col.type || (typeof editRow?.[col.field] === "boolean" ? "boolean" : "text"),
-              defaultValue: editRow?.[col.field] || col.defaultValue || "",
-              handleInputChange: editDialogProps?.handleInputChange
-            }))
-          }
+          fields={editDialogProps.getFields(editRow)}
         />
       )}
       {hasChanges && (

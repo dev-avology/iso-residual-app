@@ -33,10 +33,18 @@ const EditDialog = ({ open, onClose, onSave, fields }) => {
   };
 
   const handleSubmit = () => {
-    onSave(formData);
+    let dataToSave = { ...formData };
+    // If splits_section exists, move it to splits
+    if (dataToSave.splits_section) {
+      dataToSave.splits = dataToSave.splits_section;
+      delete dataToSave.splits_section;
+    }
+    onSave(dataToSave);
   };
 
+  
   const renderField = (field) => {
+    console.log('field.component',field.component);
     switch (field.type) {
       case 'select':
         return (
@@ -67,6 +75,7 @@ const EditDialog = ({ open, onClose, onSave, fields }) => {
           />
         );
       case 'custom':
+        // console.log('formData[field.field]',formData[field.field]);
         return field.component?.({
           value: formData[field.field],
           onChange: (value) => handleChange(field.field, value)

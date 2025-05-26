@@ -194,9 +194,9 @@ const AgentDetails = ({ agent, onAgentChange }) => {
                 onChange={(e) => setSelectedSplitType(e.target.value)}
                 className="input block w-full bg-zinc-800 border-zinc-700 text-white rounded-md focus:ring-yellow-400 focus:border-yellow-400"
               >
-                <option value="">Select Split Type</option>
+                <option value="" style={{ color: 'black' }}>Select Split Type</option>
                 {Object.values(SPLIT_TYPES).map((type) => (
-                  <option key={type} value={type}>{type}</option>
+                  <option style={{ color: 'black' }} key={type} value={type}>{type}</option>
                 ))}
               </select>
               <button

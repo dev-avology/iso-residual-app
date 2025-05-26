@@ -187,6 +187,7 @@ const PartnerMerchants = ({
   // It now accepts updatedData from the table's snackbar.
   const handleSavePartner = async (updatedData) => {
     try {
+      console.log('updatedData',updatedData);
       // Calculate totalRepsSplitCount for each merchant
       const updatedDataWithTotal = updatedData.map(merchant => {
         const totalRepsSplitCount = merchant.reps.reduce((total, rep) => {
@@ -204,6 +205,9 @@ const PartnerMerchants = ({
       const nonPartnerClients = (agentDetails.clients || []).filter(client => !client.partner && !client.partners);
       const updatedClients = [...nonPartnerClients, ...updatedDataWithTotal];
       const updatedAgent = { ...agentDetails, clients: updatedClients };
+
+      // console.log('updatedAgent',updatedAgent);
+      // return false;
       
       const response = await updateAgent(organizationID, agentID, updatedAgent, authToken);
       if(response.data?.success) {
@@ -708,6 +712,7 @@ const PartnerMerchants = ({
           handleInputChange: handlePartnerInputChange
         }}
         agentDetails={agentDetails}
+        merchantPartnerSlug='merchantPartnerSlug'
       />
     </div>
   );

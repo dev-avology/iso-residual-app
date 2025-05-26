@@ -196,7 +196,7 @@ const AgentDetails = ({ agent, onAgentChange }) => {
               >
                 <option value="" style={{ color: 'black' }}>Select Split Type</option>
                 {Object.values(SPLIT_TYPES).map((type) => (
-                  <option key={type} value={type}>{type}</option>
+                  <option style={{ color: 'black' }} key={type} value={type}>{type}</option>
                 ))}
               </select>
               <button

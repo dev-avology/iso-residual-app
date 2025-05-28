@@ -182,125 +182,80 @@ const BankSummaryReportViewerPage = ({ organizationID, authToken }) => {
     ],
   };
 
-  const getProcessorType = (processor) =>
-    processorTypeMap[processor] || "type1";
-
-  const exportToCSV = () => {
-    // console.log(generatedReportData);
-    // return false;
-    if (!generatedReportData.length) return;
-
-    const csvRows = [];
-
-    // List of fields to calculate totals for
-    const fieldsToTotal = [
-      "Transaction",
-      "Sales Amount",
-      "Income",
-      "Expenses",
-      "Net",
-      "Agent Net",
-      "Volume",
-      "Sales",
-      "Refunds",
-      "Rejected Amount",
-      "Bank Payout",
-      "Payout Amount",
-    ];
-
-    // Helper function to escape commas and double quotes
-    const escapeCSVValue = (value) => {
-      if (value == null) return ""; // Handle null/undefined
-      const stringValue = String(value).replace(/"/g, '""'); // Escape double quotes
-      return stringValue.includes(",") ||
-        stringValue.includes('"') ||
-        stringValue.includes("\n")
-        ? `"${stringValue}"` // Wrap in quotes if necessary
-        : stringValue;
+    const getProcessorType = (processor) => processorTypeMap[processor] || 'type1';
+    
+    const exportToCSV = () => {
+        if (!generatedReportData.length) return;
+    
+        const csvRows = [];
+    
+        // List of fields to calculate totals for
+        const fieldsToTotal = [
+            "Transaction", "Sales Amount", "Income", "Expenses", "Net",
+            "Agent Net", "Volume", "Sales", "Refunds", "Rejected Amount",
+            "Bank Payout", "Payout Amount"
+        ];
+    
+        // Helper function to escape commas and double quotes
+        const escapeCSVValue = (value) => {
+            if (value == null) return ''; // Handle null/undefined
+            const stringValue = String(value).replace(/"/g, '""'); // Escape double quotes
+            return stringValue.includes(',') || stringValue.includes('"') || stringValue.includes('\n')
+                ? `"${stringValue}"` // Wrap in quotes if necessary
+                : stringValue;
+        };
+    
+        generatedReportData.forEach((processorReport) => {
+            // Initialize totals for this processor using Decimal.js
+            const totals = fieldsToTotal.reduce((acc, field) => {
+                acc[field] = new Decimal(0); // Start with Decimal(0) for precision
+                return acc;
+            }, {});
+    
+            const processorType = getProcessorType(processorReport.processor);
+            csvRows.push([escapeCSVValue(processorReport.processor)]); // Add processor name as a header
+            csvRows.push(processorHeaders[processorType].map(escapeCSVValue).join(',')); // Add column headers
+    
+            processorReport.reportData.forEach((item) => {
+                // Parse and accumulate totals dynamically using Decimal.js
+                fieldsToTotal.forEach((field) => {
+                    const value = item[field];
+                    if (value != null && !isNaN(parseFloat(value))) {
+                        totals[field] = totals[field].plus(new Decimal(value)); // Use Decimal.plus for accumulation
+                    }
+                });
+    
+                // Generate CSV row with properly escaped values
+                const csvRow = processorHeaders[processorType].map((header) => escapeCSVValue(item[header]));
+                csvRows.push(csvRow.join(','));
+            });
+    
+            // Add totals row dynamically
+            const totalsRow = processorHeaders[processorType].map((header) => {
+                if (fieldsToTotal.includes(header)) {
+                    return escapeCSVValue(totals[header].toDecimalPlaces(2, Decimal.ROUND_HALF_UP).toString()); // Add total with rounding
+                }
+                return ''; // Leave empty for non-numeric fields
+            });
+            totalsRow[0] = "Totals"; // Add "Totals" label to the first column
+            csvRows.push(totalsRow.join(','));
+    
+            csvRows.push(''); // Add an empty row for spacing
+        });
+    
+        // Generate CSV file
+        const csvString = csvRows.join('\n');
+        const blob = new Blob([csvString], { type: 'text/csv;charset=utf-8;' });
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.setAttribute('hidden', '');
+        a.setAttribute('href', url);
+        a.setAttribute('download', `Bank_FullReport_${monthYear}.csv`);
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
     };
-
-    generatedReportData.forEach((processorReport) => {
-      processorReport.reportData = processorReport.reportData
-        .map((item) => {
-          // Format Payout Amount
-          if (item["Payout Amount"] != null && !isNaN(item["Payout Amount"])) {
-            item["Payout Amount"] = parseFloat(item["Payout Amount"]).toFixed(
-              2
-            );
-          }
-
-          // Format Bank Payout
-          if (item["Bank Payout"] != null && !isNaN(item["Bank Payout"])) {
-            item["Bank Payout"] = parseFloat(item["Bank Payout"]).toFixed(2);
-          }
-
-          return item;
-        })
-        .sort((a, b) => {
-          const field =
-            processorReport.processor === "TRX"
-              ? "Merchant DBA"
-              : "Merchant Name";
-          const nameA = (a[field] || "").toUpperCase();
-          const nameB = (b[field] || "").toUpperCase();
-          return nameA.localeCompare(nameB);
-        });
-
-      // Initialize totals for this processor using Decimal.js
-      const totals = fieldsToTotal.reduce((acc, field) => {
-        acc[field] = new Decimal(0); // Start with Decimal(0) for precision
-        return acc;
-      }, {});
-
-      const processorType = getProcessorType(processorReport.processor);
-      csvRows.push([escapeCSVValue(processorReport.processor)]); // Add processor name as a header
-      csvRows.push(
-        processorHeaders[processorType].map(escapeCSVValue).join(",")
-      ); // Add column headers
-
-      processorReport.reportData.forEach((item) => {
-        // Parse and accumulate totals dynamically using Decimal.js
-        fieldsToTotal.forEach((field) => {
-          const value = item[field];
-          if (value != null && !isNaN(parseFloat(value))) {
-            totals[field] = totals[field].plus(new Decimal(value)); // Use Decimal.plus for accumulation
-          }
-        });
-
-        // Generate CSV row with properly escaped values
-        const csvRow = processorHeaders[processorType].map((header) =>
-          escapeCSVValue(item[header])
-        );
-        csvRows.push(csvRow.join(","));
-      });
-
-      // Add totals row dynamically
-      const totalsRow = processorHeaders[processorType].map((header) => {
-        if (fieldsToTotal.includes(header)) {
-          return escapeCSVValue(
-            totals[header].toDecimalPlaces(2, Decimal.ROUND_HALF_UP).toString()
-          ); // Add total with rounding
-        }
-        return ""; // Leave empty for non-numeric fields
-      });
-      totalsRow[0] = "Totals"; // Add "Totals" label to the first column
-      csvRows.push(totalsRow.join(","));
-
-      csvRows.push(""); // Add an empty row for spacing
-    });
-
-    // Generate CSV file
-    const csvString = csvRows.join("\n");
-    const blob = new Blob([csvString], { type: "text/csv;charset=utf-8;" });
-    const url = window.URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.setAttribute("hidden", "");
-    a.setAttribute("href", url);
-    a.setAttribute("download", `Bank_FullReport_${monthYear}.csv`);
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-  };
+    
 
   if (loading) {
     return (

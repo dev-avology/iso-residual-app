@@ -222,9 +222,7 @@ const TableWithFilters = ({
 
 
 
-  const paginatedData = filteredData.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
-
-  // Sorting logic for Merchant Id
+  // Sorting logic for Merchant Id (only affects display, not main data)
   const handleSortMerchantId = () => {
     let newOrder = 'asc';
     if (sortKey === 'Merchant Id' && sortOrder === 'asc') {
@@ -232,14 +230,21 @@ const TableWithFilters = ({
     }
     setSortKey('Merchant Id');
     setSortOrder(newOrder);
-
-    const sorted = [...data].sort((a, b) => {
-      if (a['Merchant Id'] < b['Merchant Id']) return newOrder === 'asc' ? -1 : 1;
-      if (a['Merchant Id'] > b['Merchant Id']) return newOrder === 'asc' ? 1 : -1;
-      return 0;
-    });
-    setData(sorted);
   };
+
+  // Memoized sorted data for display
+  const sortedData = useMemo(() => {
+    if (sortKey === 'Merchant Id') {
+      return [...filteredData].sort((a, b) => {
+        if (a['Merchant Id'] < b['Merchant Id']) return sortOrder === 'asc' ? -1 : 1;
+        if (a['Merchant Id'] > b['Merchant Id']) return sortOrder === 'asc' ? 1 : -1;
+        return 0;
+      });
+    }
+    return filteredData;
+  }, [filteredData, sortKey, sortOrder]);
+
+  const paginatedData = sortedData.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
 
   return (
     <Box class="max-w-7xl mx-auto bg-zinc-900 rounded-lg shadow-sm p-6 mb-8 ">
@@ -270,14 +275,18 @@ const TableWithFilters = ({
                 </TableCell>
               )}
               {columns.map((col) => (
-                <TableCell align="center" key={col.field} className="border-b px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
-                  {col.label}
-                  {col.field === 'Merchant Id' && (
-                    <span style={{ marginLeft: 8, cursor: 'pointer' }} onClick={handleSortMerchantId}>
-                      {sortKey === 'Merchant Id' ? (
-                        sortOrder === 'asc' ? <FaSortUp /> : <FaSortDown />
-                      ) : <FaSort />}
-                    </span>
+                <TableCell align="center" key={col.field} className="border-b px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider" style={col.field === 'Merchant Id' ? { minWidth: 120, paddingRight: 0 } : {}}>
+                  {col.field === 'Merchant Id' ? (
+                    <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                      <span>{col.label}</span>
+                      <span style={{ marginLeft: 8, cursor: 'pointer' }} onClick={handleSortMerchantId}>
+                        {sortKey === 'Merchant Id' ? (
+                          sortOrder === 'asc' ? <FaSortUp /> : <FaSortDown />
+                        ) : <FaSort />}
+                      </span>
+                    </Box>
+                  ) : (
+                    col.label
                   )}
                 </TableCell>
               ))}

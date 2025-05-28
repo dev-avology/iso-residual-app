@@ -140,7 +140,7 @@ function App() {
                 {/* Reports */}
                 <Route path="/upload-report" element={<ReportUpload authToken={authToken} organizationID={organizationID} />} />
                 <Route path="/reports/:type" element={<Reports authToken={authToken} organizationID={organizationID} />} />
-                <Route path="/report/:reportID" element={<ReportViewerPage authToken={authToken} reportType="billing" />} />
+                <Route path="/report/:reportID" element={<ReportViewerPage authToken={authToken} organizationID={organizationID} reportType="billing" />} />
                 <Route path="/agent-report/:agentID" element={<AgentReportViewerPage authToken={authToken} organizationID={organizationID} />} />
                 <Route path="/processor-summary-report" element={<ProcessorSummaryReportViewerPage authToken={authToken} organizationID={organizationID} />} />
                 <Route path="/Agent-summary-report" element={<AgentSummaryReportViewerPage authToken={authToken} organizationID={organizationID} />} />

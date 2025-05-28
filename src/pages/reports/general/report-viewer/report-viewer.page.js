@@ -1,16 +1,18 @@
 import React, { useState, useEffect } from "react";
 import { Box, Button, Typography, Select, MenuItem, TextField, FormControl, InputLabel, IconButton } from "@mui/material";
 import { FaExclamationTriangle } from "react-icons/fa"; // Import the specific icon
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { FaCheck } from "react-icons/fa"; // Import the specific icon
 import Header from "../../../../components/general/header/header.component";
 import ReusableTable from "../../../../components/general/table/table.component";
 import { getReportById, updateReport } from "../../../../api/reports.api";
 import { regenerateProcessorReport } from "../../../../utils/reports/processorReport.util";
 import DeleteIcon from '@mui/icons-material/Delete';
+import { getAgents } from "../../../../api/agents.api";
 
-const ReportViewerPage = ({ authToken }) => {
+const ReportViewerPage = ({ authToken, organizationID }) => {
     const { reportID } = useParams();
+    const navigate = useNavigate();
     const [report, setReport] = useState(null);
     const [reportData, setReportData] = useState([]);
     const [filteredData, setFilteredData] = useState([]); // For filtered results
@@ -27,13 +29,60 @@ const ReportViewerPage = ({ authToken }) => {
         name: '',
         value: ''
     });
+    const [agents, setAgents] = useState([]);
 
     const splitTypes = ['agent', 'company', 'manager', 'partner', 'rep'];
+
+    // Validate token on component mount
+    useEffect(() => {
+        if (!authToken) {
+            setError("Authentication token is missing");
+            // Redirect to login or handle unauthorized access
+            navigate('/login');
+            return;
+        }
+    }, [authToken, navigate]);
+
+    useEffect(() => {
+        const fetchAgents = async () => {
+            try {
+                if (!authToken) {
+                    throw new Error("No authentication token available");
+                }
+                const response = await getAgents(organizationID, authToken);
+                console.log('response ashish',response);
+                if (response && response.agents) {
+                    setAgents(response.agents);
+                } else {
+                    setAgents([]);
+                }
+            } catch (err) {
+                console.error("Agent fetch error:", err?.response?.data || err.message);
+                if (err?.response?.data?.error === "Invalid or expired token") {
+                    setError("Your session has expired. Please log in again.");
+                    navigate('/login');
+                } else {
+                    setError('Failed to fetch agents');
+                }
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        if (authToken && organizationID) {
+            fetchAgents();
+        }
+    }, [reportID, authToken, organizationID, navigate]);
+
+    console.log('agents data',agents);
 
     // Fetch report data on mount
     useEffect(() => {
         const fetchReport = async () => {
             try {
+                if (!authToken) {
+                    throw new Error("No authentication token available");
+                }
                 setLoading(true);
                 const data = await getReportById(reportID, authToken);
                 setIdField(Object.keys(data.reportData[0])[1]);
@@ -44,13 +93,21 @@ const ReportViewerPage = ({ authToken }) => {
                 setLoading(false);
                 console.log("Fetched report data:", data.reportData);
             } catch (err) {
-                setError("Failed to load report data");
+                console.error("Report fetch error:", err?.response?.data || err.message);
+                if (err?.response?.data?.error === "Invalid or expired token") {
+                    setError("Your session has expired. Please log in again.");
+                    navigate('/login');
+                } else {
+                    setError("Failed to load report data");
+                }
                 setLoading(false);
             }
         };
 
-        fetchReport();
-    }, [reportID, authToken]);
+        if (authToken) {
+            fetchReport();
+        }
+    }, [reportID, authToken, navigate]);
 
     const handleRegenerateReport = async () => {
         try {
@@ -221,7 +278,7 @@ const ReportViewerPage = ({ authToken }) => {
                 defaultValue: row?.[col.field] || col.defaultValue || "",
             }));
 
-            const splitFields = [
+            const splitFields = [   
                 {
                     label: "Other Splits",
                     field: "splits_section",
@@ -252,15 +309,42 @@ const ReportViewerPage = ({ authToken }) => {
                                                 ))}
                                             </Select>
                                         </FormControl>
-                                        <TextField
-                                            label="Name"
-                                            value={split.name || ''}
-                                            onChange={(e) => {
-                                                const updatedSplits = [...splitsArray];
-                                                updatedSplits[index] = { ...updatedSplits[index], name: e.target.value };
-                                                onChange(updatedSplits);
-                                            }}
-                                        />
+
+                                        <FormControl fullWidth>
+                                            <InputLabel>Name</InputLabel>
+                                            <Select
+                                                value={split.name || ''}
+                                                onChange={(e) => {
+                                                    const updatedSplits = [...splitsArray];
+                                                    updatedSplits[index] = { 
+                                                        ...updatedSplits[index], 
+                                                        name: e.target.value 
+                                                    };
+                                                    onChange(updatedSplits);
+                                                }}
+                                                label="Name"
+                                            >
+                                                {agents.map((agent) => (
+                                                    <MenuItem 
+                                                        key={agent.agentID} 
+                                                        value={`${agent.fName} ${agent.lName}`}
+                                                    >
+                                                        {`${agent.fName} ${agent.lName}`}
+                                                    </MenuItem>
+                                                ))}
+                                            </Select>
+                                        </FormControl>
+
+                                            {/* <TextField
+                                                label="Name"
+                                                value={split.name || ''}
+                                                onChange={(e) => {
+                                                    const updatedSplits = [...splitsArray];
+                                                    updatedSplits[index] = { ...updatedSplits[index], name: e.target.value };
+                                                    onChange(updatedSplits);
+                                                }}
+                                            /> */}
+
                                         <TextField
                                             label="Value"
                                             type="number"

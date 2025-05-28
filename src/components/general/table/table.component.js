@@ -18,6 +18,7 @@ import Totals from "../totals/totals.component";
 import EditDialog from "../editDialog/editDialog.component"; // Import the EditDialog component
 import { exportToCSV } from '../../../utils/export.util';
 import Decimal from "decimal.js";
+import { FaSort, FaSortUp, FaSortDown } from 'react-icons/fa';
 
 const TableWithFilters = ({
   data = [],
@@ -48,6 +49,8 @@ const TableWithFilters = ({
   const [editDialogOpen, setEditDialogOpen] = useState(false);
   const [editRow, setEditRow] = useState(null);
   const [totals, setTotals] = useState({});
+  const [sortOrder, setSortOrder] = useState('asc');
+  const [sortKey, setSortKey] = useState(null);
 
   console.log(data,'datadatadata');
 
@@ -221,6 +224,23 @@ const TableWithFilters = ({
 
   const paginatedData = filteredData.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
 
+  // Sorting logic for Merchant Id
+  const handleSortMerchantId = () => {
+    let newOrder = 'asc';
+    if (sortKey === 'Merchant Id' && sortOrder === 'asc') {
+      newOrder = 'desc';
+    }
+    setSortKey('Merchant Id');
+    setSortOrder(newOrder);
+
+    const sorted = [...data].sort((a, b) => {
+      if (a['Merchant Id'] < b['Merchant Id']) return newOrder === 'asc' ? -1 : 1;
+      if (a['Merchant Id'] > b['Merchant Id']) return newOrder === 'asc' ? 1 : -1;
+      return 0;
+    });
+    setData(sorted);
+  };
+
   return (
     <Box class="max-w-7xl mx-auto bg-zinc-900 rounded-lg shadow-sm p-6 mb-8 ">
 
@@ -252,6 +272,13 @@ const TableWithFilters = ({
               {columns.map((col) => (
                 <TableCell align="center" key={col.field} className="border-b px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
                   {col.label}
+                  {col.field === 'Merchant Id' && (
+                    <span style={{ marginLeft: 8, cursor: 'pointer' }} onClick={handleSortMerchantId}>
+                      {sortKey === 'Merchant Id' ? (
+                        sortOrder === 'asc' ? <FaSortUp /> : <FaSortDown />
+                      ) : <FaSort />}
+                    </span>
+                  )}
                 </TableCell>
               ))}
               {approvalAction && <TableCell align="center">Actions</TableCell>}

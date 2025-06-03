@@ -18,6 +18,7 @@ export const addReport = async (organizationID, reportData, authToken) => {
 };
 
 export const getReports = async (organizationID, type, authToken) => {
+  console.log('ggggg',organizationID, type, authToken);
   try {
     const headers = {
       Authorization: `Bearer ${authToken}`,
@@ -27,6 +28,8 @@ export const getReports = async (organizationID, type, authToken) => {
       return response.data;
     }
     const response = await axios.get(`${ROUTE_BASE_URL}/organizations/${organizationID}/${type}`, { headers });
+
+    console.log('responsewwwwwwwwwww',response.data);
     return response.data;
   } catch (error) {
     console.error("Error fetching reports:", error);
@@ -40,6 +43,7 @@ export const getAllReports = async (organizationID, authToken) => {
       Authorization: `Bearer ${authToken}`,
     };
     const response = await axios.get(`${ROUTE_BASE_URL}/organizations/${organizationID}`, { headers });
+    console.log('responsewwwwwwwwwww22222',response.data);
     return response.data;
   } catch (error) {
     console.error("Error fetching reports:", error);
@@ -75,11 +79,12 @@ export const deleteReport = async (reportID, authToken) => {
 
 export const updateReport = async (reportID, reportData, authToken) => {
   try {
-    console.log('updateReport', reportID, reportData);
+    console.log('updateReport22222222', reportID, reportData);
     const headers = {
       Authorization: `Bearer ${authToken}`,
     };
     const response = await axios.put(`${ROUTE_BASE_URL}/${reportID}`, reportData, { headers });
+    console.log('response5555',response);
     return response.data;
   } catch (error) {
     console.error("Error updating report:", error);
@@ -143,6 +148,7 @@ export const generateBankSummaryReport = async (organizationID, monthYear, authT
       Authorization: `Bearer ${authToken}`,
     };
     const response = await axios.post(`${ROUTE_BASE_URL}/organizations/${organizationID}/bank-summary`, { monthYear }, { headers });
+    console.log('generateBankSummaryReport response',response);
     return response;
   } catch (error) {
     console.error("Error generating bank summary report:", error);
@@ -158,6 +164,8 @@ export const getBankSummaryReport = async (organizationID, monthYear, authToken)
     };
     console.log('getBankSummaryReport', organizationID, monthYearSplit[0], monthYearSplit[1]);
     const response = await axios.get(`${ROUTE_BASE_URL}/organizations/${organizationID}/bank-summary/${monthYearSplit[0]}/${monthYearSplit[1]}`, { headers });
+
+    console.log('bank-summary-res',response);
     return response;
   } catch (error) {
     console.error("Error fetching bank summary report:", error);
@@ -178,6 +186,20 @@ export const createBankSummaryReport = async (organizationID, monthYear, reportD
   }
 };
 
+export const updateMerchantData = async (merchantId, updatePayload, authToken) => {
+  
+  try {
+    const headers = {
+      Authorization: `Bearer ${authToken}`,
+    };
+    const response = await axios.put(`${ROUTE_BASE_URL}/merchant/${merchantId}`, updatePayload, { headers });
+    return response.data;
+  } catch (error) {
+    console.error("Error updating merchant data:", error);
+    throw error.response?.data || error.message;
+  }
+};
+
 export const updateBankSummaryReport = async (reportID, reportData, authToken) => {
   try {
     const headers = {
@@ -190,6 +212,7 @@ export const updateBankSummaryReport = async (reportID, reportData, authToken) =
     throw error.response?.data || error.message;
   }
 };
+
 // Processor summary report API functions
 export const generateProcessorSummaryReport = async (organizationID, monthYear, authToken) => {
   try {

@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import { useLocation } from "react-router-dom";
 import { Tabs, Tab, Box, Button, CircularProgress } from "@mui/material";
 import Decimal from "decimal.js";
 import BankSummaryReportViewer from "../../../../components/reports/bank/bank-summary-report-viewer/bank-summary-report-viewer.component.js";
@@ -8,12 +7,16 @@ import {
   createBankSummaryReport,
   getBankSummaryReport,
   updateReport,
+  updateMerchantData
 } from "../../../../api/reports.api.js";
 import { getAgent } from "../../../../api/agents.api.js";
 import processorTypeMap from "../../../../lib/typeMap.lib.js";
 import Header from "../../../../components/general/header/header.component.js"; // Import the reusable Header component
 import { mergeReports } from "../../../../utils/merge.util.js";
 import "./bank-summary-report-viewer.page.css";
+import { useLocation, useNavigate } from "react-router-dom";
+import { getAgents } from "../../../../api/agents.api.js";
+import axios from "axios";
 
 const BankSummaryReportViewerPage = ({ organizationID, authToken }) => {
   const [generatedReportData, setGeneratedReportData] = useState([]);
@@ -24,6 +27,10 @@ const BankSummaryReportViewerPage = ({ organizationID, authToken }) => {
   const [mergedData, setMergedData] = useState([]);
   const [hasChanges, setHasChanges] = useState(false);
   const location = useLocation();
+  const navigate = useNavigate();
+  const [agents, setAgents] = useState([]);
+  const [updatedMerchant, setUpdatedMerchant] = useState([]);
+
 
   const searchParams = new URLSearchParams(location.search);
   const monthYear = searchParams.get("month");
@@ -38,8 +45,8 @@ const BankSummaryReportViewerPage = ({ organizationID, authToken }) => {
 
   useEffect(() => {
     console.log("Fetching reports...");
-    console.log("generatedReportData:", generatedReportData);
-    console.log("dbReport:", dbReport);
+    console.log("generatedReportData--:", generatedReportData);
+    console.log("dbReport22:", dbReport);
     console.log("mergedData:", mergedData);
   }, [mergedData, generatedReportData, dbReport]);
   const fetchReports = async () => {
@@ -52,7 +59,7 @@ const BankSummaryReportViewerPage = ({ organizationID, authToken }) => {
         generateBankSummaryReport(organizationID, monthYear, authToken),
         getBankSummaryReport(organizationID, monthYear, authToken),
       ]);
-      console.log("generatedResponse:", generatedResponse);
+      console.log("generatedResponse22:", generatedResponse);
       console.log("savedResponse:", savedResponse);
 
       const generatedReportData = generatedResponse.data?.reportData || [];
@@ -61,8 +68,8 @@ const BankSummaryReportViewerPage = ({ organizationID, authToken }) => {
 
       // Merge the reports
       if (generatedReportData.length) {
-        console.log("arg1:", generatedReportData);
-        console.log("arg2:", savedResponse?.data?.reportData || null);
+        // console.log("arg1:", generatedReportData);
+        // console.log("arg2:", savedResponse?.data?.reportData || null);
         const merged = mergeReports(
           generatedReportData,
           savedResponse?.data?.reportData || null
@@ -70,7 +77,7 @@ const BankSummaryReportViewerPage = ({ organizationID, authToken }) => {
         setMergedData(merged);
         console.log("Merged data:", merged);
       } else {
-        console.warn("Generated report is empty. No data to merge.");
+        // console.warn("Generated report is empty. No data to merge.");
         setMergedData([]);
       }
     } catch (err) {
@@ -81,54 +88,112 @@ const BankSummaryReportViewerPage = ({ organizationID, authToken }) => {
     }
   };
 
-  const handleSaveChanges = async () => {
+// Fetch agents
+useEffect(() => {
+  const fetchAgents = async () => {
     try {
-      // Transform mergedData to match the structure of the generated report
-      const minimalReportData = mergedData.map((processorReport) => ({
-        processor: processorReport.processor,
-        reportData: processorReport.reportData.map(
-          ({ "Merchant Id": merchantId, approved }) => ({
-            "Merchant Id": merchantId,
-            approved,
-          })
-        ),
-      }));
-
-      // Check if all rows are approved
-      const allRowsApproved = mergedData.every((processorReport) =>
-        processorReport.reportData.every((row) => row.approved)
-      );
-
-      // Prepare the updated report object excluding the immutable _id field
-      const { _id, ...reportWithoutId } = dbReport; // ✅ Exclude _id
-      const updatedReport = {
-        ...reportWithoutId,
-        reportData: minimalReportData,
-        approved: allRowsApproved,
-      };
-
-      // Save the report (update or create)
-      if (dbReport && dbReport.reportID) {
-        console.log("Updating existing report:", updatedReport);
-        await updateReport(dbReport.reportID, updatedReport, authToken);
-      } else {
-        console.log("Creating new report:", updatedReport);
-        await createBankSummaryReport(
-          organizationID,
-          monthYear,
-          updatedReport,
-          authToken
-        );
+      // Check if token exists and is valid
+      if (!authToken) {
+        console.error('No auth token available');
+        navigate('/login');
+        return;
       }
-
-      // Refetch reports and reset change tracking
-      await fetchReports();
-      setHasChanges(false);
-    } catch (error) {
-      console.error("Error saving report:", error);
-      alert("Error saving report.", error.message);
+      // Use getAgents instead of getAgent
+      const response = await getAgents(organizationID, authToken);
+      console.log('Agents API Response:', response);
+      
+      if (response && response.agents) {
+        setAgents(response.agents);
+        // console.log('Agents Data:', response.agents);
+      }
+    } catch (err) {
+      console.error('Error fetching agents:', err);
+      console.error('Error details:', {
+        status: err?.response?.status,
+        data: err?.response?.data,
+        headers: err?.response?.headers
+      });
+      
+      // Handle token expiration
+      if (err?.response?.data?.error === "Invalid or expired token") {
+        console.error('Token expired, redirecting to login');
+        // Clear any stored tokens
+        localStorage.removeItem('token');
+        localStorage.removeItem('organizationId');
+        // Redirect to login
+        navigate('/login');
+      } else {
+        setError('Failed to fetch agents');
+      }
     }
   };
+
+  if (organizationID && authToken) {
+    fetchAgents();
+  }
+}, [organizationID, authToken, navigate]);  
+
+  const handleSaveChanges = async () => {
+    try {
+        // Transform mergedData to match the structure of the generated report
+        const minimalReportData = mergedData.map(processorReport => ({
+            processor: processorReport.processor,
+            reportData: processorReport.reportData.map(row => {
+                console.log('Processing row:', row); // Log each row being processed
+                return {
+                    "Merchant Id": row["Merchant Id"],
+                    approved: row.approved,
+                    splits: row.splits || [] // Include splits data
+                };
+            }),
+        }));
+
+        console.log('Transformed report data:', minimalReportData); // Log transformed data
+
+        // Check if all rows are approved
+        const allRowsApproved = mergedData.every(processorReport =>
+            processorReport.reportData.every(row => row.approved)
+        );
+
+        // Create a new report object without trying to destructure _id
+        const updatedReport = {
+            organizationID,
+            monthYear,
+            reportData: minimalReportData,
+            approved: allRowsApproved
+        };
+        
+        // Save the report (update or create)
+        if (dbReport && dbReport.reportID) {
+            console.log('Updating existing report22222:', updatedReport);
+            // return false;
+            await updateReport(dbReport.reportID, updatedReport, authToken);
+        } else {
+            console.log('Creating new report:', updatedReport);
+            await createBankSummaryReport(organizationID, monthYear, updatedReport, authToken);
+        }
+
+        if(updatedMerchant){
+          
+          const merchantId = updatedMerchant.merchant["Merchant Id"];          
+          // Create the update payload
+          const updatePayload = {
+              monthYear,
+              organizationID,
+              processor: updatedMerchant.processor,
+              merchantData: updatedMerchant.merchant,
+            };
+          await updateMerchantData(merchantId,updatePayload,authToken);
+        }
+
+        // Refetch reports and reset change tracking
+        await fetchReports();
+        setHasChanges(false);
+    } catch (error) {
+        console.error("Error saving report:", error);
+        alert("Error saving report: " + error.message);
+    }
+};
 
   const handleTabChange = (event, newValue) => {
     setActiveProcessor(newValue);
@@ -302,6 +367,11 @@ const BankSummaryReportViewerPage = ({ organizationID, authToken }) => {
     document.body.removeChild(a);
   };
 
+  // Add handler for updated merchant
+  const handleUpdatedMerchant = (updatedData) => {
+    setUpdatedMerchant(updatedData);   
+  };
+
   if (loading) {
     return (
       <Box
@@ -352,9 +422,11 @@ const BankSummaryReportViewerPage = ({ organizationID, authToken }) => {
               processor={generatedReportData[activeProcessor].processor}
               mergedData={[mergedData[activeProcessor]]}
               onSave={handleSaveChanges}
-              setMergedData={setMergedData} // Pass this prop
-              setHasChanges={setHasChanges} // Pass this prop
-              hasChanges={hasChanges} // Pass this prop
+              setMergedData={setMergedData}
+              setHasChanges={setHasChanges}
+              hasChanges={hasChanges}
+              agents={agents}
+              updatedMerchantData={handleUpdatedMerchant}
             />
           )}
       </Box>

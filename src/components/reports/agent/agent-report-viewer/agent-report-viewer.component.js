@@ -44,6 +44,7 @@ const AgentReportViewer = ({
     /**
      * ✅ Bulk approval handler
      */
+    
     const handleBulkApprove = () => {
         if (selectedRows.length === 0) {
             alert("No rows selected for approval.");
@@ -81,6 +82,18 @@ const AgentReportViewer = ({
         },
     ];
 
+    // Add editDialogProps
+    const editDialogProps = {
+        getFields: (row) => {
+            return columns.map((col) => ({
+                label: col.label,
+                field: col.field,
+                type: col.type || (typeof row?.[col.field] === "boolean" ? "boolean" : "text"),
+                defaultValue: row?.[col.field] || col.defaultValue || "",
+            }));
+        }
+    };
+
     /**
      * ✅ Render Component (No Agent Net Calculations)
      */
@@ -114,6 +127,7 @@ const AgentReportViewer = ({
                 onSave={onSave}
                 setHasChanges={setHasChanges}
                 hasChanges={hasChanges}
+                editDialogProps={editDialogProps}
             />
         </Box>
     );

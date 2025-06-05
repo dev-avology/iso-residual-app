@@ -290,7 +290,11 @@ const TableWithFilters = ({
               {columns.map((col) => (
                 <TableCell align="center" key={col.field} className="border-b px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider" style={col.field === 'Merchant Id' ? { minWidth: 120, paddingRight: 0 } : {}}>
                   <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                    <span>{col.label}</span>
+                    <span style={type === 'bank-report' ? { textTransform: "uppercase" } : {}}>
+                      {type === 'bank-report'
+                        ? col.label.replace(/([a-z])([A-Z])/g, '$1 $2').toUpperCase()
+                        : col.label}
+                    </span>
                     <span 
                       style={{ marginLeft: 8, cursor: 'pointer' }} 
                       onClick={() => handleSort(col.field)}

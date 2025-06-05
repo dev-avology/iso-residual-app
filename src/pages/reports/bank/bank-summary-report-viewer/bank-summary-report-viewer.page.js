@@ -45,7 +45,7 @@ const BankSummaryReportViewerPage = ({ organizationID, authToken }) => {
 
   useEffect(() => {
     console.log("Fetching reports...");
-    console.log("generatedReportData--:", generatedReportData);
+    console.log("generatedReportData----:", generatedReportData);
     console.log("dbReport22:", dbReport);
     console.log("mergedData:", mergedData);
   }, [mergedData, generatedReportData, dbReport]);
@@ -198,6 +198,7 @@ useEffect(() => {
   const handleTabChange = (event, newValue) => {
     setActiveProcessor(newValue);
   };
+  // console.log('activeProcessor',activeProcessor);
 
   const processorHeaders = {
     type1: [
@@ -251,9 +252,9 @@ useEffect(() => {
     processorTypeMap[processor] || "type1";
 
   const exportToCSV = () => {
-    // console.log(generatedReportData);
+    // console.log(sortedReportData);
     // return false;
-    if (!generatedReportData.length) return;
+    if (!sortedReportData.length) return;
 
     const csvRows = [];
 
@@ -284,7 +285,7 @@ useEffect(() => {
         : stringValue;
     };
 
-    generatedReportData.forEach((processorReport) => {
+    sortedReportData.forEach((processorReport) => {
       processorReport.reportData = processorReport.reportData
         .map((item) => {
           // Format Payout Amount
@@ -372,6 +373,15 @@ useEffect(() => {
     setUpdatedMerchant(updatedData);   
   };
 
+  // Sort the generatedReportData alphabetically by processor name
+  const sortedReportData = [...generatedReportData].sort((a, b) =>
+    a.processor.localeCompare(b.processor)
+  );
+  // Sort mergedData the same way as sortedReportData
+  const sortedMergedData = [...mergedData].sort((a, b) =>
+    a.processor.localeCompare(b.processor)
+  );
+
   if (loading) {
     return (
       <Box
@@ -403,6 +413,7 @@ useEffect(() => {
           Export Full Report
         </Button>
       </Box>
+
       <Tabs
         allowScrollButtonsMobile
         value={activeProcessor}
@@ -411,16 +422,16 @@ useEffect(() => {
         scrollButtons={true}
         sx={{ borderBottom: 1, borderColor: "divider", mb: 3 }}
       >
-        {generatedReportData.map((processorReport, index) => (
+        {sortedReportData.map((processorReport, index) => (
           <Tab key={index} label={processorReport.processor} />
         ))}
       </Tabs>
       <Box>
-        {generatedReportData[activeProcessor] &&
-          mergedData[activeProcessor] && (
+        {sortedReportData[activeProcessor] &&
+          sortedMergedData[activeProcessor] && (
             <BankSummaryReportViewer
-              processor={generatedReportData[activeProcessor].processor}
-              mergedData={[mergedData[activeProcessor]]}
+              processor={sortedReportData[activeProcessor].processor}
+              mergedData={[sortedMergedData[activeProcessor]]}
               onSave={handleSaveChanges}
               setMergedData={setMergedData}
               setHasChanges={setHasChanges}

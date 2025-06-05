@@ -39,7 +39,17 @@ const BankSummaryReportViewer = ({
               }))
         : [];
 
-    // Add splits column with custom render function
+    // ✅ Add the approved column separately with checkmark logic
+    columns.push({
+        field: "approved",
+        label: "Approved",
+        render: (approved) =>
+            approved ? (
+                <FaCheck color="green" title="Approved" />
+            ) : null,
+    });
+
+     // Add splits column with custom render function
     columns.push({
         field: "splits",
         label: "Splits",
@@ -51,16 +61,6 @@ const BankSummaryReportViewer = ({
                 </div>
             ));
         }
-    });
-
-    // ✅ Add the approved column separately with checkmark logic
-    columns.push({
-        field: "approved",
-        label: "Approved",
-        render: (approved) =>
-            approved ? (
-                <FaCheck color="green" title="Approved" />
-            ) : null,
     });
 
     /**
@@ -108,6 +108,7 @@ const BankSummaryReportViewer = ({
 
     const editDialogProps = {
         getFields: (row) => {
+            console.log('row2222',row);
             const baseFields = columns
                 .filter(col => col.field !== "splits") // Exclude splits from base fields
                 .map((col) => ({
@@ -305,6 +306,7 @@ const BankSummaryReportViewer = ({
                 setHasChanges={setHasChanges}
                 hasChanges={hasChanges}
                 editDialogProps={editDialogProps}
+                type="bank-report"
             />
 
             {/* ✅ Safe Handling of Totals to Prevent Runtime Error */}

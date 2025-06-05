@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useParams, useLocation } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import {
     Tabs,
     Tab,
@@ -8,12 +8,16 @@ import {
     CircularProgress,
 } from "@mui/material";
 import AgentReportViewer from "../../../../components/reports/agent/agent-report-viewer/agent-report-viewer.component.js";
-import { generateAgentReport, createAgentReport, getAgentReportByMonth, updateReport } from '../../../../api/reports.api.js'; import { getAgent } from "../../../../api/agents.api.js";
+import { generateAgentReport, createAgentReport, getAgentReportByMonth, updateReport,updateMerchantData } from '../../../../api/reports.api.js'; 
+import { getAgent } from "../../../../api/agents.api.js";
 import processorTypeMap from "../../../../lib/typeMap.lib.js";
 import Header from "../../../../components/general/header/header.component.js"; // Import the reusable Header component
 import { mergeReports } from "../../../../utils/merge.util.js";
 import "./agent-report-viewer.page.css";
 import { use } from "react";
+import { getAgents } from "../../../../api/agents.api.js";
+import { useNavigate,useLocation } from "react-router-dom";
+
 
 const AgentReportViewerPage = ({ organizationID, authToken }) => {
     const { agentID } = useParams();
@@ -25,10 +29,14 @@ const AgentReportViewerPage = ({ organizationID, authToken }) => {
     const [error, setError] = useState(null);
     const [mergedData, setMergedData] = useState([]);
     const [hasChanges, setHasChanges] = useState(false);
+    const [agents, setAgents] = useState([]);
+    const [updatedMerchant, setUpdatedMerchant] = useState([]);
+
     const location = useLocation();
 
     const searchParams = new URLSearchParams(location.search);
     const monthYear = searchParams.get("month");
+    const navigate = useNavigate();
 
     useEffect(() => {
         if (authToken && organizationID && agentID && monthYear) {
@@ -86,15 +94,63 @@ const AgentReportViewerPage = ({ organizationID, authToken }) => {
             setLoading(false);
         }
     };
+
+
+    // Fetch agents
+    useEffect(() => {
+      const fetchAgents = async () => {
+        try {
+          // Check if token exists and is valid
+          if (!authToken) {
+            console.error('No auth token available');
+            navigate('/login');
+            return;
+          }
+          // Use getAgents instead of getAgent
+          const response = await getAgents(organizationID, authToken);
+          console.log('Agents reports API Response:', response);
+          
+          if (response && response.agents) {
+            setAgents(response.agents);
+            // console.log('Agents Data:', response.agents);
+          }
+        } catch (err) {
+          console.error('Error fetching agents:', err);
+          console.error('Error details:', {
+            status: err?.response?.status,
+            data: err?.response?.data,
+            headers: err?.response?.headers
+          });
+          
+          // Handle token expiration
+          if (err?.response?.data?.error === "Invalid or expired token") {
+            console.error('Token expired, redirecting to login');
+            // Clear any stored tokens
+            localStorage.removeItem('token');
+            localStorage.removeItem('organizationId');
+            // Redirect to login
+            navigate('/login');
+          } else {
+            setError('Failed to fetch agents');
+          }
+        }
+      };
+    
+      if (organizationID && authToken) {
+        fetchAgents();
+      }
+    }, [organizationID, authToken, navigate]);  
+
     
     const handleSaveChanges = async () => {
         try {
             // Transform mergedData to match the structure of the generated report
             const minimalReportData = mergedData.map(processorReport => ({
                 processor: processorReport.processor, // Keep the processor name
-                reportData: processorReport.reportData.map(({ "Merchant Id": merchantId, approved }) => ({
+                reportData: processorReport.reportData.map(({ "Merchant Id": merchantId, approved, splits }) => ({
                     "Merchant Id": merchantId,
                     approved,
+                    splits: splits || {} // Include splits data
                 })),
             }));
     
@@ -119,6 +175,32 @@ const AgentReportViewerPage = ({ organizationID, authToken }) => {
                 console.log('Creating a new report with approval status.');
                 await createAgentReport(organizationID, agentID, monthYear, reportData, authToken);
             }
+
+            if(updatedMerchant){
+                const merchantId = updatedMerchant.merchant["Merchant Id"];          
+                // Create the update payload
+                // const updatePayload = {
+                //     monthYear,
+                //     organizationID,
+                //     processor: updatedMerchant.processor,
+                //     merchantData: {
+                //         ...updatedMerchant.merchant,
+                //         splits: updatedMerchant.merchant.splits || {} // Ensure splits are included
+                //     },
+                // };
+
+
+                const updatePayload = {
+                    monthYear,
+                    organizationID,
+                    processor: updatedMerchant.processor,
+                    merchantData: updatedMerchant.merchant,
+                  };
+
+
+                console.log('updatePayload', updatePayload);
+                await updateMerchantData(merchantId, updatePayload, authToken);
+            }
     
             // ✅ Refetch reports and reset change tracking
             await fetchReports();
@@ -130,7 +212,9 @@ const AgentReportViewerPage = ({ organizationID, authToken }) => {
         }
     };
     
-    
+    const handleUpdatedMerchant = (updatedData) => {
+      setUpdatedMerchant(updatedData);   
+    };
     
 
 
@@ -302,6 +386,8 @@ const AgentReportViewerPage = ({ organizationID, authToken }) => {
                         setMergedData={setMergedData} // Pass this prop
                         setHasChanges={setHasChanges} // Pass this prop
                         hasChanges={hasChanges} // Pass this prop
+                        agents={agents}
+                        updatedMerchantData={handleUpdatedMerchant}
                     />
                 )}
             </Box>

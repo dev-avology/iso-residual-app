@@ -120,6 +120,7 @@ export const generateAgentReport = async (organizationID, agentID, monthYear, au
       { monthYear }, // Send the monthYear in the body
       { headers } // Send headers including Authorization token
     );
+    console.log('responseresponseresponse',response);
     return response; // Returns the generated agent report data
   } catch (error) {
     console.error('Error generating agent report:', error);
@@ -193,6 +194,8 @@ export const updateMerchantData = async (merchantId, updatePayload, authToken) =
       Authorization: `Bearer ${authToken}`,
     };
     const response = await axios.put(`${ROUTE_BASE_URL}/merchant/${merchantId}`, updatePayload, { headers });
+    console.log('My params',merchantId, updatePayload, authToken);
+    console.log('Hi respone',response.data);
     return response.data;
   } catch (error) {
     console.error("Error updating merchant data:", error);

@@ -11,6 +11,7 @@ import {
   TableHead,
   TableRow,
   Checkbox,
+  type
 } from "@mui/material";
 import FilterComponent from "../filter/filter.component";
 import ActionsColumn from "../actionsColumn/actionsColumn.component";
@@ -40,7 +41,8 @@ const TableWithFilters = ({
   onDelete,
   editDialogProps,
   agentDetails,
-  merchantPartnerSlug
+  merchantPartnerSlug,
+  type
 }) => {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
@@ -49,8 +51,8 @@ const TableWithFilters = ({
   const [editDialogOpen, setEditDialogOpen] = useState(false);
   const [editRow, setEditRow] = useState(null);
   const [totals, setTotals] = useState({});
+  const [sortKey, setSortKey] = useState('');
   const [sortOrder, setSortOrder] = useState('asc');
-  const [sortKey, setSortKey] = useState(null);
 
   console.log(data,'datadatadata');
 
@@ -219,30 +221,41 @@ const TableWithFilters = ({
     return filtered;
   }, [data, filters, searchTerm, columns, filtersConfig]);
 
-
-
-
-  // Sorting logic for Merchant Id (only affects display, not main data)
-  const handleSortMerchantId = () => {
-    let newOrder = 'asc';
-    if (sortKey === 'Merchant Id' && sortOrder === 'asc') {
-      newOrder = 'desc';
+  const handleSort = (key) => {
+    if (sortKey === key) {
+      setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc');
+    } else {
+      setSortKey(key);
+      setSortOrder('asc');
     }
-    setSortKey('Merchant Id');
-    setSortOrder(newOrder);
+    setPage(0); // Reset to first page on sort
   };
 
-  // Memoized sorted data for display
   const sortedData = useMemo(() => {
-    if (sortKey === 'Merchant Id') {
+    if (type === 'bank-report' && sortKey === 'Merchant Id') {
       return [...filteredData].sort((a, b) => {
         if (a['Merchant Id'] < b['Merchant Id']) return sortOrder === 'asc' ? -1 : 1;
         if (a['Merchant Id'] > b['Merchant Id']) return sortOrder === 'asc' ? 1 : -1;
         return 0;
       });
     }
-    return filteredData;
-  }, [filteredData, sortKey, sortOrder]);
+    if (!sortKey) return filteredData;
+    return [...filteredData].sort((a, b) => {
+      let valueA = a[sortKey];
+      let valueB = b[sortKey];
+      if (typeof valueA === 'number' && typeof valueB === 'number') {
+        return sortOrder === 'asc' ? valueA - valueB : valueB - valueA;
+      }
+      if (typeof valueA === 'string' && typeof valueB === 'string') {
+        return sortOrder === 'asc'
+          ? valueA.localeCompare(valueB)
+          : valueB.localeCompare(valueA);
+      }
+      if (valueA == null) return sortOrder === 'asc' ? -1 : 1;
+      if (valueB == null) return sortOrder === 'asc' ? 1 : -1;
+      return 0;
+    });
+  }, [filteredData, sortKey, sortOrder, type]);
 
   const paginatedData = sortedData.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
 
@@ -276,18 +289,19 @@ const TableWithFilters = ({
               )}
               {columns.map((col) => (
                 <TableCell align="center" key={col.field} className="border-b px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider" style={col.field === 'Merchant Id' ? { minWidth: 120, paddingRight: 0 } : {}}>
-                  {col.field === 'Merchant Id' ? (
-                    <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                      <span>{col.label}</span>
-                      <span style={{ marginLeft: 8, cursor: 'pointer' }} onClick={handleSortMerchantId}>
-                        {sortKey === 'Merchant Id' ? (
-                          sortOrder === 'asc' ? <FaSortUp /> : <FaSortDown />
-                        ) : <FaSort />}
-                      </span>
-                    </Box>
-                  ) : (
-                    col.label
-                  )}
+                  <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                    <span>{col.label}</span>
+                    <span 
+                      style={{ marginLeft: 8, cursor: 'pointer' }} 
+                      onClick={() => handleSort(col.field)}
+                    >
+                    {type === 'bank-report' && (
+                      sortKey === col.field ? (
+                        sortOrder === 'asc' ? <FaSortUp /> : <FaSortDown />
+                      ) : <FaSort />
+                    )}
+                    </span>
+                  </Box>
                 </TableCell>
               ))}
               {approvalAction && <TableCell align="center">Actions</TableCell>}
@@ -295,8 +309,8 @@ const TableWithFilters = ({
           </TableHead>
           <TableBody>
             {paginatedData.length > 0 ? (
-              paginatedData.map((row) => (
-                <TableRow key={row[idField]}>
+              paginatedData.map((row, index) => (
+                <TableRow key={row[idField] + '-' + index}>
                   {setSelected && (
                     <TableCell  align="center" padding="checkbox">
                       <Checkbox

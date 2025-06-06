@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { login } from '../../../api/authApi.js';
 import {jwtDecode} from 'jwt-decode'; // Correct import for jwt-decode
@@ -9,12 +9,57 @@ const Login = ({ setUsername, setAuthToken, setOrganization }) => { // Added set
   const [error, setError] = useState('');
   const navigate = useNavigate();
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  useEffect(() => {
+    const handleDecryptCredentials = async () => {
+      try {
+        const urlParams = new URLSearchParams(window.location.search);
+        const cipher = urlParams.get('secX');
+        const iv = urlParams.get('secY');
+        console.log('REACT_APP_PROD_URL',process.env.REACT_APP_PROD_URL);
+        console.log('REACT_APP_LARAVEL',process.env);
+
+        if (cipher && iv) {
+          const response = await fetch('https://phpstack-1180784-5314741.cloudwaysapps.com/api/decrypt/cred', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Accept': 'application/json'
+            },
+            body: JSON.stringify({ cipher, iv }),
+          });
+
+          if (!response.ok) {
+            console.error('Decrypt response not ok:', response.status);
+            return;
+          }
+
+          const data = await response.json();
+          const [email, pass] = data.decrypted.split(':');
+
+          console.log('enc email', email);
+          console.log('enc pass', pass);
+          
+          if (email && pass) {
+            setLocalUsername(email);
+            setPassword(pass);
+            // Automatically trigger login
+            handleLogin(email, pass);
+          }
+        }
+      } catch (error) {
+        console.error('Error decrypting credentials:', error);
+        // Don't set error state to maintain current functionality
+      }
+    };
+
+    handleDecryptCredentials();
+  }, []);
+
+  const handleLogin = async (username, pass) => {
     try {
       console.log('starting login');
       
-      const { token } = await login(localUsername, password);
+      const { token } = await login(username, pass);
   
       // Decode the token to get the organizationID
       const decodedToken = jwtDecode(token);
@@ -22,20 +67,24 @@ const Login = ({ setUsername, setAuthToken, setOrganization }) => { // Added set
   
       // Store token and organizationID in localStorage
       localStorage.setItem('authToken', token);
-      localStorage.setItem('username', localUsername);
+      localStorage.setItem('username', username);
       localStorage.setItem('organizationID', organizationID);
   
       // Update state
+      setUsername(username);
       setAuthToken(token);
-      setUsername(localUsername);
-      setOrganization(organizationID);  // Set organizationID in state
+      setOrganization(organizationID);
   
-      // Redirect to dashboard
       navigate('/dashboard');
     } catch (error) {
-      console.error('Login failed:', error);
-      setError(`Login failed: ${error.message}`);
+      console.error('Login error:', error);
+      setError('Invalid username or password');
     }
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    handleLogin(localUsername, password);
   };
   
   return (

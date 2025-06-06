@@ -9,7 +9,7 @@ const SPLIT_TYPES = {
   OTHER: 'Other/Custom'
 };
 
-const AgentDetails = ({ agent, onAgentChange }) => {
+const AgentDetails = ({ agent, allAgents, onAgentChange }) => {
   const [editedAgent, setEditedAgent] = useState(agent);
   const [isEditing, setIsEditing] = useState(false);
   const [selectedSplitType, setSelectedSplitType] = useState('');
@@ -22,6 +22,8 @@ const AgentDetails = ({ agent, onAgentChange }) => {
       });
     }
   }, [agent]);
+
+  console.log('allAgentsssss',allAgents);
 
   // Handle input changes with dynamic '%' display
   const handleInputChange = (field, value) => {
@@ -192,11 +194,11 @@ const AgentDetails = ({ agent, onAgentChange }) => {
               <select
                 value={selectedSplitType}
                 onChange={(e) => setSelectedSplitType(e.target.value)}
-                className="input block w-full bg-zinc-800 border-zinc-700 text-white rounded-md focus:ring-yellow-400 focus:border-yellow-400"
+                className="input block w-full bg-zinc-800 border-zinc-700 text-white rounded-md focus:ring-yellow-400 focus:border-yellow-400" style={{ color: 'black' }}
               >
-                <option value="" style={{ color: 'black' }}>Select Split Type</option>
+                <option value="">Select Split Type</option>
                 {Object.values(SPLIT_TYPES).map((type) => (
-                  <option style={{ color: 'black' }} key={type} value={type}>{type}</option>
+                  <option key={type} value={type}>{type}</option>
                 ))}
               </select>
               <button
@@ -219,13 +221,26 @@ const AgentDetails = ({ agent, onAgentChange }) => {
                     Remove
                   </button>
                 </div>
-                <input
-                  type="text"
-                  value={split.name}
+                <select
+                  value={split.name || ""}
                   onChange={(e) => handleAdditionalSplitChange(index, 'name', e.target.value)}
-                  placeholder={`${split.type} Name`}
-                  className="input block w-full mb-2 bg-zinc-800 border-zinc-700 text-white rounded-md focus:ring-yellow-400 focus:border-yellow-400"
-                />
+                  className="input block w-full mb-2 bg-zinc-800 border-zinc-700 text-white rounded-md focus:ring-yellow-400 focus:border-yellow-400" 
+                  style={{ color: "black"}}
+                >
+                  <option value="" style={{ color: "black"}}>Select {split.type}</option>
+                  {allAgents.map((agent) => {
+                    const fullName = `${agent.fName} ${agent.lName}`;
+                    return (
+                      <option 
+                        key={agent.agentID} 
+                        value={fullName}
+                        style={{ color: "black"}}
+                      >
+                        {fullName}
+                      </option>
+                    );
+                  })}
+                </select>
                 <input
                   type="text"
                   value={split.split}

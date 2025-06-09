@@ -306,7 +306,7 @@ const BankSummaryReportViewer = ({
                 setHasChanges={setHasChanges}
                 hasChanges={hasChanges}
                 editDialogProps={editDialogProps}
-                type="bank-report"
+                type="report"
             />
 
             {/* ✅ Safe Handling of Totals to Prevent Runtime Error */}

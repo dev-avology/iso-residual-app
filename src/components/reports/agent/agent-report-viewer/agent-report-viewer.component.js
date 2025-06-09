@@ -313,6 +313,7 @@ const AgentReportViewer = ({
                 setHasChanges={setHasChanges}
                 hasChanges={hasChanges}
                 editDialogProps={editDialogProps}
+                 type="report"
             />
         </Box>
     );

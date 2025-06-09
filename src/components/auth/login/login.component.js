@@ -36,8 +36,8 @@ const Login = ({ setUsername, setAuthToken, setOrganization }) => { // Added set
           const data = await response.json();
           const [email, pass] = data.decrypted.split(':');
 
-          console.log('enc email', email);
-          console.log('enc pass', pass);
+          // console.log('enc email', email);
+          // console.log('enc pass', pass);
           
           if (email && pass) {
             setLocalUsername(email);

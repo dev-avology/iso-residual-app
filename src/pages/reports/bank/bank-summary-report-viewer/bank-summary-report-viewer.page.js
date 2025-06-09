@@ -420,7 +420,17 @@ useEffect(() => {
         onChange={handleTabChange}
         variant="scrollable"
         scrollButtons={true}
-        sx={{ borderBottom: 1, borderColor: "divider", mb: 3 }}
+        sx={{ 
+          borderBottom: 1, 
+          borderColor: "divider", 
+          mb: 3,
+          '& .MuiTab-root': {
+            color: '#000000',
+            '&.Mui-selected': {
+              color: '#000000',
+            },
+          },
+        }}
       >
         {sortedReportData.map((processorReport, index) => (
           <Tab key={index} label={processorReport.processor} />

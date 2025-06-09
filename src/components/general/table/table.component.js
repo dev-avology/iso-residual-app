@@ -232,7 +232,7 @@ const TableWithFilters = ({
   };
 
   const sortedData = useMemo(() => {
-    if (type === 'bank-report' && sortKey === 'Merchant Id') {
+    if (type === 'report' && sortKey === 'Merchant Id') {
       return [...filteredData].sort((a, b) => {
         if (a['Merchant Id'] < b['Merchant Id']) return sortOrder === 'asc' ? -1 : 1;
         if (a['Merchant Id'] > b['Merchant Id']) return sortOrder === 'asc' ? 1 : -1;
@@ -290,8 +290,8 @@ const TableWithFilters = ({
               {columns.map((col) => (
                 <TableCell align="center" key={col.field} className="border-b px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider" style={col.field === 'Merchant Id' ? { minWidth: 120, paddingRight: 0 } : {}}>
                   <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                    <span style={type === 'bank-report' ? { textTransform: "uppercase" } : {}}>
-                      {type === 'bank-report'
+                    <span style={type === 'report' ? { textTransform: "uppercase" } : {}}>
+                      {type === 'report'
                         ? col.label.replace(/([a-z])([A-Z])/g, '$1 $2').toUpperCase()
                         : col.label}
                     </span>
@@ -299,7 +299,7 @@ const TableWithFilters = ({
                       style={{ marginLeft: 8, cursor: 'pointer' }} 
                       onClick={() => handleSort(col.field)}
                     >
-                    {type === 'bank-report' && (
+                    {type === 'report' && (
                       sortKey === col.field ? (
                         sortOrder === 'asc' ? <FaSortUp /> : <FaSortDown />
                       ) : <FaSort />

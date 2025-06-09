@@ -52,8 +52,27 @@ const AgentSummaryReportViewerPage = ({ authToken, organizationID }) => {
         throw new Error('Invalid response structure: reportData is not an array');
       }
 
+      if (agentReports) {
+        // Separate TOTALS row from other data
+        const totalsRow = agentReports.find(item => item.agentName === "TOTALS");
+        const otherRows = agentReports.filter(item => item.agentName !== "TOTALS");
+  
+        // Sort the data alphabetically by agent name (excluding TOTALS)
+        const sortedData = [...otherRows].sort((a, b) => 
+          a.agentName.localeCompare(b.agentName)
+        );
+  
+        // Add TOTALS back at the end
+        const finalData = [...sortedData];
+        if (totalsRow) {
+          finalData.push(totalsRow);
+        }
+  
+        setSummaryReport(finalData);
+      }
+      
+      // setSummaryReport(agentReports);
       // Set the initial report data and keep it in memory for merging later
-      setSummaryReport(agentReports);
 
     } catch (err) {
       console.error('Error generating agent summary report:', err);
@@ -200,7 +219,23 @@ const AgentSummaryReportViewerPage = ({ authToken, organizationID }) => {
     const csvHeaders = [
       "Agent ID", "Agent Name", "Transactions", "Sales Amount", "Income", "Expenses", "Net", "Agent Net"
     ];
-    const csvRows = summaryReport.map(item => [
+
+    // Separate TOTALS row from other data
+    const totalsRow = summaryReport.find(item => item.agentName === "TOTALS");
+    const otherRows = summaryReport.filter(item => item.agentName !== "TOTALS");
+
+    // Sort the data alphabetically by agent name (excluding TOTALS)
+    const sortedData = [...otherRows].sort((a, b) => 
+      a.agentName.localeCompare(b.agentName)
+    );
+
+    // Add TOTALS back at the end
+    const finalData = [...sortedData];
+    if (totalsRow) {
+      finalData.push(totalsRow);
+    }
+
+    const csvRows = finalData.map(item => [
       item.agentID,
       item.agentName,
       item.totalTransactions,
@@ -208,7 +243,8 @@ const AgentSummaryReportViewerPage = ({ authToken, organizationID }) => {
       item.totalIncome,
       item.totalExpenses,
       item.totalNet,
-      item.totalAgentNet
+      // Format agent net to 2 decimal places
+      Number(item.totalAgentNet).toFixed(2)
     ]);
 
     const csvContent = [
@@ -227,6 +263,9 @@ const AgentSummaryReportViewerPage = ({ authToken, organizationID }) => {
     URL.revokeObjectURL(url);
   };
 
+  // useEffect(() => {
+ 
+  // }, [summaryReport]);
 
   if (loading) {
     return <div className="agent-summary-report-viewer"><p>Loading...</p></div>;
@@ -284,6 +323,7 @@ const AgentSummaryReportViewerPage = ({ authToken, organizationID }) => {
             setSelected={setSelectedRows}
             enableTotals={true}
             approvalAction={true}
+            type="report"
         />
 
         {/* Save Changes Button */}

@@ -414,6 +414,7 @@ const ReportViewerPage = ({ authToken, organizationID }) => {
                 onSave={handleSaveChanges}
                 totalFields={totalFields}
                 editDialogProps={editDialogProps}
+                type="report"
             />
         </Box>
     );

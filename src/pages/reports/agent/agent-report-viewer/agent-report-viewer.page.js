@@ -49,7 +49,7 @@ const AgentReportViewerPage = ({ organizationID, authToken }) => {
     useEffect(() => {
         
         console.log('Fetching reports...');
-        console.log('generatedReportData:', generatedReportData);
+        console.log('generatedReportDataSS:', generatedReportData);
         console.log('dbReport:', dbReport);
         console.log('mergedData:', mergedData);
     }, [mergedData, generatedReportData, dbReport]);
@@ -235,7 +235,7 @@ const AgentReportViewerPage = ({ organizationID, authToken }) => {
     const getProcessorType = (processor) => processorTypeMap[processor] || 'type1';
 
     const exportToCSV = () => {
-        if (!generatedReportData || !generatedReportData.length) {
+        if (!sortedReportData || !sortedReportData.length) {
             console.error("No generated report data available.");
             return;
         }
@@ -255,7 +255,7 @@ const AgentReportViewerPage = ({ organizationID, authToken }) => {
             return stringValue;
         };
     
-        generatedReportData.forEach((processorReport) => {
+        sortedReportData.forEach((processorReport) => {
             // Ensure processorReport and its reportData are valid
             if (!processorReport || !processorReport.processor || !processorReport.reportData || !processorReport.reportData.length) {
                 console.error("Invalid processor report structure:", processorReport);
@@ -333,6 +333,16 @@ const AgentReportViewerPage = ({ organizationID, authToken }) => {
         a.click();
         document.body.removeChild(a);
     };
+
+
+    // Sort the generatedReportData alphabetically by processor name
+    const sortedReportData = [...generatedReportData].sort((a, b) =>
+        a.processor.localeCompare(b.processor)
+    );
+    // Sort mergedData the same way as sortedReportData
+    const sortedMergedData = [...mergedData].sort((a, b) =>
+        a.processor.localeCompare(b.processor)
+    );
     
     if (loading) {
         return (
@@ -367,21 +377,32 @@ const AgentReportViewerPage = ({ organizationID, authToken }) => {
                 onChange={handleTabChange}
                 variant="scrollable"
                 scrollButtons={true}
-                sx={{ borderBottom: 1, borderColor: "divider", mb: 3 }}
+                // sx={{ borderBottom: 1, borderColor: "divider", mb: 3 }}
+                sx={{ 
+                    borderBottom: 1, 
+                    borderColor: "divider", 
+                    mb: 3,
+                    '& .MuiTab-root': {
+                        color: '#000000',
+                        '&.Mui-selected': {
+                        color: '#000000',
+                        },
+                    },
+                }}
             >
-                {generatedReportData.map((processorReport, index) => (
+                {sortedReportData.map((processorReport, index) => (
                     <Tab key={index} label={processorReport.processor} />
                 ))}
             </Tabs>
             <Box>
-                {generatedReportData[activeProcessor] && (
+                {sortedReportData[activeProcessor] && (
                     <AgentReportViewer
                         authToken={authToken}
                         organizationID={organizationID}
                         agentID={agentID}
                         monthYear={monthYear}
-                        processor={generatedReportData[activeProcessor].processor}
-                        mergedData={[mergedData[activeProcessor]]}
+                        processor={sortedReportData[activeProcessor].processor}
+                        mergedData={[sortedMergedData[activeProcessor]]}
                         onSave={handleSaveChanges}
                         setMergedData={setMergedData} // Pass this prop
                         setHasChanges={setHasChanges} // Pass this prop

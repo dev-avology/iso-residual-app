@@ -5,6 +5,7 @@ import { FaEye, FaTrash } from 'react-icons/fa';
 import { confirmAlert } from 'react-confirm-alert';
 import 'react-confirm-alert/src/react-confirm-alert.css';
 import './agents-list.component.css';
+import { jwtDecode } from 'jwt-decode';
 
 const AgentsList = ({ organizationID, authToken }) => {
   const [agents, setAgents] = useState([]);
@@ -12,7 +13,13 @@ const AgentsList = ({ organizationID, authToken }) => {
   const [error, setError] = useState('');
   const [searchTerm, setSearchTerm] = useState('');
   const [filterRole, setFilterRole] = useState('all');
-
+  
+  const token = localStorage.getItem('authToken');
+  // console.log('localStorage',localStorage);
+  const decodedToken = jwtDecode(token);
+  const roleId = decodedToken.roleId;
+  console.log('roleId',roleId);
+  
   // Pagination state
   const [currentPage, setCurrentPage] = useState(1);
   const agentsPerPage = 10;
@@ -125,9 +132,11 @@ const AgentsList = ({ organizationID, authToken }) => {
           <option value="individual">Individual</option>
         </select>
         <div className="actions-container">
-          <Link to="/agents/add-agent" className="add-agent-link">
-            <button className="add-agent-button text-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-black bg-yellow-400 hover:bg-yellow-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-yellow-400">Add New Agent</button>
-          </Link>
+         {(!roleId || roleId === 1 || roleId === 2) && (
+            <Link to="/agents/add-agent" className="add-agent-link">
+              <button className="add-agent-button text-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-black bg-yellow-400 hover:bg-yellow-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-yellow-400">Add New Agent</button>
+            </Link>
+          )}
           <Link to="/agents/upload" className="upload-agent-link">
             <button className="upload-agent-button text-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-black bg-yellow-400 hover:bg-yellow-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-yellow-400">Upload Agents</button>
           </Link>

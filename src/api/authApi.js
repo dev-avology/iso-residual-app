@@ -26,3 +26,15 @@ export const login = async (username, password) => {
     throw error.response.data;
   }
 };
+
+export const generateIsoToken = async (username, roleId) => {
+  try {
+    const response = await axios.post(`${ROUTE_BASE_URL}/generate-token`, {username,roleId});
+    console.log('response', response);
+    // Axios automatically returns the data in the response
+    return { token: response.data };
+  } catch (error) {
+    // Throw the error from the response
+    throw error.response.data;
+  }
+};

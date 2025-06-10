@@ -1,13 +1,152 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { login } from '../../../api/authApi.js';
-import {jwtDecode} from 'jwt-decode'; // Correct import for jwt-decode
+import { login, generateIsoToken } from '../../../api/authApi.js';
+import { jwtDecode } from 'jwt-decode';
+import { createAgent } from '../../../api/agents.api.js';
 
-const Login = ({ setUsername, setAuthToken, setOrganization }) => { // Added setOrganization prop
+const Login = ({ setUsername, setAuthToken, setOrganization }) => {
   const [localUsername, setLocalUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const navigate = useNavigate();
+
+  // Try ISO login first
+  const tryIsoLogin = async (username, pass, is_iso_user=null) => {
+    try {
+      const body = {
+        email: username,
+        password: pass
+      };
+
+      if (is_iso_user) {
+        body.is_iso_user = '1'; // or just use `is_iso_user` if it's already the right value
+      }
+
+      const response = await fetch('http://127.0.0.1:8000/api/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        },
+        body: JSON.stringify(body)
+      });
+
+      if (!response.ok) {
+        throw new Error('ISO login failed');
+      }
+
+      const data = await response.json();
+      return {
+        success: true,
+        token: data.token,
+        isIsoUser: true,
+        user: `${data.user?.first_name || ''} ${data.user?.last_name || ''}`.trim(),
+        firstName : data.user?.first_name || '',
+        lastName : data.user?.last_name || '',
+        user_id: data.user?.id || '',
+        role_id: data.user?.role_id || ''
+      };
+    } catch (error) {
+      console.error('ISO login error:', error);
+      return { success: false };
+    }
+  };
+
+  // Try residual login
+  const tryResidualLogin = async (username, pass) => {
+    try {
+      const { token } = await login(username, pass);
+      return {
+        success: true,
+        token,
+        isIsoUser: false
+      };
+    } catch (error) {
+      console.error('Residual login error:', error);
+      return { success: false };
+    }
+  };
+
+  const handleLogin = async (username, pass, is_iso_user=null) => {
+    try {
+      // Try ISO login first
+      const isoResult = await tryIsoLogin(username, pass, is_iso_user);
+      // console.log()
+      
+      if (isoResult?.success) {
+        try {
+          // Safely get the username or fallback to empty string
+          const username = isoResult?.user || '';
+          const roleId = isoResult?.role_id || '';
+      
+          // Ensure generateIsoToken is called only with valid string
+          const { token } = await generateIsoToken(username, roleId);
+      
+          // Safe access for token and payload
+          const authToken = token?.token || '';
+          const organizationID = token?.payload?.organization || '';
+      
+          // Store values in localStorage (fallback to empty if any issue)
+          localStorage.setItem('authToken', authToken);
+          localStorage.setItem('username', username);
+          localStorage.setItem('organizationID', organizationID);
+          localStorage.setItem('isIsoUser', 'true');
+          
+          // Update state safely
+          setUsername(username);
+          setAuthToken(authToken);
+          setOrganization(organizationID);
+
+          const agent = {
+            fName: isoResult.firstName,
+            lName: isoResult.lastName,
+            user_id: isoResult.user_id.toString(),
+            merchants: [] // Empty merchants array for now
+          }
+
+          const response = await createAgent(organizationID, agent, authToken);
+          console.log('response', response);
+          
+          // Navigate to dashboard after successful agent creation
+          navigate('/dashboard');
+          return true; // Return true to indicate successful login
+        } catch (err) {
+          console.error('ISO Login error:', err);
+          setError('Failed to create agent. Please try again.');
+          return false; // Return false to indicate login failure
+        }
+      }
+
+      // If ISO login fails, try residual login
+      const residualResult = await tryResidualLogin(username, pass);
+      
+      if (residualResult.success) {
+        const token = residualResult.token;
+        const decodedToken = jwtDecode(token);
+        const organizationID = decodedToken.organization;
+        
+        // Store token and organizationID in localStorage
+        localStorage.setItem('authToken', token);
+        localStorage.setItem('username', username);
+        localStorage.setItem('organizationID', organizationID);
+        localStorage.setItem('isIsoUser', 'false');
+        
+        // Update state
+        setUsername(username);
+        setAuthToken(token);
+        setOrganization(organizationID);
+        
+        navigate('/dashboard');
+        return;
+      }
+
+      // If both logins fail
+      setError('Invalid username or password');
+    } catch (error) {
+      console.error('Login error:', error);
+      setError('Login failed. Please try again.');
+    }
+  };
 
   useEffect(() => {
     const handleDecryptCredentials = async () => {
@@ -15,11 +154,10 @@ const Login = ({ setUsername, setAuthToken, setOrganization }) => { // Added set
         const urlParams = new URLSearchParams(window.location.search);
         const cipher = urlParams.get('secX');
         const iv = urlParams.get('secY');
-        console.log('REACT_APP_PROD_URL',process.env.REACT_APP_PROD_URL);
-        console.log('REACT_APP_LARAVEL',process.env);
 
         if (cipher && iv) {
-          const response = await fetch('https://phpstack-1180784-5314741.cloudwaysapps.com/api/decrypt/cred', {
+          // const response = await fetch('https://phpstack-1180784-5314741.cloudwaysapps.com/api/decrypt/cred', {
+          const response = await fetch('http://127.0.0.1:8000/api/decrypt/cred', {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
@@ -35,52 +173,22 @@ const Login = ({ setUsername, setAuthToken, setOrganization }) => { // Added set
 
           const data = await response.json();
           const [email, pass] = data.decrypted.split(':');
-
-          // console.log('enc email', email);
-          // console.log('enc pass', pass);
           
           if (email && pass) {
             setLocalUsername(email);
             setPassword(pass);
+            const is_iso_user = "1";
             // Automatically trigger login
-            handleLogin(email, pass);
+            handleLogin(email, pass, is_iso_user);
           }
         }
       } catch (error) {
         console.error('Error decrypting credentials:', error);
-        // Don't set error state to maintain current functionality
       }
     };
 
     handleDecryptCredentials();
   }, []);
-
-  const handleLogin = async (username, pass) => {
-    try {
-      console.log('starting login');
-      
-      const { token } = await login(username, pass);
-  
-      // Decode the token to get the organizationID
-      const decodedToken = jwtDecode(token);
-      const organizationID = decodedToken.organization;
-  
-      // Store token and organizationID in localStorage
-      localStorage.setItem('authToken', token);
-      localStorage.setItem('username', username);
-      localStorage.setItem('organizationID', organizationID);
-  
-      // Update state
-      setUsername(username);
-      setAuthToken(token);
-      setOrganization(organizationID);
-  
-      navigate('/dashboard');
-    } catch (error) {
-      console.error('Login error:', error);
-      setError('Invalid username or password');
-    }
-  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();

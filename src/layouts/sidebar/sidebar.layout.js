@@ -141,7 +141,7 @@ const Sidebar = ({ username, isAdmin, onLogout }) => {
           </Link>
 
          <a
-          href={`http://localhost:5173/login${queryParams}`}
+          href={`https://isohub.io/login${queryParams}`}
           target="_blank"
           rel="noopener noreferrer"
           onClick={toggleMobileMenu}

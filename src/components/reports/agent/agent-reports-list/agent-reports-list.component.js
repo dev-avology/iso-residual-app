@@ -6,7 +6,8 @@ import { getReports } from '../../../../api/reports.api'; // Import processor re
 // styles
 import './agent-reports-list.component.css'; // Custom styling for agents list
 
-const AgentReportsList = ({ authToken, organizationID, filterMonth, filterYear, searchTerm, setUniqueFirstNames }) => {
+const AgentReportsList = ({ authToken, organizationID, filterMonth, filterYear, searchTerm, setUniqueFirstNames, userID }) => {
+  console.log('useragent userid ',userID);
   const [agents, setAgents] = useState([]);
   const [filteredReports, setFilteredReports] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -18,8 +19,13 @@ const AgentReportsList = ({ authToken, organizationID, filterMonth, filterYear, 
     }
   }, [authToken, organizationID, filterMonth, filterYear]);
 
+  // Filter reports based on userI
+
+  console.log('filteredReports222',filteredReports);
+
   useEffect(() => {
     if (searchTerm) {
+      console.log('searchTerm',searchTerm);
       const filtered = agents.filter(agent => {
         const name = agent.role === 'company'
           ? agent.company?.toLowerCase()
@@ -66,8 +72,16 @@ const AgentReportsList = ({ authToken, organizationID, filterMonth, filterYear, 
         return { ...agent, monthsWithProcessorReports };
       });
 
-      setAgents(agentReportList);
-      setFilteredReports(agentReportList);
+      console.log('agentReportList',agentReportList);
+      console.log('agentReportList',agentReportList);
+
+      const filteredByUserID = userID ? 
+      agentReportList.filter(agent => agent.user_id == userID) : 
+      agentReportList;
+      // setFilteredReports(filteredByUserID);
+
+      setAgents(filteredByUserID);
+      setFilteredReports(filteredByUserID);
     } catch (error) {
       console.error('Error fetching agents or processor reports:', error);
     } finally {
@@ -79,6 +93,17 @@ const AgentReportsList = ({ authToken, organizationID, filterMonth, filterYear, 
     // Navigate to a dynamically built agent report view
     navigate(`/agent-report/${agentID}?month=${month}`);
   };
+
+  // useEffect(() => {
+  //   if (filteredReports.length > 0) {
+  //     console.log('our user id', userID);
+  //     console.log('agent user id id', userID);
+  //     const filteredByUserID = userID ? 
+  //       filteredReports.filter(agent => agent.user_id == userID) : 
+  //       filteredReports;
+  //     setFilteredReports(filteredByUserID);
+  //   }
+  // }, [userID, filteredReports]);
 
   if (loading) {
     return <div className="agents-report-list"><p>Loading...</p></div>; // Display loading state

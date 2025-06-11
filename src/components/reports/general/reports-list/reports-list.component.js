@@ -5,6 +5,8 @@ import { confirmAlert } from 'react-confirm-alert';
 import 'react-confirm-alert/src/react-confirm-alert.css';
 import { getReports, deleteReport } from '../../../../api/reports.api';
 import './reports-list.component.css';
+import { jwtDecode } from 'jwt-decode';
+
 
 const ReportsList = ({ authToken, organizationID, type, filterMonth, filterYear, searchTerm, setUniqueProcessor }) => {
     const [reports, setReports] = useState([]);
@@ -14,6 +16,8 @@ const ReportsList = ({ authToken, organizationID, type, filterMonth, filterYear,
     const [error, setError] = useState('');
     const reportsPerPage = 10;
     const navigate = useNavigate();
+
+    console.log('type',type);
 
     useEffect(() => {
         if (authToken && organizationID) {
@@ -60,11 +64,36 @@ const ReportsList = ({ authToken, organizationID, type, filterMonth, filterYear,
             );
         }
 
-        setFilteredReports(filtered);
+        console.log('filtered',filtered);
+
+        const token = localStorage.getItem('authToken');
+        const decodedToken = jwtDecode(token);
+        const userId = decodedToken?.user_id || '';
+        const roleId = decodedToken?.roleId || '';
+    
+        // Add userId to formData if condition is met
+        let userID = '';
+        if (decodedToken && (userId !== '') && (roleId !== 1 && roleId !== 2)) {
+            userID = userId;
+        }
+
+        let filteredByUserID = [];
+    
+        console.log('user id', userID);
+    
+        // Filter reports based on userID if provided
+        filteredByUserID = userID ? 
+        filtered.filter(report => report.userID == userID) : 
+        filtered;
+
+        setFilteredReports(filteredByUserID);
+
         setCurrentPage(1);
         const uniqueFirstProcessor = [
             ...new Set(filtered.map(report => report.processor?.trim()).filter(Boolean))
         ];
+
+        // console.log('uniqueFirstProcessor',uniqueFirstProcessor);
         
         setUniqueProcessor(uniqueFirstProcessor);
     };
@@ -125,7 +154,7 @@ const ReportsList = ({ authToken, organizationID, type, filterMonth, filterYear,
                     </tr>
                 </thead>
                 <tbody>
-                    {currentReports.map((report) => (
+                    {filteredReports.map((report) => (
                         <tr key={report.reportID}>
                             <td className='px-6 py-4 whitespace-nowrap text-sm text-gray-300'>{report.month}</td>
                             <td className='px-6 py-4 whitespace-nowrap text-sm text-gray-300'>{report.processor}</td>

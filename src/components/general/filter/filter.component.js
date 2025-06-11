@@ -20,8 +20,11 @@ const FilterComponent = ({
     actions = [], // Array of custom actions: [{ name: "Action Name", onClick: () => {} }]
     onDelete,
     fileName,
-    onExport
+    onExport,
+    userID
 }) => {
+    console.log('filter userID:', userID, '| Type:', typeof userID);
+
     const [filters, setFilters] = useState({});
     const [searchTerm, setSearchTerm] = useState("");
     const [anchorEl, setAnchorEl] = useState(null);
@@ -72,6 +75,9 @@ const FilterComponent = ({
                     sx={{ width: "200px" }}
                 />
             )}
+
+            {userID === '' && (
+            <>
 
             {filtersConfig.map((filter) => (
                 <FormControl
@@ -163,6 +169,10 @@ const FilterComponent = ({
                     Export
                 </MenuItem>
             </Menu>
+
+            </>
+            )}
+
         </Box>
     );
 };

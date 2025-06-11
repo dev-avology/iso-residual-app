@@ -9,6 +9,7 @@ import AgentReportsList from '../../../../components/reports/agent/agent-reports
 import ProcessorSummaryReportsList from '../../../../components/reports/processor/processor-summary-reports-list/processor-summary-reports-list.component.js';
 import AgentSummaryReportsList from '../../../../components/reports/agent/agent-summary-reports-list/agent-summary-reports-list.component.js';
 import BankSummaryReportsList from '../../../../components/reports/bank/bank-summary-reports-list/bank-summary-reports-list.component.js';
+import { jwtDecode } from 'jwt-decode';
 
 const ReportsPage = ({ organizationID, authToken }) => {
     const { type } = useParams();
@@ -26,6 +27,18 @@ const ReportsPage = ({ organizationID, authToken }) => {
         // Logic for handling "Go to Report Upload" button click
     };
 
+    const token = localStorage.getItem('authToken');
+    const decodedToken = jwtDecode(token);
+    const userId = decodedToken?.user_id || '';
+    const roleId = decodedToken?.roleId || '';
+
+    let userID = '';
+
+    // Add userId to formData if condition is met
+    if (decodedToken && (userId !== '') && (roleId !== 1 && roleId !== 2)) {
+       userID = userId
+    }
+
     return (
         <div className="reports-page p-6">
              <div className="reports-page-wrap max-w-7xl mx-auto bg-zinc-900 rounded-lg shadow-sm p-6 mb-8">
@@ -41,6 +54,7 @@ const ReportsPage = ({ organizationID, authToken }) => {
                 onUploadClick={handleUploadClick}
                 uniqueFirstNames={uniqueFirstNames}
                 uniqueProcessor={uniqueProcessor}
+                userID= {userID}
             />
             {/* Based on the report type, render the appropriate report list */}
             {reportType === 'agent' ? (
@@ -52,6 +66,7 @@ const ReportsPage = ({ organizationID, authToken }) => {
                         filterMonth={filterMonth}
                         filterYear={filterYear}
                         setUniqueFirstNames={setUniqueFirstNames}
+                        userID={userID}
                     />
                 </div>
             ) : reportType === 'processor-summary' ? (

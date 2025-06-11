@@ -13,7 +13,8 @@ const ReportsListHeader = ({
   setSearchTerm, 
   onUploadClick,
   uniqueFirstNames,
-  uniqueProcessor 
+  uniqueProcessor,
+  userID 
 }) => {
     const navigate = useNavigate();
 
@@ -79,7 +80,7 @@ const ReportsListHeader = ({
                 />
 
                 {
-                    reportType === 'agent' && (
+                    reportType === 'agent' &&  userID === '' && (
                         <div className="w-64">
                             <Select
                                 options={(uniqueFirstNames || []).map(name => ({

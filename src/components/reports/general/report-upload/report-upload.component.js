@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom'; // Import the hook
 import { addReport } from '../../../../api/reports.api.js';
 import './report-upload.component.css';
+import { jwtDecode } from 'jwt-decode';
 
 const ReportUpload = ({ authToken, organizationID }) => {
   const processors = [
@@ -115,6 +116,17 @@ const ReportUpload = ({ authToken, organizationID }) => {
 
       formData.append('month', selectedMonth);
       formData.append('year', selectedYear);
+
+      // Get token and decode it
+      const token = localStorage.getItem('authToken');
+      const decodedToken = jwtDecode(token);
+      const userId = decodedToken?.user_id || '';
+      const roleId = decodedToken?.roleId || '';
+
+      // Add userId to formData if condition is met
+      if (decodedToken && (userId !== '') && (roleId !== 1 && roleId !== 2)) {
+        formData.append('userID', userId);
+      }
 
       const response = await addReport(organizationID, formData, authToken);
       console.log('API Response:', response);

@@ -42,7 +42,8 @@ const TableWithFilters = ({
   editDialogProps,
   agentDetails,
   merchantPartnerSlug,
-  type
+  type,
+  userID
 }) => {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
@@ -272,6 +273,7 @@ const TableWithFilters = ({
         onExport={handleExportToCSV}
         onDelete={handleBulkDelete}
         onTotalsCalculated={(calculatedTotals) => setTotals(calculatedTotals)}
+        userID={userID}
       />
       <TableContainer >
 
@@ -308,7 +310,7 @@ const TableWithFilters = ({
                   </Box>
                 </TableCell>
               ))}
-              {approvalAction && <TableCell align="center">Actions</TableCell>}
+              {approvalAction && userID === '' && <TableCell align="center">Actions</TableCell>}
             </TableRow>
           </TableHead>
           <TableBody>
@@ -333,7 +335,8 @@ const TableWithFilters = ({
                         }
                     </TableCell>
                 ))}
-                  {approvalAction && (
+
+                  {approvalAction && userID === '' && (
                     <TableCell align="center" className="hrtd">
                       <ActionsColumn
                         onEdit={() => handleEdit(row[idField])}

@@ -22,7 +22,7 @@ const Login = ({ setUsername, setAuthToken, setOrganization }) => {
         body.is_iso_user = '1'; // or just use `is_iso_user` if it's already the right value
       }
 
-      const response = await fetch('http://127.0.0.1:8000/api/login', {
+      const response = await fetch('https://phpstack-1180784-5314741.cloudwaysapps.com/api/login', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -44,7 +44,9 @@ const Login = ({ setUsername, setAuthToken, setOrganization }) => {
         firstName : data.user?.first_name || '',
         lastName : data.user?.last_name || '',
         user_id: data.user?.id || '',
-        role_id: data.user?.role_id || ''
+        role_id: data.user?.role_id || '',
+        email: data.user?.email || '',
+        user_id: data.user?.id || '',
       };
     } catch (error) {
       console.error('ISO login error:', error);
@@ -78,9 +80,11 @@ const Login = ({ setUsername, setAuthToken, setOrganization }) => {
           // Safely get the username or fallback to empty string
           const username = isoResult?.user || '';
           const roleId = isoResult?.role_id || '';
+          const email = isoResult?.email || '';
+          const user_id = isoResult?.user_id || '';
       
           // Ensure generateIsoToken is called only with valid string
-          const { token } = await generateIsoToken(username, roleId);
+          const { token } = await generateIsoToken(username, roleId, email, user_id);
       
           // Safe access for token and payload
           const authToken = token?.token || '';
@@ -157,7 +161,7 @@ const Login = ({ setUsername, setAuthToken, setOrganization }) => {
 
         if (cipher && iv) {
           // const response = await fetch('https://phpstack-1180784-5314741.cloudwaysapps.com/api/decrypt/cred', {
-          const response = await fetch('http://127.0.0.1:8000/api/decrypt/cred', {
+          const response = await fetch('https://phpstack-1180784-5314741.cloudwaysapps.com/api/decrypt/cred', {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',

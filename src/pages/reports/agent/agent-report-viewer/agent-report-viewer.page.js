@@ -17,6 +17,7 @@ import "./agent-report-viewer.page.css";
 import { use } from "react";
 import { getAgents } from "../../../../api/agents.api.js";
 import { useNavigate,useLocation } from "react-router-dom";
+import { jwtDecode } from 'jwt-decode';
 
 
 const AgentReportViewerPage = ({ organizationID, authToken }) => {
@@ -37,6 +38,18 @@ const AgentReportViewerPage = ({ organizationID, authToken }) => {
     const searchParams = new URLSearchParams(location.search);
     const monthYear = searchParams.get("month");
     const navigate = useNavigate();
+
+    const token = localStorage.getItem('authToken');
+    const decodedToken = jwtDecode(token);
+    const userId = decodedToken?.user_id || '';
+    const roleId = decodedToken?.roleId || '';
+
+    let userID = '';
+
+    // Add userId to formData if condition is met
+    if (decodedToken && (userId !== '') && (roleId !== 1 && roleId !== 2)) {
+       userID = userId
+    }
 
     useEffect(() => {
         if (authToken && organizationID && agentID && monthYear) {
@@ -409,6 +422,7 @@ const AgentReportViewerPage = ({ organizationID, authToken }) => {
                         hasChanges={hasChanges} // Pass this prop
                         agents={agents}
                         updatedMerchantData={handleUpdatedMerchant}
+                        userID={userID}
                     />
                 )}
             </Box>

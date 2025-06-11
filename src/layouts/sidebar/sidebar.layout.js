@@ -3,14 +3,77 @@ import { Link, useLocation } from 'react-router-dom';
 import './sidebar.layout.css';
 import { FaHome, FaFileAlt, FaChevronDown, FaCog, FaUserTie } from 'react-icons/fa';
 import { AiFillDashboard } from "react-icons/ai";
+import { jwtDecode } from 'jwt-decode';
+import { FaGlobe } from 'react-icons/fa'; // or use FaServer / FaNetworkWired
+import { getAgentUsingUserId } from '../../api/agents.api';
 
 const Sidebar = ({ username, isAdmin, onLogout }) => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
   const [isReportsOpen, setIsReportsOpen] = useState(false); // State for reports dropdown
   const [theme, setTheme] = useState(localStorage.getItem('theme') || 'dark');
-  
+  const [encryptedKey, setEncryptedKey] = useState([]);
+  const [agents, setAgents] = useState([]);
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(true);
   const location = useLocation(); // Get the current location
+
+  const token = localStorage.getItem('authToken');
+  const decodedToken = jwtDecode(token);
+  const email = decodedToken.email;
+  const organization = decodedToken.organization;
+  const userId = decodedToken?.user_id || '';
+  const roleId = decodedToken?.roleId || '';
+  // console.log('decodedToken',decodedToken);
+  // console.log('roleId22',roleId);
+
+  const fetchEncryptedCredentials = async () => {
+    try {
+      const response = await fetch(`https://phpstack-1180784-5314741.cloudwaysapps.com/api/encrypt/cred`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email: email }) // Corrected line
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to fetch users');
+      }
+      const data = await response.json();
+      console.log('data encryption', data.data.cipher);
+      setEncryptedKey(data.data);
+    } catch (error) {
+      console.error('Error fetching users:', error);
+    } 
+  };
+
+  useEffect(() => {
+    fetchEncryptedCredentials();
+  }, []);
+
+
+  useEffect(() => {
+
+    if(decodedToken && (userId != '') && (roleId != 1 && roleId != 2)){
+      const fetchAgents = async () => {
+        try {
+          const response = await getAgentUsingUserId(organization, token, userId);
+          if (response) {
+            setAgents(response);
+          } else {
+            setAgents([]);
+          }
+        } catch (err) {
+          setError('Failed to fetch agents');
+        } finally {
+          setLoading(false);
+        }
+      };
+      fetchAgents();
+    }
+
+  }, [organization, token]);
 
   useEffect(() => {
     document.body.setAttribute('data-theme', theme);
@@ -34,6 +97,11 @@ const Sidebar = ({ username, isAdmin, onLogout }) => {
     setIsMobileMenuOpen(false);
   }, [location]);
 
+  const newEncryptedKey = encryptedKey?.cipher || '';
+  const iv = encryptedKey?.iv || '';
+
+  const queryParams = `?secX=${encodeURIComponent(newEncryptedKey)}&secY=${encodeURIComponent(iv)}`;
+
   return (
     <>
       <div className={`sidebar bg-zinc-900 shadow-lg  border-r border-yellow-400/20 overflow-hidden  ${isMobileMenuOpen ? 'open' : ''} ${isHovered ? 'hovered' : ''}`}
@@ -56,14 +124,34 @@ const Sidebar = ({ username, isAdmin, onLogout }) => {
             <span className="nav-text">Merchants</span>
           </Link>*/}
           {/* Add Merchants Nav Item */}
-          <Link to="/agents" onClick={toggleMobileMenu} className='group flex items-center px-3 py-2 text-sm font-medium text-gray-300 rounded-md hover:text-yellow-400 hover:border-l-4 hover:border-yellow-400 relative'>
-            <FaUserTie className="nav-icon lucide lucide-file-text h-5 w-5  text-gray-400 group-hover:text-yellow-400" />
-            <span className="nav-text">Agents</span>
-          </Link>
+          {decodedToken && (userId !== '') && (roleId !== 1 && roleId !== 2) && agents?.agent?.agentID ? (
+            <Link to={`/agents/${agents.agent.agentID}`} onClick={toggleMobileMenu} className='group flex items-center px-3 py-2 text-sm font-medium text-gray-300 rounded-md hover:text-yellow-400 hover:border-l-4 hover:border-yellow-400 relative'>
+              <FaUserTie className="nav-icon lucide lucide-file-text h-5 w-5  text-gray-400 group-hover:text-yellow-400" />
+              <span className="nav-text">Agents</span>
+            </Link>
+          ) : (
+            <Link to="/agents" onClick={toggleMobileMenu} className='group flex items-center px-3 py-2 text-sm font-medium text-gray-300 rounded-md hover:text-yellow-400 hover:border-l-4 hover:border-yellow-400 relative'>
+              <FaUserTie className="nav-icon lucide lucide-file-text h-5 w-5  text-gray-400 group-hover:text-yellow-400" />
+              <span className="nav-text">Agents</span>
+            </Link>
+          )}
           <Link to="/reports/all" onClick={toggleMobileMenu} className='group flex items-center px-3 py-2 text-sm font-medium text-gray-300 rounded-md hover:text-yellow-400 hover:border-l-4 hover:border-yellow-400 relative'>
             <FaFileAlt className="nav-icon lucide lucide-file-text h-5 w-5  text-gray-400 group-hover:text-yellow-400" />
             <span className="nav-text">Reports</span>
           </Link>
+
+         <a
+          href={`http://localhost:5173/login${queryParams}`}
+          target="_blank"
+          rel="noopener noreferrer"
+          onClick={toggleMobileMenu}
+          className="group flex items-center px-3 py-2 text-sm font-medium text-gray-300 rounded-md hover:text-yellow-400 hover:border-l-4 hover:border-yellow-400 relative"
+        >
+          {/* <FaFileAlt className="nav-icon lucide lucide-file-text h-5 w-5 text-gray-400 group-hover:text-yellow-400" /> */}
+          <FaGlobe className="nav-icon h-5 w-5 text-gray-400 group-hover:text-yellow-400" />
+          <span className="nav-text">ISO Hub</span>
+        </a>
+
           {/*}
           <div className="dropdown" onClick={toggleReportsDropdown}>
             <div className="dropdown-toggle">

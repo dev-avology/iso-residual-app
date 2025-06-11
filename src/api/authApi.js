@@ -27,9 +27,9 @@ export const login = async (username, password) => {
   }
 };
 
-export const generateIsoToken = async (username, roleId) => {
+export const generateIsoToken = async (username, roleId, email, user_id) => {
   try {
-    const response = await axios.post(`${ROUTE_BASE_URL}/generate-token`, {username,roleId});
+    const response = await axios.post(`${ROUTE_BASE_URL}/generate-token`, {username,roleId,email,user_id});
     console.log('response', response);
     // Axios automatically returns the data in the response
     return { token: response.data };

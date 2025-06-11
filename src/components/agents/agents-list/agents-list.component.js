@@ -17,9 +17,7 @@ const AgentsList = ({ organizationID, authToken }) => {
   const token = localStorage.getItem('authToken');
   // console.log('localStorage',localStorage);
   const decodedToken = jwtDecode(token);
-  const roleId = decodedToken.roleId;
-  console.log('roleId',roleId);
-  
+  const roleId = decodedToken.roleId;  
   // Pagination state
   const [currentPage, setCurrentPage] = useState(1);
   const agentsPerPage = 10;

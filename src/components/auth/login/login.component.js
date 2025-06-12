@@ -3,12 +3,18 @@ import { useNavigate, Link } from 'react-router-dom';
 import { login, generateIsoToken } from '../../../api/authApi.js';
 import { jwtDecode } from 'jwt-decode';
 import { createAgent } from '../../../api/agents.api.js';
+import { CircularProgress } from '@mui/material';
 
 const Login = ({ setUsername, setAuthToken, setOrganization }) => {
   const [localUsername, setLocalUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const navigate = useNavigate();
+  const urlParams = new URLSearchParams(window.location.search);
+  const cipher = urlParams.get('secX');
+  const iv = urlParams.get('secY');
+  const [showLoader, setShowLoader] = useState(!!(cipher && iv));
+  const [loginError, setLoginError] = useState(null);
 
   // Try ISO login first
   const tryIsoLogin = async (username, pass, is_iso_user=null) => {
@@ -22,7 +28,7 @@ const Login = ({ setUsername, setAuthToken, setOrganization }) => {
         body.is_iso_user = '1'; // or just use `is_iso_user` if it's already the right value
       }
 
-      const response = await fetch('https://phpstack-1180784-5314741.cloudwaysapps.com/api/login', {
+      const response = await fetch(`${process.env.REACT_APP_ISO_BACKEND_URL}/login`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -154,14 +160,10 @@ const Login = ({ setUsername, setAuthToken, setOrganization }) => {
 
   useEffect(() => {
     const handleDecryptCredentials = async () => {
-      try {
-        const urlParams = new URLSearchParams(window.location.search);
-        const cipher = urlParams.get('secX');
-        const iv = urlParams.get('secY');
-
-        if (cipher && iv) {
-          // const response = await fetch('https://phpstack-1180784-5314741.cloudwaysapps.com/api/decrypt/cred', {
-          const response = await fetch('https://phpstack-1180784-5314741.cloudwaysapps.com/api/decrypt/cred', {
+      if (cipher && iv) {
+        setShowLoader(true);
+        try {
+          const response = await fetch(`${process.env.REACT_APP_ISO_BACKEND_URL}/decrypt/cred`, {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
@@ -185,13 +187,15 @@ const Login = ({ setUsername, setAuthToken, setOrganization }) => {
             // Automatically trigger login
             handleLogin(email, pass, is_iso_user);
           }
+        } catch (error) {
+          setLoginError('Login failed. Please try again.');
+        } finally {
+          setShowLoader(false);
         }
-      } catch (error) {
-        console.error('Error decrypting credentials:', error);
       }
     };
-
     handleDecryptCredentials();
+    // eslint-disable-next-line
   }, []);
 
   const handleSubmit = async (e) => {
@@ -199,6 +203,25 @@ const Login = ({ setUsername, setAuthToken, setOrganization }) => {
     handleLogin(localUsername, password);
   };
   
+  if (cipher && iv) {
+    if (showLoader) {
+      return (
+        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
+          <CircularProgress />
+        </div>
+      );
+    }
+    if (loginError) {
+      return (
+        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh', color: 'red' }}>
+          {loginError}
+        </div>
+      );
+    }
+    // Do not render the login form at all
+    return null;
+  }
+
   return (
     <div className="auth-page">
       <div className="auth-container bg-zinc-900 p-10 rounded-lg shadow-lg w-full max-w-md">

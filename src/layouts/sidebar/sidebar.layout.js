@@ -26,13 +26,15 @@ const Sidebar = ({ username, isAdmin, onLogout }) => {
   const organization = decodedToken.organization;
   const userId = decodedToken?.user_id || '';
   const roleId = decodedToken?.roleId || '';
+  console.log('process.env.REACT_APP_ISO_BACKEND_URL',`${process.env.REACT_APP_ISO_BACKEND_URL}/encrypt/cred`);
   // console.log('decodedToken',decodedToken);
   // console.log('roleId22',roleId);
   // console.log('agents',agents);
 
   const fetchEncryptedCredentials = async () => {
     try {
-      const response = await fetch(`https://phpstack-1180784-5314741.cloudwaysapps.com/api/encrypt/cred`, {
+      // const response = await fetch(`https://phpstack-1180784-5314741.cloudwaysapps.com/api/encrypt/cred`, {
+      const response = await fetch(`${process.env.REACT_APP_ISO_BACKEND_URL}/encrypt/cred`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -178,7 +180,7 @@ const Sidebar = ({ username, isAdmin, onLogout }) => {
           </Link>
 
          <a
-          href={`https://isohub.io/login${queryParams}`}
+          href={`${process.env.REACT_APP_ISO_URL}/login${queryParams}`}
           target="_blank"
           rel="noopener noreferrer"
           onClick={toggleMobileMenu}

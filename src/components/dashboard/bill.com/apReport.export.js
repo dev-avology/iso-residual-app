@@ -3,7 +3,7 @@ import { generateBankSummaryReport, generateAgentSummaryReport } from '../../../
 import { getInvoiceNum, updateInvoiceNum } from '../../../api/invoices.api';
 import './ap-report-export.component.css'; // Optional: Add styles
 
-const APReportExport = ({ authToken, organizationID }) => {
+const APReportExport = ({ authToken, organizationID, userID }) => {
     const getCurrentMonthAndYear = () => {
         const date = new Date();
         const monthName = date.toLocaleString('default', { month: 'long' });

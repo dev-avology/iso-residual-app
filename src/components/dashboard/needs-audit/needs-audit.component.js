@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './needs-audit.component.css'; // Assuming you'll add styles here
 
-const NeedsAudit = ({ reports }) => {
+const NeedsAudit = ({ reports, userID }) => {
   const [reportsThatNeedAudit, setReportsThatNeedAudit] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const reportsPerPage = 5; // Adjust the number of reports per page
@@ -10,11 +10,20 @@ const NeedsAudit = ({ reports }) => {
 
   useEffect(() => {
     // Filter reports that have entries needing audit
-    const reportsNeedingAudit = reports.filter(report => 
-      Array.isArray(report.reportData) && report.reportData.some(item => item.needsAudit)
-    );
+    let reportsNeedingAudit = [];
+    if(userID === ''){
+      reportsNeedingAudit = reports.filter(report => 
+        Array.isArray(report.reportData) && report.reportData.some(item => item.needsAudit)
+      );
+    }else{
+      reportsNeedingAudit = reports.filter(report => 
+        report.userID == userID && Array.isArray(report.reportData) && report.reportData.some(item => item.needsAudit)
+      );
+    }
     setReportsThatNeedAudit(reportsNeedingAudit);
   }, [reports]);
+
+  console.log('reportsThatNeedAudit',reportsThatNeedAudit);
 
   // Pagination logic
   const indexOfLastReport = currentPage * reportsPerPage;

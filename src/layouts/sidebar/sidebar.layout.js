@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import './sidebar.layout.css';
-import { FaHome, FaFileAlt, FaChevronDown, FaCog, FaUserTie } from 'react-icons/fa';
+// import { FaHome, FaFileAlt, FaChevronDown, FaCog, FaUserTie } from 'react-icons/fa';
 import { AiFillDashboard } from "react-icons/ai";
 import { jwtDecode } from 'jwt-decode';
 import { FaGlobe } from 'react-icons/fa'; // or use FaServer / FaNetworkWired
 import { getAgentUsingUserId } from '../../api/agents.api';
+import { FaHome, FaFileAlt, FaChevronDown, FaCog, FaUserTie, FaUsers } from 'react-icons/fa';
 
 const Sidebar = ({ username, isAdmin, onLogout }) => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -17,6 +18,7 @@ const Sidebar = ({ username, isAdmin, onLogout }) => {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(true);
   const location = useLocation(); // Get the current location
+  const [isAgentsOpen, setIsAgentsOpen] = useState(false);
 
   const token = localStorage.getItem('authToken');
   const decodedToken = jwtDecode(token);
@@ -26,6 +28,7 @@ const Sidebar = ({ username, isAdmin, onLogout }) => {
   const roleId = decodedToken?.roleId || '';
   // console.log('decodedToken',decodedToken);
   // console.log('roleId22',roleId);
+  // console.log('agents',agents);
 
   const fetchEncryptedCredentials = async () => {
     try {
@@ -125,16 +128,50 @@ const Sidebar = ({ username, isAdmin, onLogout }) => {
           </Link>*/}
           {/* Add Merchants Nav Item */}
           {decodedToken && (userId !== '') && (roleId !== 1 && roleId !== 2) && agents?.agent?.agentID ? (
+            // user dropdown
             <Link to={`/agents/${agents.agent.agentID}`} onClick={toggleMobileMenu} className='group flex items-center px-3 py-2 text-sm font-medium text-gray-300 rounded-md hover:text-yellow-400 hover:border-l-4 hover:border-yellow-400 relative'>
               <FaUserTie className="nav-icon lucide lucide-file-text h-5 w-5  text-gray-400 group-hover:text-yellow-400" />
-              <span className="nav-text">Agents</span>
+              <span className="nav-text">
+                {agents?.agent?.fName && agents?.agent?.lName ? 
+                  `${agents.agent.
+                    fName.charAt(0).toUpperCase()}${agents.agent.
+                      fName.slice(1)} ${agents.agent.lName.charAt(0).toUpperCase()}${agents.agent.lName.slice(1)}` :
+                  'Agent Name'
+                }
+              </span>
             </Link>
           ) : (
-            <Link to="/agents" onClick={toggleMobileMenu} className='group flex items-center px-3 py-2 text-sm font-medium text-gray-300 rounded-md hover:text-yellow-400 hover:border-l-4 hover:border-yellow-400 relative'>
-              <FaUserTie className="nav-icon lucide lucide-file-text h-5 w-5  text-gray-400 group-hover:text-yellow-400" />
-              <span className="nav-text">Agents</span>
-            </Link>
+            <>    
+            {/* Admin Dropdown */}
+            <div
+              className="nav-item group flex items-center px-3 py-2 text-sm font-medium text-gray-300 rounded-md hover:text-yellow-400 hover:border-l-4 hover:border-yellow-400 relative cursor-pointer"
+              onClick={() => setIsAgentsOpen(!isAgentsOpen)}
+            >
+               <FaUsers className="nav-icon h-5 w-5 text-gray-400 group-hover:text-yellow-400" />
+
+               {isHovered && (
+                <>
+                  <span className="nav-text ml-2">Admin</span>
+                  <span className={`ml-auto transition-transform ${isAgentsOpen ? 'rotate-180' : ''}`}>▼</span>
+                </>
+              )}
+            </div>
+          
+            {isAgentsOpen && (
+              <div className="dropdown-content pl-6">
+                <Link
+                  to="/agents"
+                  className="dropdown-item group flex items-center px-3 py-2 text-sm font-medium text-gray-300 rounded-md hover:text-yellow-400 hover:border-l-4 hover:border-yellow-400 relative"
+                >
+                  <FaUserTie className="nav-icon h-5 w-5 text-gray-400 group-hover:text-yellow-400" />
+                  <span className="nav-text ml-2">Agents</span>
+                </Link>
+              </div>
+            )}
+            </>
           )}
+
+
           <Link to="/reports/all" onClick={toggleMobileMenu} className='group flex items-center px-3 py-2 text-sm font-medium text-gray-300 rounded-md hover:text-yellow-400 hover:border-l-4 hover:border-yellow-400 relative'>
             <FaFileAlt className="nav-icon lucide lucide-file-text h-5 w-5  text-gray-400 group-hover:text-yellow-400" />
             <span className="nav-text">Reports</span>

@@ -7,6 +7,7 @@ import AgentDetails from "../../../components/agents/agent-details/agent-details
 import AgentMerchants from "../../../components/agents/agent-merchants/agent-merchants.component";
 import PartnerMerchants from "../../../components/agents/partner-merchants/partner-merchants.component";
 import { getAgent, getAgents, updateAgent } from "../../../api/agents.api";
+import { jwtDecode } from 'jwt-decode';
 
 const AgentViewerPage = ({ organizationID, authToken }) => {
   const { agentID } = useParams();
@@ -22,6 +23,18 @@ const AgentViewerPage = ({ organizationID, authToken }) => {
   const [hasChanges, setHasChanges] = useState(false);
   const [repSplitOnChange, setRepSplitOnChange] = useState(null);
   const [allAgents, setAllAgents] = useState([]);
+
+  const token = localStorage.getItem('authToken');
+  const decodedToken = jwtDecode(token);
+  const userId = decodedToken?.user_id || '';
+  const roleId = decodedToken?.roleId || '';
+
+  let userID = '';
+
+  // Add userId to formData if condition is met
+  if (decodedToken && (userId !== '') && (roleId !== 1 && roleId !== 2)) {
+      userID = userId
+  }
 
   // console.log(editedAgent.agentSplit,'editedAgent22222');
 
@@ -86,7 +99,10 @@ const AgentViewerPage = ({ organizationID, authToken }) => {
       [field]: value,
     }));
     setRepSplitOnChange(value);
-    setHasChanges(true);
+    if(userID === ''){
+        // setIsEditing(true);
+      setHasChanges(true);
+    }
   };
 
   // Handle client changes using merchantID instead of index
@@ -95,7 +111,10 @@ const AgentViewerPage = ({ organizationID, authToken }) => {
       client.merchantID === merchantID ? { ...client, [field]: value } : client
     );
     setClients(updatedClients);
-    setHasChanges(true);
+    // setHasChanges(true);
+    if(userID === ''){
+      setHasChanges(true);
+    }
   };
 
   // Handle client deletion
@@ -104,7 +123,10 @@ const AgentViewerPage = ({ organizationID, authToken }) => {
       (client) => client.merchantID !== merchantID
     );
     setClients(updatedClients);
-    setHasChanges(true);
+    // setHasChanges(true);
+    if(userID === ''){
+      setHasChanges(true);
+    }
   };
 
   // Function to add a new client row
@@ -117,7 +139,10 @@ const AgentViewerPage = ({ organizationID, authToken }) => {
       branchID: "",
     };
     setClients([...clients, newClient]);
-    setHasChanges(true);
+    // setHasChanges(true);
+    if(userID === ''){
+      setHasChanges(true);
+    }
   };
 
   // Handle save operation
@@ -159,7 +184,10 @@ const AgentViewerPage = ({ organizationID, authToken }) => {
   const updatePartnerClients = (updatedClients) => {
     setClients(updatedClients);
     console.log(updatedClients, "updatedClients");
-    setHasChanges(true);
+    // setHasChanges(true);
+    if(userID === ''){
+      setHasChanges(true);
+    }
   };
 
   // Split clients into two categories
@@ -175,7 +203,7 @@ const AgentViewerPage = ({ organizationID, authToken }) => {
 
   return (
     <div className="agent-view-page">
-      <AgentDetails agent={editedAgent} allAgents={allAgents} onAgentChange={handleAgentChange} />
+      <AgentDetails agent={editedAgent} allAgents={allAgents} onAgentChange={handleAgentChange} userID={userID} />
 
       <div className="tabs">
         <div
@@ -205,6 +233,7 @@ const AgentViewerPage = ({ organizationID, authToken }) => {
               agentDetails={editedAgent}
               onClientChange={handleClientChange}
               onDeleteClient={handleDeleteClient}
+              userID={userID}
             />
           </>
         ) : (
@@ -217,6 +246,7 @@ const AgentViewerPage = ({ organizationID, authToken }) => {
               authToken={authToken} // Pass authToken
               agentDetails={editedAgent}
               repSplitOnChange={repSplitOnChange} // Pass agent details
+              userID={userID}
             />
           </>
         )}

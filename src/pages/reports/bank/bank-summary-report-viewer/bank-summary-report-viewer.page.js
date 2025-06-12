@@ -17,6 +17,7 @@ import "./bank-summary-report-viewer.page.css";
 import { useLocation, useNavigate } from "react-router-dom";
 import { getAgents } from "../../../../api/agents.api.js";
 import axios from "axios";
+import { jwtDecode } from 'jwt-decode';
 
 const BankSummaryReportViewerPage = ({ organizationID, authToken }) => {
   const [generatedReportData, setGeneratedReportData] = useState([]);
@@ -30,6 +31,19 @@ const BankSummaryReportViewerPage = ({ organizationID, authToken }) => {
   const navigate = useNavigate();
   const [agents, setAgents] = useState([]);
   const [updatedMerchant, setUpdatedMerchant] = useState([]);
+
+
+  const token = localStorage.getItem('authToken');
+  const decodedToken = jwtDecode(token);
+  const userId = decodedToken?.user_id || '';
+  const roleId = decodedToken?.roleId || '';
+
+  let userID = '';
+
+  // Add userId to formData if condition is met
+  if (decodedToken && (userId !== '') && (roleId !== 1 && roleId !== 2)) {
+      userID = userId
+  }
 
 
   const searchParams = new URLSearchParams(location.search);
@@ -448,6 +462,7 @@ useEffect(() => {
               hasChanges={hasChanges}
               agents={agents}
               updatedMerchantData={handleUpdatedMerchant}
+              userID={userID}
             />
           )}
       </Box>

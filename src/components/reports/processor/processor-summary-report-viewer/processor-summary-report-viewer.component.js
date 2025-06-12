@@ -11,7 +11,7 @@ import TableWithFilters from '../../../general/table/table.component.js';
 import { exportToCSV } from '../../../../utils/export.util.js';
 import { FaCheck } from 'react-icons/fa';
 
-const ProcessorSummaryReportViewer = ({ authToken, organizationID }) => {
+const ProcessorSummaryReportViewer = ({ authToken, organizationID, userID }) => {
     const [summaryReport, setSummaryReport] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -212,6 +212,7 @@ const ProcessorSummaryReportViewer = ({ authToken, organizationID }) => {
                 ]}
                 totalFields={["totalTransactions", "totalSalesAmount", "totalIncome", "totalExpenses", "totalNet", "totalAgentNet"]}
                 type="report"
+                userID={userID}
             />
         </div>
     );

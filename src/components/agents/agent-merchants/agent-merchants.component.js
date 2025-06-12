@@ -19,6 +19,7 @@ const AgentMerchants = ({
   agentDetails,
   onClientChange,
   onDeleteClient,
+  userID
 }) => {
   // Local state holds only agent merchants (non-partner)
   const [agentData, setAgentData] = useState([]);
@@ -318,6 +319,7 @@ const AgentMerchants = ({
             })),
         }}
         merchantPartnerSlug="merchantPartnerSlug"
+        userID={userID}
       />
     </div>
   );

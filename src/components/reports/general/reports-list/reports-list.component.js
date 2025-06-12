@@ -17,7 +17,7 @@ const ReportsList = ({ authToken, organizationID, type, filterMonth, filterYear,
     const reportsPerPage = 10;
     const navigate = useNavigate();
 
-    console.log('type',type);
+    console.log('type33',type);
 
     useEffect(() => {
         if (authToken && organizationID) {
@@ -47,6 +47,8 @@ const ReportsList = ({ authToken, organizationID, type, filterMonth, filterYear,
 
     const filterReports = () => {
         let filtered = reports;
+
+        console.log('filterReportsrrr',reports);
 
         if (filterMonth) {
             filtered = filtered.filter(report => report.month.includes(filterMonth));
@@ -154,12 +156,12 @@ const ReportsList = ({ authToken, organizationID, type, filterMonth, filterYear,
                     </tr>
                 </thead>
                 <tbody>
-                    {filteredReports.map((report) => (
+                    {currentReports.map((report) => (
                         <tr key={report.reportID}>
                             <td className='px-6 py-4 whitespace-nowrap text-sm text-gray-300'>{report.month}</td>
                             <td className='px-6 py-4 whitespace-nowrap text-sm text-gray-300'>{report.processor}</td>
                             <td className='px-6 py-4 whitespace-nowrap text-sm text-gray-300'>
-                                <button className="btn-view text-yellow-400 hover:text-yellow-500"  onClick={() => handleView(report.reportID)}>
+                                <button className="btn-view text-yellow-400 hover:text-yellow-500" onClick={() => handleView(report.reportID)}>
                                     <FaEye />
                                 </button>
                                 <button className="btn-delete text-yellow-400 hover:text-yellow-500" onClick={() => handleDelete(report.reportID)}>

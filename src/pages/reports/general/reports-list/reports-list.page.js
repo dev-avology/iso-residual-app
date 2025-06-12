@@ -76,6 +76,7 @@ const ReportsPage = ({ organizationID, authToken }) => {
                         organizationID={organizationID}
                         filterMonth={filterMonth}
                         filterYear={filterYear}
+                        userID={userID}
                     />
                 </div>
             ) : reportType === 'agent-summary' ? ( // New case for agent summary report
@@ -85,6 +86,7 @@ const ReportsPage = ({ organizationID, authToken }) => {
                         organizationID={organizationID}
                         filterMonth={filterMonth}
                         filterYear={filterYear}
+                        userID={userID}
                     />
                 </div>
             ) : reportType === 'bank-summary' ? (
@@ -94,6 +96,7 @@ const ReportsPage = ({ organizationID, authToken }) => {
                         organizationID={organizationID}
                         filterMonth={filterMonth}
                         filterYear={filterYear}
+                        userID={userID}
                     />
                 </div>
             ) : (

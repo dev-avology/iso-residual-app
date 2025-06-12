@@ -126,20 +126,34 @@ const TableWithFilters = ({
 
   const handleSave = (updatedRow) => {
     // console.log('updatedRow',updatedRow);
+    // console.log('data',data);
+    // return false;
     // const updatedData = data.map(row =>
     //   row["merchantID"] === updatedRow["merchantID"] ? updatedRow : row
     // );
     let updatedData = '';
+    // console.log('data',data);
 
     if(merchantPartnerSlug === 'merchantPartnerSlug'){
       updatedData = data.map(row =>
       row["merchantID"] === updatedRow["merchantID"] ? updatedRow : row
       );
+    }else if(merchantPartnerSlug === 'billing'){
+      updatedData = data.map(row =>
+        row["Agent Id"] === updatedRow["Agent Id"] ? updatedRow : row
+      );
+    }else if(merchantPartnerSlug === 'agent-summary-report'){
+      updatedData = data.map(row =>
+        row["agentName"] === updatedRow["agentName"] ? updatedRow : row
+      );
+    }else if(merchantPartnerSlug === 'ar'){
+      updatedData = data.map(row =>
+        row["customerID"] === updatedRow["customerID"] ? updatedRow : row
+      );
     }else{
        updatedData = data.map(row =>
        row["Merchant Id"] === updatedRow["Merchant Id"] ? updatedRow : row
     );
-
     }
 
     // console.log('updatedData',updatedData);

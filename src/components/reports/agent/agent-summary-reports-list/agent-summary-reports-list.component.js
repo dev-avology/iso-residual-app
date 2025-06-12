@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { getReports } from "../../../../api/reports.api";
 import "./agent-summary-reports-list.component.css"; // Add your own styling here
 
-const AgentSummaryReportsList = ({ authToken, organizationID }) => {
+const AgentSummaryReportsList = ({ authToken, organizationID, userID }) => {
   const [summaryReports, setSummaryReports] = useState([]);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
@@ -15,24 +15,40 @@ const AgentSummaryReportsList = ({ authToken, organizationID }) => {
     }
   }, [authToken, organizationID]);
 
+  console.log('summaryReports',summaryReports);
+
   const fetchAgentReports = async () => {
     try {
       setLoading(true);
       // Fetch all reports
       const allReports = await getReports(organizationID, "agent", authToken);
+      console.log('allReports',allReports);
+      let approvedAgentReports = [];
 
-      // Filter agent reports (type: 'agent') and check for approved reports
-      const approvedAgentReports = allReports
-        // .filter(report => report.type === 'agent' && report.approved) // Only approved agent reports
-        // this upper line is commented date 05-16-2025
-        .filter((report) => report.type === "agent") // Only approved agent reports
-        .reduce((acc, report) => {
-          const monthYear = `${report.month}`;
-          if (!acc.includes(monthYear)) {
-            acc.push(monthYear); // Collect unique month-year combinations
-          }
-          return acc;
-        }, []);
+      if(userID === ''){
+        // Filter agent reports (type: 'agent') and check for approved reports
+        approvedAgentReports = allReports
+          // .filter(report => report.type === 'agent' && report.approved) // Only approved agent reports
+          // this upper line is commented date 05-16-2025
+          .filter((report) => report.type === "agent") // Only approved agent reports
+          .reduce((acc, report) => {
+            const monthYear = `${report.month}`;
+            if (!acc.includes(monthYear)) {
+              acc.push(monthYear); // Collect unique month-year combinations
+            }
+            return acc;
+          }, []);
+      }else {
+         approvedAgentReports = allReports
+         .filter((report) => report.type === "agent" && report.userID == userID)
+         .reduce((acc, report) => {
+           const monthYear = `${report.month}`;
+           if (!acc.includes(monthYear)) {
+             acc.push(monthYear);
+           }
+           return acc;
+         }, []);
+      }
 
       // Create summary reports for the unique month-year combinations
       const summaryReportsData = approvedAgentReports.map((monthYear) => {

@@ -35,6 +35,8 @@ const NeedsUploaded = ({ reports }) => {
       'TRX': 'process report',
     };
 
+    console.log('reports222',reports);
+
     // Gather processors from reports that have been uploaded
     const uploadedProcessors = [];
     reports.forEach((report) => {
@@ -46,13 +48,15 @@ const NeedsUploaded = ({ reports }) => {
       }
     });
 
+    
     // Remove duplicates from uploaded processors
     const uniqueUploadedProcessors = [...new Set(uploadedProcessors)];
-
+    
     // Check for processors that haven't uploaded reports
     const processorsThatNeedUpload = Object.keys(processorReports).filter(
       (processor) => !uniqueUploadedProcessors.includes(processor)
     );
+    console.log('processorsThatNeedUpload',processorsThatNeedUpload);
 
     setProcessorsThatNeedUpload(
       processorsThatNeedUpload.map((processor) => ({

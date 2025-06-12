@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { getReports } from '../../../../api/reports.api';
 import './processor-summary-reports-list.component.css';
 
-const ProcessorSummaryReportsList = ({ authToken, organizationID, filterMonth, filterYear }) => {
+const ProcessorSummaryReportsList = ({ authToken, organizationID, filterMonth, filterYear, userID }) => {
   const [summaryReports, setSummaryReports] = useState([]);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
@@ -20,6 +20,7 @@ const ProcessorSummaryReportsList = ({ authToken, organizationID, filterMonth, f
       setLoading(true);
       // Fetch all processor reports from the backend
       const processorReports = await getReports(organizationID, 'processor', authToken);
+      // console.log('processorReports',processorReports);
 
       // Filter processor reports based on the selected month and year
       const filteredReports = processorReports.filter(report => {
@@ -29,7 +30,15 @@ const ProcessorSummaryReportsList = ({ authToken, organizationID, filterMonth, f
       });
 
       // Create a summary report entry for each unique month-year combination
-      const uniqueMonthYearCombinations = [...new Set(filteredReports.map(report => `${report.month}-${report.year}`))];
+      let uniqueMonthYearCombinations = [];
+      if(userID === ''){
+        uniqueMonthYearCombinations = [...new Set(filteredReports.map(report => `${report.month}-${report.year}`))];
+      }else{
+        uniqueMonthYearCombinations = [...new Set(filteredReports.filter(report => report.userID == userID).map(report => `${report.month}-${report.year}`))];
+      }
+
+      console.log('uniqueMonthYearCombinations',uniqueMonthYearCombinations)
+
       const summaryReportsData = uniqueMonthYearCombinations.map(monthYear => {
         const [month, year] = monthYear.split('-');
         return {

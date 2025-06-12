@@ -23,7 +23,8 @@ const BankSummaryReportViewer = ({
     hasChanges,
     setHasChanges,
     agents,
-    updatedMerchantData
+    updatedMerchantData,
+    userID
 }) => {
     const [selectedRows, setSelectedRows] = useState([]);
     const [totals, setTotals] = useState({});
@@ -307,6 +308,7 @@ const BankSummaryReportViewer = ({
                 hasChanges={hasChanges}
                 editDialogProps={editDialogProps}
                 type="report"
+                userID={userID}
             />
 
             {/* ✅ Safe Handling of Totals to Prevent Runtime Error */}

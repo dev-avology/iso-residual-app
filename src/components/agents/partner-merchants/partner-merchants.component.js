@@ -10,7 +10,8 @@ const PartnerMerchants = ({
   agentID,
   authToken,
   agentDetails, // full agent object from parent
-  repSplitOnChange
+  repSplitOnChange,
+  userID
 }) => {
   const [partnerData, setPartnerData] = useState([]);
   const [selected, setSelected] = useState([]);
@@ -713,6 +714,7 @@ const PartnerMerchants = ({
         }}
         agentDetails={agentDetails}
         merchantPartnerSlug='merchantPartnerSlug'
+        userID={userID}
       />
     </div>
   );

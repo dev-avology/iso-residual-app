@@ -69,7 +69,7 @@ const NeedsAudit = ({ reports, userID }) => {
           </div>
         </>
       ) : (
-        <p>All reports have been audited.</p>
+        <p class="text-sm text-gray-300 text-center">All reports have been audited.</p>
       )}
     </div>
   );

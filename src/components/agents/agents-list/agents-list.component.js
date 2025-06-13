@@ -17,17 +17,24 @@ const AgentsList = ({ organizationID, authToken }) => {
   const token = localStorage.getItem('authToken');
   // console.log('localStorage',localStorage);
   const decodedToken = jwtDecode(token);
+  console.log('decodedToken',decodedToken);
   const roleId = decodedToken.roleId;  
+  const userId = decodedToken.user_id;  
+  console.log('agents',agents);
+
   // Pagination state
   const [currentPage, setCurrentPage] = useState(1);
   const agentsPerPage = 10;
+
+  const iso_token = localStorage.getItem('iso_token');
 
   useEffect(() => {
     const fetchAgents = async () => {
       try {
         const response = await getAgents(organizationID, authToken);
         if (response && response.agents && Array.isArray(response.agents)) {
-          setAgents(response.agents);
+          const filteredAgents = response.agents.filter(agent => agent.user_id !== '2');
+          setAgents(filteredAgents);
         } else {
           setAgents([]);
         }
@@ -41,7 +48,7 @@ const AgentsList = ({ organizationID, authToken }) => {
     fetchAgents();
   }, [organizationID, authToken]);
 
-  const handleDelete = async (agentID) => {
+  const handleDelete = async (agentID, user_id = null) => {
     confirmAlert({
       title: 'Confirm to delete',
       message: 'Are you sure you want to delete this agent? This action can\'t be undone.',
@@ -50,6 +57,25 @@ const AgentsList = ({ organizationID, authToken }) => {
           label: 'Yes',
           onClick: async () => {
             try {
+              
+              
+              if(user_id && user_id != null){
+                const userResponse = await fetch(`${process.env.REACT_APP_ISO_BACKEND_URL}/user/destroy/${user_id}`, {
+                  method: 'GET',
+                  headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${iso_token}`
+                  }
+                  // body: JSON.stringify(agent)
+                });
+                
+                const userData = await userResponse.json();
+                console.log('userData',userData);
+                
+                if (!userResponse.ok) {
+                  throw new Error(userData.message || 'Failed to delete user');
+                }
+              }
               await deleteAgent(organizationID, agentID, authToken);
               setAgents(agents.filter(agent => agent.agentID !== agentID));
             } catch (err) {
@@ -168,7 +194,7 @@ const AgentsList = ({ organizationID, authToken }) => {
                     </Link>
                     <button 
                       className="btn-delete text-yellow-400 hover:text-yellow-500" 
-                      onClick={() => handleDelete(agent.agentID)}
+                      onClick={() => handleDelete(agent.agentID,agent?.user_id)}
                     >
                       <FaTrash />
                     </button>

@@ -76,6 +76,7 @@ function App() {
     // Clear authentication-related data
     localStorage.removeItem('authToken');
     localStorage.removeItem('username');
+    localStorage.removeItem('iso_token');
 
     // Clear organization-specific stats and organization ID
     if (organizationID) {

@@ -37,11 +37,15 @@ const Login = ({ setUsername, setAuthToken, setOrganization }) => {
         body: JSON.stringify(body)
       });
 
+      console.log(response);
+      // return false;
+
       if (!response.ok) {
         throw new Error('ISO login failed');
       }
 
       const data = await response.json();
+      console.log('helo data',data);
       return {
         success: true,
         token: data.token,
@@ -52,7 +56,8 @@ const Login = ({ setUsername, setAuthToken, setOrganization }) => {
         user_id: data.user?.id || '',
         role_id: data.user?.role_id || '',
         email: data.user?.email || '',
-        user_id: data.user?.id || '',
+        // user_id: data.user?.id || '',
+        iso_token: data.token,
       };
     } catch (error) {
       console.error('ISO login error:', error);
@@ -88,6 +93,7 @@ const Login = ({ setUsername, setAuthToken, setOrganization }) => {
           const roleId = isoResult?.role_id || '';
           const email = isoResult?.email || '';
           const user_id = isoResult?.user_id || '';
+          const iso_token = isoResult?.iso_token || '';
       
           // Ensure generateIsoToken is called only with valid string
           const { token } = await generateIsoToken(username, roleId, email, user_id);
@@ -98,6 +104,7 @@ const Login = ({ setUsername, setAuthToken, setOrganization }) => {
       
           // Store values in localStorage (fallback to empty if any issue)
           localStorage.setItem('authToken', authToken);
+          localStorage.setItem('iso_token', iso_token);
           localStorage.setItem('username', username);
           localStorage.setItem('organizationID', organizationID);
           localStorage.setItem('isIsoUser', 'true');

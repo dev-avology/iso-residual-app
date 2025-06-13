@@ -447,6 +447,11 @@ body[data-theme="light"] .bg-zinc-900 {
 body[data-theme="light"] .text-gray-300 {
   color: #000;
 }
+
+body[data-theme="light"] .additional-splits-select-box {
+  color: #000;
+}
+
 body[data-theme="light"] .pagination-btn {
   border: 1px solid #ddd;
 }
@@ -604,6 +609,11 @@ body[data-theme="dark"] .save-button, body[data-theme="dark"] .toggle-password-b
   color: #000;
   font-weight: 500;
 }
+
+body[data-theme="dark"] .additional-splits-select-box {
+  color: white;
+}
+
 body[data-theme="dark"] .pop-form [aria-modal="true"] button svg {
   fill: #000;
 }

@@ -205,7 +205,7 @@ const AgentDetails = ({ agent, allAgents, onAgentChange, userID }) => {
                 <select
                   value={selectedSplitType}
                   onChange={(e) => setSelectedSplitType(e.target.value)}
-                  className="input block w-full bg-zinc-800 border-zinc-700 text-white rounded-md focus:ring-yellow-400 focus:border-yellow-400" style={{ color: 'black' }}
+                  className="additional-splits-select-box input block w-full bg-zinc-800 border-zinc-700 text-white rounded-md focus:ring-yellow-400 focus:border-yellow-400"
                 >
                   <option value="">Select Split Type</option>
                   {Object.values(SPLIT_TYPES).map((type) => (
@@ -243,18 +243,17 @@ const AgentDetails = ({ agent, allAgents, onAgentChange, userID }) => {
                 <select
                   value={split.name || ""}
                   onChange={(e) => handleAdditionalSplitChange(index, 'name', e.target.value)}
-                  className="input block w-full mb-2 bg-zinc-800 border-zinc-700 text-white rounded-md focus:ring-yellow-400 focus:border-yellow-400" 
-                  style={{ color: "black"}}
+                  className="additional-splits-select-box input block w-full mb-2 bg-zinc-800 border-zinc-700 text-white rounded-md focus:ring-yellow-400 focus:border-yellow-400" 
+                  
                   disabled={userID !== ''}
                 >
-                  <option value="" style={{ color: "black"}}>Select {split.type}</option>
+                  <option value="">Select {split.type}</option>
                   {allAgents.map((agent) => {
                     const fullName = `${agent.fName} ${agent.lName}`;
                     return (
                       <option 
                         key={agent.agentID} 
                         value={fullName}
-                        style={{ color: "black"}}
                       >
                         {fullName}
                       </option>

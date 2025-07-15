@@ -275,6 +275,8 @@ const TableWithFilters = ({
 
   const paginatedData = sortedData.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
 
+  console.log('sortedData',sortedData);
+
   return (
     <Box class="max-w-7xl mx-auto bg-zinc-900 rounded-lg shadow-sm p-6 mb-8 ">
 
@@ -340,16 +342,57 @@ const TableWithFilters = ({
                       />
                     </TableCell>
                   )}
-                  {columns.map((col) => (
-                    <TableCell align="center" key={col.field}>
-                        {col.render 
-                            ? col.render(row[col.field], row) 
-                            : (typeof row[col.field] === "number" 
-                                ? new Decimal(row[col.field]).toDecimalPlaces(2).toNumber().toFixed(2) 
-                                : row[col.field])
-                        }
-                    </TableCell>
-                ))}
+                  {columns.map((col) => {
+                    // Define currency fields that should show dollar sign
+                    const currencyFields = [
+                      'Expenses', 'Income', 'Net', 'BPS', 'Sales Amount', 
+                      'Agent Net', 'Bank Payout', 'Payout Amount', 'Volume', 
+                      'Sales', 'Refunds', 'Reject Amount', 'Fee', 'Total',
+                      'Setup Fee ISO', 'Monthly Gateway Fee ISO', 'Transaction Fee ISO',
+                      'ISO Total', 'lineItemAmount', 'lineItemPrice','Total Sales Amount',
+                      'Total Income','Total Expenses','Total Net','Total Agent Net'
+                    ];
+                    const isCurrencyField = currencyFields.includes(col.label);
+                    console.log('isCurrencyField',col.label)
+                    
+                    // Define integer fields
+                    const integerFields = ['Transaction', 'Transactions', 'Transaction Count', 'lineItemQuantity','Total Transactions'];
+                    const isIntegerField = integerFields.includes(col.label);
+                    
+                    let displayValue;
+                    if (col.render) {
+                      displayValue = col.render(row[col.field], row);
+                    } else if (isCurrencyField) {
+                      // Format currency fields with dollar sign and 2 decimal places
+                      // Show $0.00 for blank/null/undefined values
+                      if (row[col.field] === null || row[col.field] === undefined || row[col.field] === '' || row[col.field] === 'null') {
+                        displayValue = '$0.00';
+                      } else {
+                        const numValue = parseFloat(row[col.field]);
+                        displayValue = isNaN(numValue) ? '$0.00' : `$${numValue.toFixed(2)}`;
+                      }
+                    } else if (isIntegerField) {
+                      // Format integer fields
+                      // Show 0 for blank/null/undefined values
+                      if (row[col.field] === null || row[col.field] === undefined || row[col.field] === '' || row[col.field] === 'null') {
+                        displayValue = '0';
+                      } else {
+                        const intValue = parseInt(row[col.field]);
+                        displayValue = isNaN(intValue) ? '0' : intValue.toString();
+                      }
+                    } else if (typeof row[col.field] === "number") {
+                      // console.log('typeof row[col.field]',typeof row[col.field]);
+                      displayValue = new Decimal(row[col.field]).toDecimalPlaces(2).toNumber().toFixed(2);
+                    } else {
+                      displayValue = row[col.field];
+                    }
+                    
+                    return (
+                      <TableCell align="center" key={col.field}>
+                        {displayValue}
+                      </TableCell>
+                    );
+                  })}
 
                   {approvalAction && userID === '' && (
                     <TableCell align="center" className="hrtd">

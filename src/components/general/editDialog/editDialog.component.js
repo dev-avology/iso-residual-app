@@ -32,6 +32,14 @@ const EditDialog = ({ open, onClose, onSave, fields }) => {
     }));
   };
 
+  // Function to format currency values for display
+  const formatCurrencyForDisplay = (value) => {
+    if (value === null || value === undefined || value === '') return '';
+    const numValue = parseFloat(value);
+    if (isNaN(numValue)) return value;
+    return numValue.toFixed(2);
+  };
+
   const handleSubmit = () => {
     let dataToSave = { ...formData };
     // If splits_section exists, move it to splits
@@ -45,6 +53,22 @@ const EditDialog = ({ open, onClose, onSave, fields }) => {
   
   const renderField = (field) => {
     console.log('field.component',field.component);
+    
+    // Define currency fields that should show dollar sign
+    const currencyFields = [
+      'Expenses', 'Income', 'Net', 'BPS', 'Sales Amount', 
+      'Agent Net', 'Bank Payout', 'Payout Amount', 'Volume', 
+      'Sales', 'Refunds', 'Reject Amount', 'Fee', 'Total',
+      'Setup Fee ISO', 'Monthly Gateway Fee ISO', 'Transaction Fee ISO',
+      'ISO Total', 'lineItemAmount', 'lineItemPrice',
+      'totalSalesAmount', 'totalIncome', 'totalExpenses', 'totalNet', 'totalAgentNet'
+    ];
+    const isCurrencyField = currencyFields.includes(field.label) || currencyFields.includes(field.field);
+    
+    // Define integer fields
+    const integerFields = ['Transaction', 'Transactions', 'Transaction Count', 'lineItemQuantity', 'totalTransactions'];
+    const isIntegerField = integerFields.includes(field.label) || integerFields.includes(field.field);
+    
     switch (field.type) {
       case 'select':
         return (
@@ -85,9 +109,27 @@ const EditDialog = ({ open, onClose, onSave, fields }) => {
           <TextField
             fullWidth
             label={field.label}
-            type={field.type || 'text'}
-            value={formData[field.field] || ''}
-            onChange={(e) => handleChange(field.field, e.target.value)}
+            type={isIntegerField ? 'number' : (field.type || 'text')}
+            value={isCurrencyField ? formatCurrencyForDisplay(formData[field.field]) : (formData[field.field] || '')}
+            onChange={(e) => {
+              let value;
+              if (isCurrencyField) {
+                // Remove dollar sign and commas for currency fields
+                const cleanValue = e.target.value.replace(/[$,]/g, '');
+                value = parseFloat(cleanValue) || 0;
+              } else if (isIntegerField) {
+                // Integer field
+                value = parseInt(e.target.value) || 0;
+              } else if (field.type === 'number') {
+                value = parseFloat(e.target.value) || 0;
+              } else {
+                value = e.target.value;
+              }
+              handleChange(field.field, value);
+            }}
+            InputProps={{
+              startAdornment: isCurrencyField ? '$' : null,
+            }}
             variant="outlined"
           />
         );

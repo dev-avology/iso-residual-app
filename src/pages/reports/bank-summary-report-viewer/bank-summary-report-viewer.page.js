@@ -136,7 +136,7 @@ const BankSummaryReportViewerPage = ({ organizationID, authToken }) => {
         type2: ['Merchant Id', 'Merchant Name', 'Payout Amount', 'Volume', 'Sales', 'Refunds', 'Reject Amount', 'Bank Split', 'Bank Payout', 'Branch ID'],
         type3: ['Merchant Id', 'Merchant DBA', 'Payout Amount', 'Volume', 'Sales', 'Refunds', 'Reject Amount', 'Bank Split', 'Bank Payout', 'Branch ID'],
         type4: ['Merchant Id', 'Merchant Name', 'Income', 'Expenses', 'Net', '%', 'Agent Net', 'Branch ID'],
-        type5: ['Merchant Id', 'Merchant Name', 'Transaction', 'Sales Amount', 'Income', 'Expenses', 'Net', 'BPS', '%', 'Agent Net']
+        type5: ['Merchant Id', 'Merchant Name', 'Transaction', 'Sales Amount', 'Income', 'Expenses', 'Net', 'BPS', '%', 'Agent Net','Branch ID']
     };
 
     const getProcessorType = (processor) => processorTypeMap[processor] || 'type1';

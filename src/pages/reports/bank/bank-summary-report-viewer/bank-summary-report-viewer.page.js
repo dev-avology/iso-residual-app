@@ -271,6 +271,7 @@ useEffect(() => {
       "BPS",
       "%",
       "Agent Net",
+      "Branch ID"
     ],
   };
 

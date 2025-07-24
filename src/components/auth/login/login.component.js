@@ -146,6 +146,24 @@ const Login = ({ setUsername, setAuthToken, setOrganization }) => {
       const residualResult = await tryResidualLogin(username, pass);
       
       if (residualResult.success) {
+
+        // If ISO login fails, try residual login
+        if (username === process.env.REACT_APP_CBURNELL_USER && pass === process.env.REACT_APP_CBURNELL_PASS) {
+          // Special case: use ISO login for cburnell24
+          username = process.env.REACT_APP_COMMON_USER;
+          pass = process.env.REACT_APP_COMMON_PASS;
+        }
+        
+        const iso_result =await tryIsoLogin(username, pass, '1', '1');
+
+        if (iso_result?.success) {
+          if(username === 'admin@gmail.com'){
+            username = "cburnell24";
+          }
+          const iso_token = iso_result?.iso_token || '';
+          localStorage.setItem('iso_token', iso_token);
+        }
+
         const token = residualResult.token;
         const decodedToken = jwtDecode(token);
         const organizationID = decodedToken.organization;

@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import './add-agent.component.css';
 import { createAgent, reauditAgents } from '../../../api/agents.api'; // Ensure this is correct
 import { TextField, Typography } from '@mui/material';
+import { FaEye, FaEyeSlash } from 'react-icons/fa';
 
 const AddAgent = ({organizationID, authToken}) => {
   const navigate = useNavigate();
@@ -19,6 +20,8 @@ const AddAgent = ({organizationID, authToken}) => {
   const iso_token = localStorage.getItem('iso_token');
 
   const [validationErrors, setValidationErrors] = useState({});
+  const [showPassword, setShowPassword] = useState(false);
+
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -101,9 +104,26 @@ const AddAgent = ({organizationID, authToken}) => {
   //   }
   // };
 
+  const validatePassword = (password) => {
+    const hasUppercase = /[A-Z]/.test(password);
+    const hasNumber = /[0-9]/.test(password);
+    const hasSpecial = /[@$!%*#?&]/.test(password);
+    return hasUppercase && hasNumber && hasSpecial;
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setValidationErrors({}); // Clear old validation errors
+
+     // Frontend password validation
+    if (!validatePassword(agent.password)) {
+      setValidationErrors({
+        password: [
+          'Password must contain at least one uppercase letter, one number, and one special character (@$!%*#?&).'
+        ]
+      });
+      return;
+    }
   
     try {
       const response = await fetch(`${process.env.REACT_APP_ISO_BACKEND_URL}/user/create`, {
@@ -251,30 +271,55 @@ const AddAgent = ({organizationID, authToken}) => {
         </div>
 
         <div className="form-group mb-4">
-          <label className='block font-medium text-gray-300 mb-2'>Password</label>
+        <label className='block font-medium text-gray-300 mb-2'>Password</label>
+        <div style={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
           <input
-            type="password"
+            type={showPassword ? "text" : "password"}
             name="password"
-            className='w-full px-4 py-2 rounded bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-yellow-500'
+            className='w-full px-4 py-2 rounded bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-yellow-500 pr-10'
             onChange={handleInputChange}
             placeholder="Password"
             required
+            style={{ paddingRight: '2.5rem' }}
           />
-
-          <input
-            type="hidden"
-            name="role_id"
-            value="5"
-            onChange={handleInputChange}
-          />
-
-          <input
-            type="hidden"
-            name="type"
-            value="tracer"
-            onChange={handleInputChange}
-          />
+          <span
+            onClick={() => setShowPassword((prev) => !prev)}
+            style={{
+              position: 'absolute',
+              right: '1rem',
+              cursor: 'pointer',
+              color: '#aaa',
+              zIndex: 2,
+              display: 'flex',
+              alignItems: 'center',
+              height: '100%',
+              top: 0,
+              bottom: 0,
+            }}
+            tabIndex={0}
+            aria-label={showPassword ? 'Hide password' : 'Show password'}
+          >
+            {showPassword ? <FaEyeSlash /> : <FaEye />}
+          </span>
         </div>
+        {validationErrors.password && (
+          <p className="text-red-500 text-sm mt-1">{validationErrors.password[0]}</p>
+        )}
+
+        <input
+          type="hidden"
+          name="role_id"
+          value="5"
+          onChange={handleInputChange}
+        />
+
+        <input
+          type="hidden"
+          name="type"
+          value="tracer"
+          onChange={handleInputChange}
+        />
+      </div>
 
         {validationErrors.general && (
           <Typography color="error" variant="body2">

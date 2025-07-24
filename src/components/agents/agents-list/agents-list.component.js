@@ -59,23 +59,23 @@ const AgentsList = ({ organizationID, authToken }) => {
             try {
               
               
-              if(user_id && user_id != null){
-                const userResponse = await fetch(`${process.env.REACT_APP_ISO_BACKEND_URL}/user/destroy/${user_id}`, {
-                  method: 'GET',
-                  headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${iso_token}`
-                  }
-                  // body: JSON.stringify(agent)
-                });
+              // if(user_id && user_id != null){
+              //   const userResponse = await fetch(`${process.env.REACT_APP_ISO_BACKEND_URL}/user/destroy/${user_id}`, {
+              //     method: 'GET',
+              //     headers: {
+              //       'Content-Type': 'application/json',
+              //       'Authorization': `Bearer ${iso_token}`
+              //     }
+              //     // body: JSON.stringify(agent)
+              //   });
                 
-                const userData = await userResponse.json();
-                console.log('userData',userData);
+              //   const userData = await userResponse.json();
+              //   console.log('userData',userData);
                 
-                if (!userResponse.ok) {
-                  throw new Error(userData.message || 'Failed to delete user');
-                }
-              }
+              //   if (!userResponse.ok) {
+              //     throw new Error(userData.message || 'Failed to delete user');
+              //   }
+              // }
               await deleteAgent(organizationID, agentID, authToken);
               setAgents(agents.filter(agent => agent.agentID !== agentID));
             } catch (err) {
